@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Schema Man{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block body %}
+
+<section class="container">
+
+	<div class="sql-container">
+		<div class="sql-buttons">
+			<button class="button-for-sql" id="engine-selector">Select the engine</button>
+			<button class="button-for-sql" id="normalizarion-selector">Normalizarion level</button>
+			<div class="text-editor">
+
+			</div>
+		</div>
+	</div>
+
+	<div class="reporter-container">
+		<div class="reporter-buttons">
+			<button class="button-for-sql" id="engine-selector">Run</button>
+			<button class="button-for-sql" id="normalizarion-selector">Download</button>
+		</div>
+			<div class="report-page">
+				
+			</div>
+	</div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

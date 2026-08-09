@@ -1,0 +1,25 @@
+:root {
+	/* header conf */
+	--header-color:#383636;
+	--header-height: 6rem;
+	/* --header-font:; */
+	--header-font-color:wheat;
+	/* body conf */
+	--body-color: black;
+
+}
+
+
+header {
+	background-color: var(--header-color);
+	height: var(--header-height);
+	color: var(--header-font-color);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+}
+
+body {
+	background-color: var(--body-color);
+}
