@@ -7,7 +7,5 @@ bp = Blueprint('main', __name__)
 
 
 @bp.route('/')
-def main():
+def normalizator():
     return render_template('app/normalizator.html')
-
-

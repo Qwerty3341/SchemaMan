@@ -3,17 +3,17 @@
 {% block title %}Schema Man{% endblock %}
 
 {% block styles %}
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/normalizator.css') }}">
 {% endblock %}
 
 {% block body %}
 
-<section class="container">
+<section class="normalizator-container">
 
 	<div class="sql-container">
 		<div class="sql-buttons">
-			<button class="button-for-sql" id="engine-selector">Select the engine</button>
-			<button class="button-for-sql" id="normalizarion-selector">Normalizarion level</button>
+			<button class="button-for-sql" id="sql-engine-selector">Select the engine</button>
+			<button class="button-for-sql" id="sql-normalization-selector">Normalization level</button>
 			<div class="text-editor">
 
 			</div>
@@ -22,8 +22,8 @@
 
 	<div class="reporter-container">
 		<div class="reporter-buttons">
-			<button class="button-for-sql" id="engine-selector">Run</button>
-			<button class="button-for-sql" id="normalizarion-selector">Download</button>
+			<button class="button-for-report" id="reporter-run">Run</button>
+			<button class="button-for-report" id="reporter-download">Download</button>
 		</div>
 			<div class="report-page">
 				

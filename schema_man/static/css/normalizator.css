@@ -1,0 +1,16 @@
+.button-for-sql {
+	background-color: teal;
+	color: white;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	border: none;
+
+}
+
+.button-for-report {
+	background-color: green;
+	color: white;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	border: none;
+}

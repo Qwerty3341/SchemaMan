@@ -12,10 +12,6 @@ def create_app(test_config=None):
 
     os.makedirs(app.instance_path, exist_ok=True)
 
-    @app.route('/hello')
-    def hello():
-        return 'HolaMundo'
-
     from .schema_man import bp as main_bp
     app.register_blueprint(main_bp)
 
