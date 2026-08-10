@@ -1,7 +1,8 @@
 /* General config */
 
 :root {
-	--text-editor-font:;
+	--text-editor-font: 'Source Code Pro', monospace;
+	--text-editor-font-size: 1.5rem;
 }
 
 .normalizator-container {
@@ -44,10 +45,12 @@
 /* sql container */
 
 .text-editor {
-	background-color: gray;
+	background-color: beige;
 	border: none;
 	flex: 1;
 	min-height: 0;
+	font-family: var(--text-editor-font);
+	font-size: var(--text-editor-font-size);
 }
 
 /* report container */
