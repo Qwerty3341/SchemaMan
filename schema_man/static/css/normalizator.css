@@ -11,7 +11,8 @@
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: 10px;
-	height: 100%;
+	flex: 1;
+	min-height: 0;
 }
 
 .button-for-sql {
@@ -42,20 +43,20 @@
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
+	min-height: 0;
+	overflow: hidden;
 }
 
-/* sql editor overlay */
+/* sql editor */
 
 .sql-editor {
-	background-color: var(--editor-bg);
-	color: #e2e8f0;
-	border: none;
 	flex: 1;
 	min-height: 0;
-	font-family: var(--text-editor-font);
-	font-size: var(--text-editor-font-size);
 }
 
-.sql-editor:focus {
-	outline: none;
+.CodeMirror {
+	height: 100%;
+	font-family: var(--text-editor-font);
+	font-size: var(--text-editor-font-size);
+	background-color: var(--editor-bg);
 }

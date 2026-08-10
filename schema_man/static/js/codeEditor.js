@@ -1,35 +1,36 @@
 class CodeEditor {
 
-	static KEYWORDS = [
-		'CREATE', 'TABLE', 'SELECT', 'FROM', 'INDEX',
-		'WHERE', 'INSERT', 'INTO', 'VALUES', 'UPDATE',
-		'DELETE', 'JOIN', 'ON', 'AND', 'OR', 'NOT',
-		'NULL', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES',
-		'ALTER', 'DROP', 'ADD', 'COLUMN', 'SET',
-		'ORDER', 'BY', 'GROUP', 'HAVING', 'LIMIT',
-		'AS', 'DISTINCT', 'IN', 'BETWEEN', 'LIKE',
-		'IS', 'EXISTS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END',
-		'CREATE', 'VIEW', 'TRIGGER', 'PROCEDURE', 'FUNCTION',
-		'RETURN', 'RETURNS', 'BEGIN', 'COMMIT', 'ROLLBACK',
-		'TRUNCATE', 'REPLACE', 'GRANT', 'REVOKE',
-	]
-
-	static OPERATORS = [
-		'>=', '<=', '!=', '<>',
-		'+', '-', '*', '/', '=',
-		'<', '>', '%', '||',
-	]
-
-	constructor(textArea) {
-		this.textArea = textArea;
+	static DEFAULTS = {
+		theme: 'material-darker',
+		mode: 'text/x-sql',
+		lineNumbers: true,
+		indentUnit: 4,
+		tabSize: 4,
+		lineWrapping: true,
 	}
 
-	syntaxHighlight() {
-
+	constructor(element, options = {}) {
+		this.options = { ...CodeEditor.DEFAULTS, ...options };
+		this.editor = CodeMirror.fromTextArea(element, this.options);
 	}
 
-	setLineNumbers() {
+	getValue() {
+		return this.editor.getValue();
+	}
 
+	setValue(text) {
+		this.editor.setValue(text);
+	}
+
+	focus() {
+		this.editor.focus();
 	}
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+	const textarea = document.querySelector('#sql-editor');
+	if (textarea) {
+		const editor = new CodeEditor(textarea);
+		editor.focus();
+	}
+});
