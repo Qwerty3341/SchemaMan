@@ -22,7 +22,8 @@
 			</button>
 		</div>
 
-		<div class="text-editor"></div>
+		<textarea class="sql-editor"> 
+		</textarea>
 	</div>
 
 	<div class="container" id="report-container">
@@ -43,4 +44,5 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
 {% endblock %}
