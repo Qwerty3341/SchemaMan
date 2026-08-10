@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 
+
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
@@ -12,7 +13,12 @@ def create_app(test_config=None):
 
     os.makedirs(app.instance_path, exist_ok=True)
 
-    from .schema_man import bp as main_bp
+    from .schema_man import bp as main_bp, manual_bp, about_bp
+    from .normal_forms import nf_bp
+
     app.register_blueprint(main_bp)
+    app.register_blueprint(manual_bp)
+    app.register_blueprint(nf_bp)
+    app.register_blueprint(about_bp)
 
     return app
