@@ -12,16 +12,30 @@
 
 <section class="normalizator-container">
 	<div class="container" id="sql-container">
-		<div class="sql-buttons">
-
-			<button class="button-for-sql" id="sql-engine-selector">
-				Select the engine
-				<i class="fa-solid fa-database"></i>
-			</button>
-			<button class="button-for-sql" id="sql-normalization-selector">
-				Normalization level
-				<i class="fa-regular fa-file-code"></i>
-			</button>
+		<div class="sql-selects">
+			<div class="selector-container">
+				<label for="sql-engine-selector" class="select-label">
+					<i class="fa-solid fa-database"></i> Engine: 
+				</label>
+				<select class="select-for-sql" id="sql-engine-selector">
+					<option>SQlite</option>
+					<option>MariaDB</option>
+					<option>PostgreSQL</option>
+				</select>
+			</div>
+			
+			<div class="selector-container"> 
+				<label for="sql-normalization-selector" class="select-label">
+					<i class="fa-regular fa-file-code"></i> Normalization level:
+				</label>
+				<select class="select-for-sql" id="sql-normalization-selector">
+					<option>FN1</option>
+					<option>FN2</option>
+					<option>FN3</option>
+					<option>FN4</option>
+					<option>FN5</option>
+				</select>
+			</div>
 		</div>
 
 		<textarea class="sql-editor" id="sql-editor"></textarea>

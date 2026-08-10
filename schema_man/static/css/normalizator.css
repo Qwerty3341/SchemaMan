@@ -15,13 +15,29 @@
 	min-height: 0;
 }
 
-.button-for-sql {
+.selector-container {
+	display: flex;
+	align-items: center;
+}
+
+.select-label {
 	background-color: teal;
 	color: white;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
+	font-size: 1rem;
+	white-space: nowrap;
+}
 
+.select-for-sql {
+	background-color: var(--editor-bg);
+	color: var(--editor-fg);
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	border: none;
+	font-size: 1rem;
+	flex: 1;
 }
 
 .button-for-report {
@@ -32,7 +48,12 @@
 	border: none;
 }
 
-.sql-buttons,
+.sql-selects {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+}
+
 .report-buttons {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
