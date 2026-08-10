@@ -45,7 +45,8 @@
 /* sql container */
 
 .text-editor {
-	background-color: beige;
+	background-color: #1e293b;
+	color: #e2e8f0;
 	border: none;
 	flex: 1;
 	min-height: 0;
