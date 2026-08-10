@@ -1,5 +1,9 @@
 # SchemaMan
 
+SQL Schemas normalizator (Like an interpreter for normal forms)
+the system will generate reports for compliance and non-compliance for normal forms
+Is not expected that the system will generate code just the report
+
 ## Languages
 
 Python + Flask
