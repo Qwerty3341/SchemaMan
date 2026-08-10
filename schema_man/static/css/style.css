@@ -21,11 +21,21 @@ header {
 
 }
 
-body {
+html, body {
+	height: 100%;
+	margin: 0;
 	background-color: var(--body-color);
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	/* min-height: 100vh; */
 }
 
 footer {
 	background-color: var(--header-color);
 	height: var(--footer-height);
+	margin-top: auto;
+	color: wheat;
 }
