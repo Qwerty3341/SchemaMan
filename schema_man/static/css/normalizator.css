@@ -1,3 +1,10 @@
+/* General config */
+
+.normalizator-container {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+}
+
 .button-for-sql {
 	background-color: teal;
 	color: white;
@@ -14,3 +21,14 @@
 	cursor: pointer;
 	border: none;
 }
+
+.container {
+	display: flex;
+	flex-direction: column;
+}
+
+/* sql container */
+
+
+/* report container */
+

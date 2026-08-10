@@ -6,7 +6,8 @@
 	--header-font-color:wheat;
 	/* body conf */
 	--body-color: black;
-
+	/* footer conf */
+	--footer-height: 2rem;
 }
 
 
@@ -22,4 +23,9 @@ header {
 
 body {
 	background-color: var(--body-color);
+}
+
+footer {
+	background-color: var(--header-color);
+	height: var(--footer-height);
 }
