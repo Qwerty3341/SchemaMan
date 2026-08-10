@@ -2,10 +2,11 @@
 	/* header conf */
 	--header-color: #383636;
 	--header-height: 6rem;
-	/* --header-font:; */
+	--header-font: "Space Grotesk", sans-serif;
 	--header-font-color: wheat;
 	/* body conf */
 	--body-color: black;
+	--body-font: "Gabarito", sans-serif;
 	/* footer conf */
 	--footer-height: 3rem;
 	--margin-hf: 10px;
@@ -19,7 +20,7 @@ header {
 	justify-content: center;
 	align-items: center;
 	margin-bottom: var(--margin-hf);
-
+	font-family: var(--header-font);
 }
 
 html,
@@ -32,7 +33,9 @@ body {
 body {
 	display: flex;
 	flex-direction: column;
-	/* min-height: 100vh; */
+	font-family: var(--body-font);
+	font-weight: 500;
+	font-size: 1rem;
 }
 
 footer {
@@ -42,3 +45,4 @@ footer {
 	color: wheat;
 	margin-top: var(--margin-hf);
 }
+

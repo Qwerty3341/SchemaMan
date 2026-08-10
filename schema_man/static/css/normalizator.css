@@ -26,7 +26,8 @@
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
-	font-size: 1rem;
+	font-size: 1.05rem;
+	font-weight: 500;
 	white-space: nowrap;
 }
 
@@ -36,7 +37,8 @@
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
-	font-size: 1rem;
+	font-size: 1.05rem;
+	font-weight: 500;
 	flex: 1;
 }
 
@@ -46,6 +48,8 @@
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
+	font-size: 1.05rem;
+	font-weight: 500;
 }
 
 .sql-selects {
@@ -69,7 +73,6 @@
 }
 
 /* sql editor */
-
 .sql-editor {
 	flex: 1;
 	min-height: 0;
