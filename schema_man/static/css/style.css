@@ -1,15 +1,15 @@
 :root {
 	/* header conf */
-	--header-color:#383636;
+	--header-color: #383636;
 	--header-height: 6rem;
 	/* --header-font:; */
-	--header-font-color:wheat;
+	--header-font-color: wheat;
 	/* body conf */
 	--body-color: black;
 	/* footer conf */
-	--footer-height: 2rem;
+	--footer-height: 3rem;
+	--margin-hf: 10px;
 }
-
 
 header {
 	background-color: var(--header-color);
@@ -18,11 +18,12 @@ header {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-bottom: 10px;
+	margin-bottom: var(--margin-hf);
 
 }
 
-html, body {
+html,
+body {
 	height: 100%;
 	margin: 0;
 	background-color: var(--body-color);
@@ -39,4 +40,5 @@ footer {
 	height: var(--footer-height);
 	margin-top: auto;
 	color: wheat;
+	margin-top: var(--margin-hf);
 }
