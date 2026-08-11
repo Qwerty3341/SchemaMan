@@ -5,7 +5,8 @@
 	--text-editor-font-size: 1.5rem;
 	--editor-bg: #1e293b;
 	--editor-fg: #e2e8f0;
-	--button-report-color: #b7ba2a;
+	--button-sql-color: teal;
+	--button-report-color: orange;
 }
 
 .normalizator-container {
@@ -22,7 +23,7 @@
 }
 
 .select-label {
-	background-color: teal;
+	background-color: var(--button-sql-color);
 	color: white;
 	padding: 0.5rem 1rem;
 	cursor: pointer;

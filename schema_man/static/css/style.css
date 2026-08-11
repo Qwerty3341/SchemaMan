@@ -1,12 +1,15 @@
 :root {
 	/* header conf */
-	--header-color: #2c2c2c;
+	--header-color: #2C1810;
 	--header-height: 6rem;
 	--header-font: "Space Grotesk", sans-serif;
-	--header-font-color: #d69826;
+	--header-font-color: #F5E6D3;
 	/* body conf */
-	--body-color: #15181d;
+	--body-color: #D4B896;
 	--body-font: "Gabarito", sans-serif;
+	--body-font-color: #1A0F0A;
+    --accent-color: #6B3A2A;
+	--card-bg: #E8D5C0;
 	/* footer conf */
 	--footer-height: 3rem;
 	--margin-hf: 10px;
