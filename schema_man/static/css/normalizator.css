@@ -13,8 +13,7 @@
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	gap: 10px;
-	flex: 1;
-	min-height: 0;
+	height: 100%;
 }
 
 .selector-container {
@@ -76,6 +75,11 @@
 
 /* sql editor */
 .sql-editor {
+	flex: 1;
+	min-height: 0;
+}
+
+.report-page {
 	flex: 1;
 	min-height: 0;
 }
