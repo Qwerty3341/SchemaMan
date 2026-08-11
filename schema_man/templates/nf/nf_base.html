@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{% block nf_title %}{% endblock %}</h1>
+<h2>{% block nf_subtitle %}{% endblock %}</h2>
+
+<div class="nf-description">
+	{% block nf_description %}{% endblock %}
+</div>
+
+<div class="nf-example">
+	{% block nf_example %}{% endblock %}
+</div>
+
+{% endblock %}
