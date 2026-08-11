@@ -1,7 +1,7 @@
 class CodeEditor {
 
 	static DEFAULTS = {
-		theme: 'gruvbox-dark',
+		theme: 'ambiance',
 		mode: 'text/x-sql',
 		lineNumbers: true,
 		indentUnit: 4,
