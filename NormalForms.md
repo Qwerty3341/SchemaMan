@@ -37,3 +37,8 @@ La forma normal de Boyce-Codd, o BCNF, es una forma normal que se considera una
 versión más estricta o más fuerte de la tercera forma normal.
 BCNF requiere el uso de superclaves.
 Se hace entre la 3 y la 4.
+
+## Links
+
+IBM <https://www.ibm.com/think/topics/database-normalization>
+Microsoft <https://learn.microsoft.com/es-mx/previous-versions/troubleshoot/microsoft-365/microsoft-365-apps/access/database-normalization-description>
