@@ -3,10 +3,10 @@
 :root {
 	--text-editor-font: 'Source Code Pro', monospace;
 	--text-editor-font-size: 1.5rem;
-	--editor-bg: #1e293b;
-	--editor-fg: #e2e8f0;
-	--button-sql-color: teal;
-	--button-report-color: orange;
+	--selector-bg: #1A0F0A;
+	--selector-fg: #F5E6D3;
+	--button-sql-color: #6B3A2A;
+	--button-report-color: #8B5A3C;
 }
 
 .normalizator-container {
@@ -34,8 +34,8 @@
 }
 
 .select-for-sql {
-	background-color: var(--editor-bg);
-	color: var(--editor-fg);
+	background-color: var(--selector-bg);
+	color: var(--selector-fg);
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
@@ -84,5 +84,5 @@
 	height: 100%;
 	font-family: var(--text-editor-font);
 	font-size: var(--text-editor-font-size);
-	background-color: var(--editor-bg);
+	background-color: var(--selector-bg);
 }

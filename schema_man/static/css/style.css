@@ -8,7 +8,7 @@
 	--body-color: #D4B896;
 	--body-font: "Gabarito", sans-serif;
 	--body-font-color: #1A0F0A;
-    --accent-color: #6B3A2A;
+    --accent-color: wheat;
 	--card-bg: #E8D5C0;
 	/* footer conf */
 	--footer-height: 3rem;
@@ -42,6 +42,10 @@ header a {
 	color: inherit;
 }
 
+header a:hover {
+	color: var(--accent-color);
+}
+
 header nav {
 	display: flex;
 	gap: 1.5rem;
@@ -59,6 +63,7 @@ body {
 	font-family: var(--body-font);
 	font-weight: 500;
 	font-size: 1rem;
+	color: var(--body-font-color);
 }
 
 /* footer config */
@@ -78,4 +83,8 @@ footer {
 footer a {
 	text-decoration: none;
 	color: inherit;
+}
+
+footer a:hover {
+	color: var(--accent-color);
 }
