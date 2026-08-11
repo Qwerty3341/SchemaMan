@@ -5,6 +5,7 @@
 	--text-editor-font-size: 1.5rem;
 	--editor-bg: #1e293b;
 	--editor-fg: #e2e8f0;
+	--button-report-color: #b7ba2a;
 }
 
 .normalizator-container {
@@ -43,7 +44,7 @@
 }
 
 .button-for-report {
-	background-color: green;
+	background-color: var(--button-report-color);
 	color: white;
 	padding: 0.5rem 1rem;
 	cursor: pointer;

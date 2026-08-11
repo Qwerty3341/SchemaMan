@@ -1,34 +1,49 @@
 :root {
 	/* header conf */
-	--header-color: #383636;
+	--header-color: #2c2c2c;
 	--header-height: 6rem;
 	--header-font: "Space Grotesk", sans-serif;
-	--header-font-color: wheat;
+	--header-font-color: #d69826;
 	/* body conf */
-	--body-color: black;
+	--body-color: #15181d;
 	--body-font: "Gabarito", sans-serif;
 	/* footer conf */
 	--footer-height: 3rem;
 	--margin-hf: 10px;
 }
 
-header {
-	background-color: var(--header-color);
-	height: var(--header-height);
-	color: var(--header-font-color);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-bottom: var(--margin-hf);
-	font-family: var(--header-font);
-}
-
+/* html and body config */
 html,
 body {
 	height: 100%;
 	margin: 0;
 	background-color: var(--body-color);
 }
+
+/* Header config */
+
+header {
+	background-color: var(--header-color);
+	height: var(--header-height);
+	color: var(--header-font-color);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 2rem;
+	margin-bottom: var(--margin-hf);
+	font-family: var(--header-font);
+}
+
+header a {
+	text-decoration: none;
+	color: inherit;
+}
+
+header nav {
+	display: flex;
+	gap: 1.5rem;
+}
+
 
 body {
 	display: flex;
@@ -42,7 +57,12 @@ footer {
 	background-color: var(--header-color);
 	height: var(--footer-height);
 	margin-top: auto;
-	color: wheat;
+	color: var(--header-font-color);
 	margin-top: var(--margin-hf);
 }
 
+/* links */
+footer a {
+	text-decoration: none;
+	color: inherit;
+}
