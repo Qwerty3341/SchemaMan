@@ -44,6 +44,11 @@ header nav {
 	gap: 1.5rem;
 }
 
+.nav-list a {
+	font-size: x-large;
+}
+
+/* body config */
 
 body {
 	display: flex;
@@ -53,15 +58,20 @@ body {
 	font-size: 1rem;
 }
 
+/* footer config */
+
 footer {
 	background-color: var(--header-color);
 	height: var(--footer-height);
 	margin-top: auto;
 	color: var(--header-font-color);
 	margin-top: var(--margin-hf);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: larger;
 }
 
-/* links */
 footer a {
 	text-decoration: none;
 	color: inherit;
