@@ -7,9 +7,40 @@
 
 {% block nf_description %}
 <p>
- 
+	Requires that a database table schema includes a primary key while excluding repetition among columns. A table in
+	first normal form should not have fields with arrays of values—for instance, a single cell with three different
+	names in it—nor should it include repeating groups, which are different columns that store the same type of data.
 </p>
 {% endblock %}
 
 {% block nf_example %}
+<p>Table violating the first normal form (No PK and a repetitive group [class])</p>
+<table>
+	<thead>TABLE STUDENT</thead>
+	<tr>
+		<td>NAME</td>
+		<td>LASTNAME</td>
+		<td>CLASS1</td>
+		<td>CLASS2</td>
+		<td>CLASS3</td>
+	</tr>
+</table>
+
+<p>Table in the first normal form</p>
+<table>
+	<thead>TABLE STUDENT</thead>
+	<tr>
+		<td>ID_STUDENT</td>
+		<td>NAME</td>
+		<td>LASTNAME</td>
+	</tr>
+</table>
+<br>
+<table>
+	<thead>TABLE CLASS</thead>
+	<tr>
+		<td>ID_CLASS</td>
+		<td>CLASS_NAME</td>
+	</tr>
+</table>
 {% endblock %}

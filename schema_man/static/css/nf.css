@@ -1,5 +1,19 @@
+:root {
+	--margin-page: 30rem;
+}
+
+
 .nf-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-left: var(--margin-page);
+	margin-right: var(--margin-page);
+}
+
+.nf-example {
 	display: flex;
 	flex-direction: column;
 }
 
+/* table style */
