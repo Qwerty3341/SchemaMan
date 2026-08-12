@@ -67,8 +67,10 @@ body {
 /* main config */
 
 main.content {
-	flex: 1;
 	padding: 1rem;
+	display: flex;
+	flex: content;
+	/* flex-direction: column; */
 }
 
 /* footer config */

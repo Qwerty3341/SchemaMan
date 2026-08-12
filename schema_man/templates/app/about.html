@@ -2,16 +2,38 @@
 
 {% block title %}About{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
 {% block content %}
+<section class="box">
+	<h1>About Schema Man</h1>
 
-<section class="about">
-	<p>
-		Project made in Flask, Python and JS by Luciano Aarón Gaytán Torres
-	</p>
-</section>
+	<div class="block" id="about">
+		<p>
+			An interpreter for normal forms in data base schemas.
+		</p>
+	</div>
 
-<section class="credits">
+	<div class="block" id="credits">
+		<p>
+			Technologies: Flask, Python and JS.
+			Made by: Luciano Aarón Gaytán Torres.
+			Advisor: Aldonso Becerra Sánchez.
+		</p>
+	</div>
 
+	<div class="block" id="sources">
+		<h2>Sources</h2>
+		<a target="_blank" href="https://www.ibm.com/think/topics/database-normalization">
+			IBM database normalization
+		</a>
+		<a target="_blank"
+			href="https://learn.microsoft.com/en-us/previous-versions/troubleshoot/microsoft-365/microsoft-365-apps/access/database-normalization-description">
+			Microsoft
+		</a>
+	</div>
 </section>
 
 {% endblock %}
