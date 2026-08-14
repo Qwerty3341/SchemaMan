@@ -1,39 +1,19 @@
 # SchemaMan
 
-SQL schema normalizer — generates compliance reports for normal forms (1NF–5NF). Does not generate SQL code.
+## Structure
 
-## Tech
-
-Python 3.14, Flask (App Factory pattern), sqlglot for SQL parsing. DB engines: SQLite, MariaDB.
-
-## Key patterns
-
-- Entry point: `schema_man/__init__.py:create_app()` — always use the app factory, never instantiate Flask directly.
-- Routes live in `schema_man/schema_man.py` as a Blueprint (`bp`).
-- Instance config: `instance/config.py` (gitignored, created at runtime).
+- Flask app using the App Factory pattern; the entry point is `schema_man/__init__.py:create_app()`.
+- Page routes are Blueprint modules in `schema_man/schema_man.py` and `schema_man/normal_forms.py`; templates and static assets are under `schema_man/templates/` and `schema_man/static/`.
+- `instance/` is runtime-local and gitignored; default config is loaded from `instance/config.py` when present.
+- `NormalForms.md` is the repository's domain reference for the 1NF–5NF rules.
 
 ## Commands
 
-No `requirements.txt` or `pyproject.toml` exists yet. Dependencies are listed only in README. Install manually if needed:
+- Start the development server with `flask --app schema_man run` from the repository root.
+- The checked-in `requirements.txt` is empty; the README's intended dependencies are Flask, sqlglot, pytest, and a future PDF library. Do not assume dependency installation is reproducible until that file is populated.
+- There are currently no tests, linter, formatter, type checker, CI workflow, or code-generation step configured.
 
-```
-pip install flask sqlglot pytest
-```
+## Conventions
 
-Run the dev server:
-
-```
-flask --app schema_man run
-```
-
-Run tests (once `tests/` is populated):
-
-```
-pytest
-```
-
-## Notes
-
-- `tests/` directory is empty — no tests exist yet.
-- No linter, formatter, or CI configured.
-- `NormalForms.md` contains the domain knowledge (in Spanish) for normal form rules.
+- Add web endpoints through the existing Blueprint structure and register new blueprints in `create_app()`.
+- Use `create_app(test_config=...)` for test setup rather than constructing a Flask app directly.
