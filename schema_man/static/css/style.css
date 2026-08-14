@@ -5,7 +5,7 @@
 	--header-font: "Space Grotesk", sans-serif;
 	--header-font-color: #F5E6D3;
 	/* body conf */
-	--body-color: #3A2C27;
+	--body-color: #551800;
 	--body-font: "Gabarito", sans-serif;
 	--body-font-color: #F5E6D3;
 	--accent-color: #E8B878;
@@ -43,6 +43,24 @@ header a {
 header a:hover {
 	color: var(--accent-color);
 }
+
+.logo-container {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.logo-container h1 {
+	margin: 0;
+}
+
+/* .logo-container .logo { */
+	/* display: block; */
+	/* width: 2.5rem; */
+	/* height: 2.5rem; */
+	/* object-fit: contain; */
+	/* flex-shrink: 0; */
+/* } */
 
 header nav {
 	display: flex;
