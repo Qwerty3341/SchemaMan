@@ -15,6 +15,7 @@
 	grid-template-columns: repeat(2, 1fr);
 	gap: 10px;
 	flex: 1;
+	min-height: 0;
 }
 
 .selector-container {
@@ -89,4 +90,9 @@
 	height: 100%;
 	font-family: var(--text-editor-font);
 	font-size: var(--text-editor-font-size);
+}
+
+.CodeMirror-scroll {
+	overflow-y: auto;
+	overflow-x: auto;
 }
