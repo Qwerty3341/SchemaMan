@@ -7,6 +7,7 @@
 	--selector-fg: #ebdbb2;
 	--button-sql-color: #689d6a;
 	--button-report-color: #d65d0e;
+	--button-font-color: #1A0F0A;
 }
 
 .normalizator-container {
@@ -23,7 +24,7 @@
 
 .select-label {
 	background-color: var(--button-sql-color);
-	color: white;
+	color: var(--button-font-color);
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
@@ -45,7 +46,7 @@
 
 .button-for-report {
 	background-color: var(--button-report-color);
-	color: white;
+	color: var(--button-font-color);
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	border: none;
