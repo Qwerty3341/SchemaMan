@@ -1,11 +1,11 @@
 :root {
 	/* header conf */
-	--header-color: #2C1810;
+	--header-color: #190A04;
 	--header-height: 6rem;
 	--header-font: "Space Grotesk", sans-serif;
 	--header-font-color: #F5E6D3;
 	/* body conf */
-	--body-color: #B4A999;
+	--body-color: #3A2C27;
 	--body-font: "Gabarito", sans-serif;
 	--body-font-color: #1A0F0A;
 	--accent-color: wheat;
