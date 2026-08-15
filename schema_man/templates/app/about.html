@@ -10,15 +10,18 @@
 <section class="box">
 	<h1>About Schema Man</h1>
 
-	<img class="logo" src="{{ url_for('static', filename='img/MrDB.svg') }}" alt="Logo">
+	<div class="logo-frame">
+		<img class="logo" src="{{ url_for('static', filename='img/MrDB.svg') }}" alt="Schema Man logo">
+	</div>
 
-	<div class="block" id="about">
+	<div class="block info-panel" id="about">
 		<p>
-			An interpreter for normal forms in data base schemas.
+			An interpreter for normal forms in database schemas.
 		</p>
 	</div>
 
-	<div class="block" id="credits">
+	<div class="block info-panel" id="credits">
+		<h2>Credits</h2>
 		<p>Technologies: Flask, Python and JS.</p>
 		<p>Made by: Luciano Aarón Gaytán Torres.</p>
 		<p>Advisor: Aldonso Becerra Sánchez.</p>
@@ -26,13 +29,17 @@
 
 	<div class="block" id="sources">
 		<h2>Sources</h2>
-		<a target="_blank" href="https://www.ibm.com/think/topics/database-normalization">
-			IBM database normalization
-		</a>
-		<a target="_blank"
-			href="https://learn.microsoft.com/en-us/previous-versions/troubleshoot/microsoft-365/microsoft-365-apps/access/database-normalization-description">
-			Microsoft
-		</a>
+		<div class="source-list">
+			<a target="_blank" rel="noopener noreferrer" href="https://www.ibm.com/think/topics/database-normalization">
+				<span>IBM database normalization</span>
+				<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+			</a>
+			<a target="_blank" rel="noopener noreferrer"
+				href="https://learn.microsoft.com/en-us/previous-versions/troubleshoot/microsoft-365/microsoft-365-apps/access/database-normalization-description">
+				<span>Microsoft database normalization</span>
+				<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+			</a>
+		</div>
 	</div>
 </section>
 
