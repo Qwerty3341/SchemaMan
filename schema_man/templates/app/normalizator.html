@@ -18,9 +18,9 @@
 					<i class="fa-solid fa-database"></i> Engine: 
 				</label>
 				<select class="select-for-sql" id="sql-engine-selector">
-					<option>SQlite</option>
-					<option>MariaDB</option>
-					<option>PostgreSQL</option>
+					<option value="sqlite">SQLite</option>
+					<option value="mysql">MariaDB</option>
+					<option value="postgres">PostgreSQL</option>
 				</select>
 			</div>
 			
@@ -59,7 +59,8 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
-<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+	<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/validationSQL.js') }}"></script>
 {% endblock %}

@@ -30,7 +30,7 @@ class CodeEditor {
 document.addEventListener('DOMContentLoaded', () => {
 	const textarea = document.querySelector('#sql-editor');
 	if (textarea) {
-		const editor = new CodeEditor(textarea);
-		editor.focus();
+		window.sqlEditor = new CodeEditor(textarea);
+		window.sqlEditor.focus();
 	}
 });

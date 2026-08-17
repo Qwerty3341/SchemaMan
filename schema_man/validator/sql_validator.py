@@ -15,13 +15,13 @@ def validate_sql(sql_schema: str, dialect: str):
     """
     try:
 
-        tree = sqlglot.parse_one(sql_schema, read=dialect)
+        tree = sqlglot.parse(sql_schema, read=dialect)
 
         return {
             "valid": True,
             #  "message": "SQL schema is valid.",
             "errors": [],
-            "tree" : tree
+            "tree": tree
         }
 
     except ParseError as error:
@@ -29,6 +29,5 @@ def validate_sql(sql_schema: str, dialect: str):
             "valid": False,
             #  "message": "SQL schema is invalid.",
             "errors": [str(error)],
-            "tree" : None
+            "tree": None
         }
-
