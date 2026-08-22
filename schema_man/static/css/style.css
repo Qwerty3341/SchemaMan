@@ -1,17 +1,18 @@
 :root {
 	/* header conf */
-	--header-color: #190A04;
-	--header-height: 6rem;
+	--header-color: #030202;
+	--header-height: 5rem;
 	--header-font: "Space Grotesk", sans-serif;
 	--header-font-color: #F5E6D3;
 	/* body conf */
-	--body-color: #2B1100;
+	--body-color: #1C1C1C;
+
 	--body-font: "Gabarito", sans-serif;
 	--body-font-color: #F5E6D3;
-	--accent-color: #E8B878;
-	--card-bg: #E8D5C0;
+	--accent-color: #5D928E;
+	--card-bg: #FABD2F;
 	/* footer conf */
-	--footer-height: 4rem;
+	--footer-height: 3rem;
 }
 
 /* html and body config */

@@ -1,5 +1,5 @@
 :root {
-	--margin-page: 30rem;
+	--margin-page: 5rem;
 }
 
 .nf-container {
@@ -8,6 +8,7 @@
 	align-items: center;
 	margin-left: var(--margin-page);
 	margin-right: var(--margin-page);
+	text-align: justify;
 }
 
 .nf-example {
