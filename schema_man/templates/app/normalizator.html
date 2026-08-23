@@ -54,13 +54,22 @@
 		</div>
 		<div class="report-page"></div>
 	</div>
+
+	<dialog id="validation-dialog">
+		<div id="elements-container">
+			<h2 id="vd-error"></h2>
+			<p id="vd-error-message"></p>
+			<button id="vd-btn-close">close</button>
+		</div>
+	</dialog>
 </section>
 
 {% endblock %}
 
 {% block scripts %}
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
-	<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/validationSQL.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
+<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validationSQL.js') }}"></script>
 {% endblock %}
+

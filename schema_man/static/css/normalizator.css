@@ -96,3 +96,42 @@
 	overflow-y: auto;
 	overflow-x: auto;
 }
+
+/* Styles for the dialog */
+#validation-dialog {
+	--dialog-size: 10rem;
+
+	height: var(--dialog-size);
+	width: calc(var(--dialog-size) * 2);
+	justify-content: center;
+	align-items: center;
+	background-color: var(--selector-bg);
+	border: 2px var(--selector-fg) solid;
+	border-radius: 10px;
+	color: var(--selector-fg);
+	padding: 1rem;
+}
+
+#vd-error-message {
+	margin-top: 0;
+	text-align: justify;
+	text-justify: inter-word;
+}
+
+#elements-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#vd-btn-close {
+	background-color: var(--button-report-color);
+	border: none;
+	border-radius: 10px;
+	color: var(--selector-fg);
+	padding: 5px;
+	height: 2rem;
+	width: 4rem;
+	cursor: pointer;
+}

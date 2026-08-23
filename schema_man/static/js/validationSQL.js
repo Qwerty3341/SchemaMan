@@ -1,15 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const textarea = document.querySelector('#sql-editor');
 	const runButton = document.querySelector('#reporter-run');
 	const engineSelector = document.querySelector('#sql-engine-selector');
-	const reportPage = document.querySelector('.report-page');
 
-	if (!textarea || !runButton || !engineSelector || !reportPage || !window.sqlEditor) {
+	// Elements on the dialog
+	const dialog = document.getElementById("validation-dialog");
+	const h2Dialog = document.getElementById("vd-error");
+	const messageP = document.getElementById("vd-error-message");
+	const btnCloseDialog = document.getElementById("vd-btn-close");
+
+	if (!runButton || !engineSelector || !dialog || !h2Dialog || !messageP || !btnCloseDialog || !window.sqlEditor) {
 		return;
 	}
 
+	// Dialog logic
+	const showDialog = (title, message, type) => {
+		h2Dialog.textContent = title;
+		messageP.textContent = message;
+		dialog.className = type;
+
+		if (!dialog.open) {
+			dialog.showModal();
+		}
+	};
+
+	btnCloseDialog.addEventListener('click', () => {
+		dialog.close();
+	});
+
 	runButton.addEventListener('click', async () => {
-		reportPage.textContent = 'Validando...';
+		showDialog("Sending the schema to sqlglot", "Validating the schema", 'status')
 
 		try {
 			const response = await fetch('/api/validate', {
@@ -26,14 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
 			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(result.errors?.join('\n') || 'Error de validación');
+				throw new Error(result.errors?.join('\n') || 'Validation Error');
+			}
+			
+			if (result.valid === true) {
+				showDialog("Correct", "SQL without errors", "success");
+			} else { // Error in the schema
+				showDialog(
+					"Incorrect",
+					result.errors?.join('\n') || "SQL with errors",
+					"error"
+				);
 			}
 
-			reportPage.textContent = result.valid
-				? 'El SQL es válido.'
-				: result.errors.join('\n');
 		} catch (error) {
-			reportPage.textContent = error.message;
+			showDialog("Error", error.message || "Could not validate the schema", 'error')
 		}
 	});
 });
