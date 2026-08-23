@@ -15,7 +15,7 @@
 		<div class="sql-selects">
 			<div class="selector-container">
 				<label for="sql-engine-selector" class="select-label">
-					<i class="fa-solid fa-database"></i> Engine: 
+					<i class="fa-solid fa-database"></i> Engine:
 				</label>
 				<select class="select-for-sql" id="sql-engine-selector">
 					<option value="sqlite">SQLite</option>
@@ -23,8 +23,8 @@
 					<option value="postgres">PostgreSQL</option>
 				</select>
 			</div>
-			
-			<div class="selector-container"> 
+
+			<div class="selector-container">
 				<label for="sql-normalization-selector" class="select-label">
 					<i class="fa-regular fa-file-code"></i> Normalization level:
 				</label>
@@ -72,4 +72,3 @@
 <script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
 <script src="{{ url_for('static', filename='js/validationSQL.js') }}"></script>
 {% endblock %}
-
