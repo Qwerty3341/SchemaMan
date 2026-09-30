@@ -6,7 +6,6 @@
 	--selector-bg: #282828;
 	--selector-fg: #ebdbb2;
 	--button-sql-color: #689d6a;
-	--button-report-color: #d65d0e;
 	--button-font-color: #1A0F0A;
 }
 
@@ -45,16 +44,6 @@
 	flex: 1;
 }
 
-.button-for-report {
-	background-color: var(--button-report-color);
-	color: var(--button-font-color);
-	padding: 0.5rem 1rem;
-	cursor: pointer;
-	border: none;
-	font-size: 1.05rem;
-	font-weight: 500;
-}
-
 .sql-selects {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
@@ -75,11 +64,6 @@
 	min-height: 0;
 }
 
-.report-page {
-	flex: 1;
-	min-height: 0;
-}
-
 .CodeMirror {
 	height: 100%;
 	font-family: var(--text-editor-font);
@@ -89,43 +73,4 @@
 .CodeMirror-scroll {
 	overflow-y: auto;
 	overflow-x: auto;
-}
-
-/* Styles for the dialog */
-#validation-dialog {
-	--dialog-size: 10rem;
-
-	height: var(--dialog-size);
-	width: calc(var(--dialog-size) * 2);
-	justify-content: center;
-	align-items: center;
-	background-color: var(--selector-bg);
-	border: 2px var(--selector-fg) solid;
-	border-radius: 10px;
-	color: var(--selector-fg);
-	padding: 1rem;
-}
-
-#vd-error-message {
-	margin-top: 0;
-	text-align: justify;
-	text-justify: inter-word;
-}
-
-#elements-container {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-#vd-btn-close {
-	background-color: var(--button-report-color);
-	border: none;
-	border-radius: 10px;
-	color: var(--selector-fg);
-	padding: 5px;
-	height: 2rem;
-	width: 4rem;
-	cursor: pointer;
 }

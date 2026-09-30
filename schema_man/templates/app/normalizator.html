@@ -42,24 +42,6 @@
 		<textarea class="sql-editor" id="sql-editor"></textarea>
 	</div>
 
-	<div class="container" id="report-container">
-		<button class="button-for-report" id="reporter-run">
-			Run
-			<i class="fa-solid fa-play"></i>
-		</button>
-
-		<div class="report-page">
-
-		</div>
-	</div>
-
-	<dialog id="validation-dialog">
-	<div id="elements-container">
-		<h2 id="vd-error"></h2>
-		<p id="vd-error-message"></p>
-		<button id="vd-btn-close">close</button>
-	</div>
-	</dialog>
 </section>
 
 {% endblock %}
@@ -68,5 +50,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
 <script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
-<script src="{{ url_for('static', filename='js/validationSQL.js') }}"></script>
 {% endblock %}
