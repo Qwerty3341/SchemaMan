@@ -13,10 +13,13 @@
 		{% block nf_description %}{% endblock %}
 	</div>
 
-	<div class="nf-subcontainer" id="compliance-requirements"></div>
-
+	<div class="nf-subcontainer" id="compliance-requirements">
+		<h3>Compliance Requirements</h3>
+		{% block requirements %}{% endblock requirements %}
+	</div>
+		
 	<div class="nf-subcontainer nf-example" id="nf-example">
-		<h3>Example</h3>
+		<h4>Example</h4>
 		{% block nf_example %}{% endblock %}
 	</div>
 </section>
