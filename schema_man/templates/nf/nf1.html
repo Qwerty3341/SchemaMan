@@ -1,18 +1,1 @@
 {% extends "nf/nf_base.html" %}
-
-{% block title %}First Normal Form{% endblock %}
-
-{% block nf_title %}First Normal Form{% endblock %}
-{% block nf_subtitle %}Delete repeated groups{% endblock %}
-
-{% block nf_description %}
-<p>
-	Requires that a database table schema includes a primary key while excluding repetition among columns. A table in
-	first normal form should not have fields with arrays of values—for instance, a single cell with three different
-	names in it—nor should it include repeating groups, which are different columns that store the same type of data.
-</p>
-{% endblock %}
-
-{% block nf_example %}
-<p>Table violating the first normal form (No PK and a repetitive group [class])</p>
-{% endblock %}

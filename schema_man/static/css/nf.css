@@ -1,17 +1,1 @@
-:root {
-	--margin-page: 5rem;
-}
-
-.nf-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-left: var(--margin-page);
-	margin-right: var(--margin-page);
-	text-align: justify;
-}
-
-.nf-example {
-	display: flex;
-	flex-direction: column;
-}
+/* holamundo */

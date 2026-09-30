@@ -26,3 +26,8 @@ def nf4():
 @nf_bp.route('/nf5')
 def nf5():
     return render_template('nf/nf5.html')
+
+
+@nf_bp.route('/bcnf')
+def bcnf():
+    return render_template('nf/bcnf.html')

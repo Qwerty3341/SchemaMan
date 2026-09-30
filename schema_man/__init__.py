@@ -21,8 +21,4 @@ def create_app(test_config=None):
     app.register_blueprint(nf_bp)
     app.register_blueprint(about_bp)
 
-    # APIs
-    from .validator.routes import validator_bp
-    app.register_blueprint(validator_bp)
-
     return app
