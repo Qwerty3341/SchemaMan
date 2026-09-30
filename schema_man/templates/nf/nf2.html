@@ -1,12 +1,24 @@
 {% extends "nf/nf_base.html" %}
 
-{% block title %}Second normal form{% endblock %}
+{% block title %}Second Normal Form{% endblock %}
 
-{% block nf_title %}{% endblock %}
-{% block nf_subtitle %}{% endblock %}
+{% block nf_title %}Second Normal Form{% endblock %}
+{% block nf_subtitle %}No Partial Dependencies on the Primary Key{% endblock %}
 
-{% block nf_description %}{% endblock %}
+{% block nf_description %}
+In second normal form, every attribute that is not part of the primary key must depend on the entire key.
+In other words, if an attribute depends on only part of the key, it must be moved to a separate table.
+{% endblock %}
 
-{% block requirements %}{% endblock%}
+{% block requirements %}
+<ul>
+	<li>The table must be in first normal form.</li>
+	<li>If the primary key is simple (a single column), the table automatically satisfies second normal form.</li>
+	<li>
+		If the primary key is composite, look for attributes that depend on only part of the key.
+		Those columns must be moved to a separate table.
+	</li>
+</ul>
+{% endblock %}
 
 {% block nf_example %}{% endblock %}

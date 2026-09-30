@@ -1,12 +1,23 @@
 {% extends "nf/nf_base.html" %}
 
-{% block title %}{% endblock %}
+{% block title %}Fifth Normal Form{% endblock %}
 
-{% block nf_title %}{% endblock %}
-{% block nf_subtitle %}{% endblock %}
+{% block nf_title %}Fifth Normal Form{% endblock %}
+{% block nf_subtitle %}The Join Dependency Puzzle{% endblock %}
 
-{% block nf_description %}{% endblock %}
+{% block nf_description %}
+Fifth normal form is usually the last normal form applied in practice. A table is in fifth normal form when it cannot be
+split into smaller tables without losing information, unless that split is based on its candidate keys. To check it, try
+decomposing the table into smaller tables and joining them back together: if the join produces rows that did not exist
+in the original table, the decomposition is not valid. A table in fifth normal form has no valid decomposition left to
+make. This kind of constraint is known as a join dependency.
+{% endblock %}
 
-{% block requirements %}{% endblock requirements %}
+{% block requirements %}
+<ul>
+	<li>The table must be in fourth normal form.</li>
+	<li>Every join dependency in the table must be implied by its candidate keys.</li>
+</ul>
+{% endblock %}
 
 {% block nf_example %}{% endblock %}

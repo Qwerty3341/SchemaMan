@@ -3,10 +3,18 @@
 {% block title %}Boyce-Codd Normal Form{% endblock %}
 
 {% block nf_title %}Boyce-Codd Normal Form{% endblock %}
-{% block nf_subtitle %}BCNF{% endblock %}
+{% block nf_subtitle %}Every Determinant Is a Candidate Key{% endblock %}
 
-{% block nf_description %}{% endblock %}
+{% block nf_description %}
+Boyce-Codd normal form is a stricter version of third normal form. It requires every determinant (an attribute that
+determines the value of another attribute) to be a candidate key (an attribute that could serve as the primary key).
+{% endblock %}
 
-{% block requirements %}{% endblock requirements %}
+{% block requirements %}
+<ul>
+	<li>The table must be in third normal form.</li>
+	<li>Every determinant must be a candidate key.</li>
+</ul>
+{% endblock %}
 
 {% block nf_example %}{% endblock %}

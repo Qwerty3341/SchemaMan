@@ -1,12 +1,25 @@
 {% extends "nf/nf_base.html" %}
 
-{% block title %}{% endblock %}
+{% block title %}Fourth Normal Form{% endblock %}
 
-{% block nf_title %}{% endblock %}
-{% block nf_subtitle %}{% endblock %}
+{% block nf_title %}Fourth Normal Form{% endblock %}
+{% block nf_subtitle %}
+No More Than One Multivalued Dependency
+{% endblock %}
 
-{% block nf_description %}{% endblock %}
+{% block nf_description %}
+Fourth normal form prevents a table from containing more than one multivalued dependency that is independent of the
+others. A multivalued dependency occurs when, for a single value of one attribute (or set of attributes), there is a set
+of possible values for another attribute, and that set is independent of the values of a third attribute in the same
+table. In other words, if a table mixes two separate facts that are not directly related to each other but both depend
+on the same attribute, it produces repeated, unnecessary combinations that add no new information.
+{% endblock %}
 
-{% block requirements %}{% endblock requirements %}
+{% block requirements %}
+<ul>
+	<li>The table must be in Boyce-Codd normal form.</li>
+	<li>The table must not contain more than one independent multivalued dependency.</li>
+</ul>
+{% endblock %}
 
 {% block nf_example %}{% endblock %}

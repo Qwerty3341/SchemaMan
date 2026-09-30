@@ -1,12 +1,26 @@
 {% extends "nf/nf_base.html" %}
 
-{% block title %}{% endblock %}
+{% block title %}Third Normal Form{% endblock %}
 
-{% block nf_title %}{% endblock %}
-{% block nf_subtitle %}{% endblock %}
+{% block nf_title %}Third Normal Form{% endblock %}
 
-{% block nf_description %}{% endblock %}
+{% block nf_subtitle %}
+No Transitive Dependencies
+{% endblock %}
 
-{% block requirements %}{% endblock requirements %}
+{% block nf_description %}
+Third normal form prevents non-key attributes from depending on other attributes that are not the primary key. Put
+another way, it prevents an attribute from acting like a primary key, without being explicitly declared as one, while
+other attributes depend on it. This is known as a transitive dependency.
+{% endblock %}
 
-{% block nf_example %}{% endblock %}
+{% block requirements %}
+<ul>
+	<li>The table must be in second normal form.</li>
+	<li>No attribute in the table may depend on another attribute that is not part of the primary key.</li>
+</ul>
+{% endblock %}
+
+{% block nf_example %}
+
+{% endblock %}
