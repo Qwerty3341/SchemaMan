@@ -1,19 +1,13 @@
 # SchemaMan
 
-## Structure
+## App structure
 
-- Flask app using the App Factory pattern; the entry point is `schema_man/__init__.py:create_app()`.
-- Page routes are Blueprint modules in `schema_man/schema_man.py` and `schema_man/normal_forms.py`; templates and static assets are under `schema_man/templates/` and `schema_man/static/`.
-- `instance/` is runtime-local and gitignored; default config is loaded from `instance/config.py` when present.
-- `NormalForms.md` is the repository's domain reference for the 1NF–5NF rules.
+- Flask app factory is `schema_man.create_app()` in `schema_man/__init__.py`; it registers page blueprints from `schema_man/schema_man.py` and `schema_man/normal_forms.py`.
+- Templates and static assets live under `schema_man/templates/` and `schema_man/static/`. Add routes to the existing blueprints and register any new blueprint in the factory.
+- Optional local settings are loaded from gitignored `instance/config.py`; pass `test_config` to `create_app()` for test configuration.
 
 ## Commands
 
-- Start the development server with `flask --app schema_man run` from the repository root.
-- The checked-in `requirements.txt` is empty; the README's intended dependencies are Flask, sqlglot, pytest, and a future PDF library. Do not assume dependency installation is reproducible until that file is populated.
-- There are currently no tests, linter, formatter, type checker, CI workflow, or code-generation step configured.
-
-## Conventions
-
-- Add web endpoints through the existing Blueprint structure and register new blueprints in `create_app()`.
-- Use `create_app(test_config=...)` for test setup rather than constructing a Flask app directly.
+- Set up dependencies with `python3 -m venv .venv`, activate it, then `python -m pip install -r requirements.txt` (README has Windows equivalents).
+- Run the app from the repository root with `flask --app schema_man run` (add `--debug` for debug mode).
+- Run tests with `pytest`. No tests or lint/typecheck/CI configuration are currently checked in.
