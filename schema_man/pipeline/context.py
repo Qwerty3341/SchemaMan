@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any, List, Optional
 
+
 @dataclass
 class PipeLineContext:
     # data from interface
@@ -8,7 +9,7 @@ class PipeLineContext:
     dialect: str
     target_normal_form: str
 
-    # Resoults 
+    # Resoults
     ast: Optional[Any] = None
     schema: Optional[Any] = None
     violations: List[Any] = field(default_factory=list)

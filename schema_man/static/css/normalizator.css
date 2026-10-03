@@ -6,6 +6,7 @@
 	--selector-bg: #282828;
 	--selector-fg: #ebdbb2;
 	--button-sql-color: #689d6a;
+	--button-report-color: #d65d0e;
 	--button-font-color: #1A0F0A;
 }
 
@@ -42,6 +43,16 @@
 	font-size: 1.05rem;
 	font-weight: 500;
 	flex: 1;
+}
+
+.button-for-report {
+	background-color: var(--button-report-color);
+	color: var(--button-font-color);
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+	border: none;
+	font-size: 1.05rem;
+	font-weight: 500;
 }
 
 .sql-selects {
