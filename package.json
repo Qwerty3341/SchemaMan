@@ -1,0 +1,28 @@
+{
+  "name": "schemaman",
+  "version": "1.0.0",
+  "description": "SQL Schemas normalizator (Like an interpreter for normal forms) the system will generate reports for compliance and non-compliance for normal forms Is not expected that the system will generate code just the report",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Qwerty3341/SchemaMan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Qwerty3341/SchemaMan/issues"
+  },
+  "homepage": "https://github.com/Qwerty3341/SchemaMan#readme",
+  "dependencies": {
+    "@codemirror/lang-sql": "^6.10.0",
+    "@uiw/codemirror-theme-gruvbox-dark": "^4.25.12",
+    "codemirror": "^6.0.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

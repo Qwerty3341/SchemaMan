@@ -3,8 +3,6 @@
 {% block title %}Schema Man{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/gruvbox-dark.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/normalizator.css') }}">
 {% endblock %}
 
@@ -39,7 +37,7 @@
 			</div>
 		</div>
 
-		<textarea class="sql-editor" id="sql-editor"></textarea>
+		<div id="sql-editor"></div>
 	</div>
 
 	<div class="container" id="report-container">
@@ -54,7 +52,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
-<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codeEditor.bundle.js') }}"></script>
 {% endblock %}

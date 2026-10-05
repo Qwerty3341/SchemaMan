@@ -69,19 +69,22 @@
 	overflow: hidden;
 }
 
-/* sql editor */
-.sql-editor {
-	flex: 1;
-	min-height: 0;
+/* ************
+ * CodeMirror *
+ * ***********/
+
+#sql-editor {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.CodeMirror {
-	height: 100%;
-	font-family: var(--text-editor-font);
-	font-size: var(--text-editor-font-size);
+#sql-editor .cm-editor {
+  height: 100%;
+  font-family: var(--text-editor-font);
+  font-size: var(--text-editor-font-size);
 }
 
-.CodeMirror-scroll {
-	overflow-y: auto;
-	overflow-x: auto;
+#sql-editor .cm-scroller {
+  overflow: auto;
 }
