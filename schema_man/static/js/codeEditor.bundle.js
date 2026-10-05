@@ -25552,14 +25552,23 @@
   var gruvboxLight = gruvboxLightInit();
 
   // schema_man/static/js/codeEditor.js
+  var STORAGE_KEY = "schema.sql";
   var container = document.querySelector("#sql-editor");
-  window.sqlEditor = new EditorView({
-    doc: "-- PASTE, CREATE OR LOAD YOUR SQL SCHEMA",
-    parent: container,
-    extensions: [
-      basicSetup,
-      sql(),
-      gruvboxDark
-    ]
-  });
+  if (container) {
+    const savedSql = sessionStorage.getItem(STORAGE_KEY);
+    window.sqlEditor = new EditorView({
+      doc: savedSql ?? "-- PASTE, CREATE OR LOAD YOUR SQL SCHEMA",
+      parent: container,
+      extensions: [
+        basicSetup,
+        sql(),
+        gruvboxDark,
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());
+          }
+        })
+      ]
+    });
+  }
 })();
