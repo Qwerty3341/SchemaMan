@@ -41,7 +41,7 @@
 	</div>
 
 	<div class="container" id="report-container">
-		<button type="button" class="button-for-report" id="reporter-run">
+		<button type="button" class="button-for-report" id="run-btn">
 			Run
 			<i class="fa-solid fa-play" aria-hidden="true"></i>
 		</button>
@@ -53,4 +53,5 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/codeEditor.bundle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/run.js') }}"></script>
 {% endblock %}
