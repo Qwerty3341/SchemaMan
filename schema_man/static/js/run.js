@@ -1,10 +1,19 @@
 const runBtn = document.querySelector("#run-btn");
 
 async function postSqlSchema() {
+  const sqlEditor = window.sqlEditor;
+  const engineSelector = document.querySelector("#sql-engine-selector");
+  const normalizationSelector = document.querySelector("#sql-normalization-selector");
+
+  if (!sqlEditor || !engineSelector || !normalizationSelector) {
+    console.error("Editor or SQL selectors are missing from the page");
+    return;
+  }
+
   const payload = {
-    sql: window.sqlEditor.state.doc.toString(),
-    dialect: document.querySelector(".select-for-sql").value,
-    normalization_level: document.querySelector(".select-for-sql").value
+    sql: sqlEditor.state.doc.toString(),
+    dialect: engineSelector.value,
+    normalization_level: normalizationSelector.value,
   };
 
   try {
@@ -13,7 +22,7 @@ async function postSqlSchema() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const result = await response.json();
@@ -22,14 +31,13 @@ async function postSqlSchema() {
       alert(result.error);
       return;
     }
-    alert("Valid SQL");
+    alert("SQL válido");
   } catch (error) {
-    console.error("Error on send the SQL: ", error);
-    alert(`Server error ${error}`);
+    console.error("Error al enviar el SQL:", error);
+    alert(`Error del servidor: ${error}`);
   }
 }
 
 if (runBtn) {
-  runBtn.addEventListener("click", postSqlSchema)
+  runBtn.addEventListener("click", postSqlSchema);
 }
-
