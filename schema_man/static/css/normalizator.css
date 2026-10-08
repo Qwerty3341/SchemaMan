@@ -57,7 +57,7 @@
 
 .sql-selects {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 	gap: 10px;
 }
 
@@ -69,9 +69,35 @@
 	overflow: hidden;
 }
 
-/* ************
+/* file chooser */
+#file-chooser-container {
+	gap: clamp(5px, 2vw, 1rem);
+}
+
+#file-chooser {
+	display: none;
+}
+
+#load-sql-label {
+	background-color: var(--button-sql-color);
+	color: var(--button-font-color);
+	font-family: var(--body-font);
+	font-size: 1.05rem;
+	font-weight: 500;
+	cursor: pointer;
+	padding: 0.5rem 1rem;
+	border: none;
+}
+
+#file-name-span {
+	color: var(--selector-fg);
+	font-family: var(--body-font);
+	font-size: 1.05rem;
+}
+
+/* ********** *
  * CodeMirror *
- * ***********/
+ * ********** */
 
 #sql-editor {
   flex: 1;

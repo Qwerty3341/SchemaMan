@@ -8,7 +8,7 @@ const container = document.querySelector("#sql-editor");
 
 if (container) {
   const savedSql = sessionStorage.getItem(STORAGE_KEY);
-
+  // Here window create sqlEditor, the instance of Code Mirror now is global
   window.sqlEditor = new EditorView({
     doc: savedSql ?? "-- PASTE, CREATE OR LOAD YOUR SQL SCHEMA",
     parent: container,

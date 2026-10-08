@@ -14,20 +14,20 @@ def parse_sql():
     data = request.get_json(silent=True)
 
     if not isinstance(data, dict):
-        return jsonify(valid=False, error="Se esperaba un objeto JSON"), 400
+        return jsonify(valid=False, error="Expect a JSON onbject"), 400
 
     sql = data.get("sql")
     dialect = data.get("dialect", "sqlite")
     normalization_level = data.get("normalization_level", "FN1")
 
     if not isinstance(sql, str):
-        return jsonify(valid=False, error="SQL debe ser texto"), 400
+        return jsonify(valid=False, error="SQL must be text"), 400
 
     if not isinstance(dialect, str):
-        return jsonify(valid=False, error="El dialecto debe ser texto"), 400
+        return jsonify(valid=False, error="Dialect must be text"), 400
 
     if not isinstance(normalization_level, str):
-        return jsonify(valid=False, error="El nivel de normalización debe ser texto"), 400
+        return jsonify(valid=False, error="The normalization level must be text"), 400
 
     context = PipeLineContext(
         sql=sql,

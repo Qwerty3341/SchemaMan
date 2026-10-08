@@ -35,6 +35,12 @@
 					<option>FN5</option>
 				</select>
 			</div>
+
+			<div class="selector-container" id="file-chooser-container">
+				<button id="load-sql-label">Load SQL</button>
+				<input id="file-chooser" lang="en" type="file" accept=".sql,.txt,text/plain,application/sql"/>
+				<span id="file-name-span"></span>
+			</div>
 		</div>
 
 		<div id="sql-editor"></div>
@@ -54,4 +60,5 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/codeEditor.bundle.js') }}"></script>
 <script src="{{ url_for('static', filename='js/run.js') }}"></script>
+<script src="{{ url_for('static', filename='js/loadFile.js') }}"></script>
 {% endblock %}
