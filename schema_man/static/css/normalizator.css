@@ -70,6 +70,10 @@
 }
 
 /* file chooser */
+#load-sql-label {
+	text-align: center;
+}
+
 #file-chooser-container {
 	gap: clamp(5px, 2vw, 1rem);
 }
@@ -85,8 +89,20 @@
 	font-size: 1.05rem;
 	font-weight: 500;
 	cursor: pointer;
-	padding: 0.5rem 1rem;
 	border: none;
+	height: 100%;
+	width: 60%;
+}
+
+#file-name-container {
+	height: 60%;
+	width: 60%;
+	padding: 0.5rem 1rem;
+	background-color: var(--selector-bg);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
 }
 
 #file-name-span {
@@ -100,17 +116,17 @@
  * ********** */
 
 #sql-editor {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
 }
 
 #sql-editor .cm-editor {
-  height: 100%;
-  font-family: var(--text-editor-font);
-  font-size: var(--text-editor-font-size);
+	height: 100%;
+	font-family: var(--text-editor-font);
+	font-size: var(--text-editor-font-size);
 }
 
 #sql-editor .cm-scroller {
-  overflow: auto;
+	overflow: auto;
 }

@@ -24,7 +24,7 @@
 
 			<div class="selector-container">
 				<label for="sql-normalization-selector" class="select-label">
-					<i class="fa-regular fa-file-code"></i> Normalization level:
+					<i class="fa-solid fa-shapes"></i>
 				</label>
 				<select class="select-for-sql" id="sql-normalization-selector">
 					<option>FN1</option>
@@ -37,9 +37,14 @@
 			</div>
 
 			<div class="selector-container" id="file-chooser-container">
-				<button id="load-sql-label">Load SQL</button>
-				<input id="file-chooser" lang="en" type="file" accept=".sql,.txt,text/plain,application/sql"/>
-				<span id="file-name-span"></span>
+				<button id="load-sql-label">
+					<i class="fa-solid fa-code"></i>
+					Load SQL
+				</button>
+				<input id="file-chooser" lang="en" type="file" accept=".sql,.txt,text/plain,application/sql" />
+				<div id="file-name-container">
+					<span id="file-name-span"></span>
+				</div>
 			</div>
 		</div>
 
