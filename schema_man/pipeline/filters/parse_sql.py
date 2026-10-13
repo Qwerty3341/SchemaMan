@@ -19,9 +19,7 @@ class ParseSqlFilter(Filter):
 
         except ParseError as e:
             raise ValueError(
-                f"Not possible to the SQL with the dialect"
-                f"{context.dialect}"
+                f"Could not parse SQL with dialect '{context.dialect}'"
             ) from e
 
         return context
-
