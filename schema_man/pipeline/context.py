@@ -10,7 +10,7 @@ class PipeLineContext:
     target_normal_form: str
 
     # Resoults
-    ast: Optional[Any] = None
+    sql_checked: Optional[Any] = None
     schema: Optional[Any] = None
     violations: List[Any] = field(default_factory=list)
     report: Optional[Any] = None

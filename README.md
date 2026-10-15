@@ -19,21 +19,8 @@ Pipe and Filter
 
 ## DB engines
 
-For tesis
-
 - SQLite
 - MariaDB
-
-In future
-
-- Postgres
-- Oracle
-- TSQL
-
-## Links
-
-Figma <https://www.figma.com/design/zzviQvjM2nXhJkRYw5AyfL/TreeQL?node-id=0-1&p=f&t=TDRe5j9R17Q8Xmqy-0>
-
 
 ## Commands
 
@@ -80,9 +67,6 @@ flask --app schema_man run --debug
 ```shell
 flask --app schema_man run
 ```
-
-The project does not currently configure a production WSGI server. Do not use
-Flask's development server for production deployments.
 
 ### Run tests
 
