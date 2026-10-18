@@ -1,158 +1,132 @@
-"""
-# Data types in engines
-"""
+"""Translate SQL dialect types into types used by the schema model."""
 
-integers = {
-    'sqlite': [
-        'INTEGER'
-    ],
-    'mariadb': [
-        'TINYINT', 'SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT'
-    ]
-}
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass, field
+from enum import StrEnum
 
-terminating_decimals = {
-    'sqlite': [
-        'NUMERIC'
-    ],
-    'mariadb': [
-        'DECIMAL', 'NUMERIC'
-    ]
-}
+from sqlglot import exp
 
-floating_points = {
-    'sqlite': [
-        'REAL'
-    ],
-    'mariadb': [
-        'FLOAT', 'DOUBLE'
-    ]
-}
 
-strings = {
-    'sqlite': [
-        'TEXT'
-    ],
-    'mariadb': [
-        'CHAR', 'VARCHAR',
-        'TINYTEXT', 'TEXT', 'MEDIUMTEXT', 'LONGTEXT'
-    ]
-}
+DType = exp.DataType.Type
 
-binaries = {
-    'sqlite': [
-        'BLOB'
-    ],
-    'mariadb': [
-        'BINARY', 'VARBINARY',
-        'TINYBLOB', 'BLOB', 'MEDIUMBLOB', 'LONGBLOB'
-    ]
-}
 
-dates_and_times = {
-    # SQLite has no native type: stored as TEXT (ISO 8601),
-    # REAL (Julian day) or INTEGER (Unix time)
-    'sqlite': [
-        'TEXT', 'REAL', 'INTEGER'
-    ],
-    'mariadb': [
-        'DATE', 'TIME', 'DATETIME', 'TIMESTAMP', 'YEAR'
-    ]
-}
+class GenericType(StrEnum):
+    INTEGER = "INTEGER"
+    DECIMAL = "DECIMAL"
+    FLOAT = "FLOAT"
+    STRING = "STRING"
+    BINARY = "BINARY"
+    DATE = "DATE"
+    TIME = "TIME"
+    DATETIME = "DATETIME"
+    BOOLEAN = "BOOLEAN"
+    BIT = "BIT"
+    ENUM = "ENUM"
+    JSON = "JSON"
+    UUID = "UUID"
+    SPATIAL = "SPATIAL"
+    UNKNOWN = "UNKNOWN"
 
-booleans = {
-    # SQLite stores booleans as INTEGER 0 / 1
-    'sqlite': [
-        'INTEGER'
-    ],
-    'mariadb': [
-        'BOOLEAN', 'BOOL'  # aliases of TINYINT(1)
-    ]
-}
 
-bits = {
-    'sqlite': [
-        'INTEGER', 'BLOB'
-    ],
-    'mariadb': [
-        'BIT'
-    ]
-}
-
-enumerations = {
-    # SQLite: TEXT + CHECK (col IN (...))
-    'sqlite': [
-        'TEXT'
-    ],
-    'mariadb': [
-        'ENUM', 'SET'
-    ]
-}
-
-json = {
-    # SQLite: TEXT with json_*() functions, JSONB stored as BLOB (3.45+)
-    'sqlite': [
-        'TEXT', 'BLOB'
-    ],
-    'mariadb': [
-        'JSON'  # alias of LONGTEXT with JSON_VALID check
-    ]
-}
-
-uuids = {
-    'sqlite': [
-        'TEXT', 'BLOB'
-    ],
-    'mariadb': [
-        'UUID'  # MariaDB 10.7+
-    ]
-}
-
-ip_addresses = {
-    'sqlite': [
-        'TEXT', 'BLOB'
-    ],
-    'mariadb': [
-        'INET4', 'INET6'  # MariaDB 10.10+
-    ]
-}
-
-spatial = {
-    # SQLite needs the SpatiaLite extension
-    'sqlite': [],
-    'mariadb': [
-        'GEOMETRY', 'POINT', 'LINESTRING', 'POLYGON',
-        'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON',
-        'GEOMETRYCOLLECTION'
-    ]
+# SQLGlot normalizes many dialect-specific aliases to these common data types.
+GENERIC_TYPES: dict[DType, GenericType] = {
+    DType.TINYINT: GenericType.INTEGER,
+    DType.SMALLINT: GenericType.INTEGER,
+    DType.MEDIUMINT: GenericType.INTEGER,
+    DType.INT: GenericType.INTEGER,
+    DType.BIGINT: GenericType.INTEGER,
+    DType.DECIMAL: GenericType.DECIMAL,
+    DType.FLOAT: GenericType.FLOAT,
+    DType.DOUBLE: GenericType.FLOAT,
+    DType.CHAR: GenericType.STRING,
+    DType.NCHAR: GenericType.STRING,
+    DType.VARCHAR: GenericType.STRING,
+    DType.NVARCHAR: GenericType.STRING,
+    DType.TINYTEXT: GenericType.STRING,
+    DType.TEXT: GenericType.STRING,
+    DType.MEDIUMTEXT: GenericType.STRING,
+    DType.LONGTEXT: GenericType.STRING,
+    DType.BINARY: GenericType.BINARY,
+    DType.VARBINARY: GenericType.BINARY,
+    DType.TINYBLOB: GenericType.BINARY,
+    DType.BLOB: GenericType.BINARY,
+    DType.MEDIUMBLOB: GenericType.BINARY,
+    DType.LONGBLOB: GenericType.BINARY,
+    DType.DATE: GenericType.DATE,
+    DType.TIME: GenericType.TIME,
+    DType.DATETIME: GenericType.DATETIME,
+    DType.TIMESTAMP: GenericType.DATETIME,
+    DType.TIMESTAMPTZ: GenericType.DATETIME,
+    DType.BOOLEAN: GenericType.BOOLEAN,
+    DType.BIT: GenericType.BIT,
+    DType.ENUM: GenericType.ENUM,
+    DType.SET: GenericType.ENUM,
+    DType.JSON: GenericType.JSON,
+    DType.UUID: GenericType.UUID,
+    DType.GEOMETRY: GenericType.SPATIAL,
+    DType.POINT: GenericType.SPATIAL,
+    DType.LINESTRING: GenericType.SPATIAL,
+    DType.POLYGON: GenericType.SPATIAL,
+    DType.MULTILINESTRING: GenericType.SPATIAL,
+    DType.MULTIPOLYGON: GenericType.SPATIAL,
 }
 
 
-data_types = {
-    'integers': integers,
-    'terminating_decimals': terminating_decimals,
-    'floating_points': floating_points,
-    'strings': strings,
-    'binaries': binaries,
-    'dates_and_times': dates_and_times,
-    'booleans': booleans,
-    'bits': bits,
-    'enumerations': enumerations,
-    'json': json,
-    'uuids': uuids,
-    'ip_addresses': ip_addresses,
-    'spatial': spatial,
+def sqlite_affinity(type_name: str) -> GenericType:
+    """Return SQLite's type affinity for a declared type name.
+
+    SQLite permits arbitrary declared type names. Its affinity rules apply in
+    this order, so an unknown name falls back to NUMERIC/DECIMAL affinity.
+    """
+    normalized = type_name.upper()
+    if "INT" in normalized:
+        return GenericType.INTEGER
+    if any(marker in normalized for marker in ("CHAR", "CLOB", "TEXT")):
+        return GenericType.STRING
+    if "BLOB" in normalized:
+        return GenericType.BINARY
+    if any(marker in normalized for marker in ("REAL", "FLOA", "DOUB")):
+        return GenericType.FLOAT
+    return GenericType.DECIMAL
+
+
+@dataclass(frozen=True)
+class Engine:
+    dialect: str
+    overrides: Mapping[DType, GenericType] = field(default_factory=dict)
+    fallback: Callable[[str], GenericType | None] | None = None
+
+
+ENGINES: dict[str, Engine] = {
+    "sqlite": Engine(dialect="sqlite", fallback=sqlite_affinity),
+    # SQLGlot parses MariaDB using its MySQL dialect.
+    "mysql": Engine(dialect="mysql"),
 }
 
-engines = [
-    'sqlite', 'mariadb'
-]
 
+def generic_type_of(data_type: exp.DataType, engine: str) -> GenericType:
+    """Translate a parsed SQLGlot type for the selected engine.
 
-def category_of(type_name, engine):
-    """Return the category a type belongs to in a given engine, or None."""
-    type_name = type_name.upper()
-    for category, engines in data_types.items():
-        if type_name in engines[engine]:
-            return category
-    return None
+    An unknown engine is a caller/configuration error. A type that cannot be
+    mapped for a known engine is represented as ``GenericType.UNKNOWN``.
+    """
+    try:
+        engine_config = ENGINES[engine.lower()]
+    except KeyError as error:
+        supported = ", ".join(sorted(ENGINES))
+        message = f"Unsupported engine {engine!r}; expected one of: {supported}"
+        raise ValueError(message) from error
+
+    generic_type = engine_config.overrides.get(data_type.this)
+    if generic_type is None:
+        generic_type = GENERIC_TYPES.get(data_type.this)
+    if generic_type is not None:
+        return generic_type
+
+    if engine_config.fallback is not None:
+        declared_type = data_type.sql(dialect=engine_config.dialect)
+        fallback_type = engine_config.fallback(declared_type)
+        if fallback_type is not None:
+            return fallback_type
+
+    return GenericType.UNKNOWN
