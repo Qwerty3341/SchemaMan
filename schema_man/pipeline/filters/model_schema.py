@@ -1,29 +1,156 @@
+import re
 from typing import override
+
+import sqlglot
+from sqlglot import exp
 
 from ..context import PipeLineContext
 from ..filter import Filter
+from .utils.data_types import generic_type_of
+from .utils.table_classes import (
+    Column,
+    ForeignKey,
+    FunctionalDependency,
+    MultivaluedDependency,
+    PrimaryKey,
+    Table,
+)
+
+# Dependencies are declared as SQL comments: "-- FD: (a, b) -> (c)".
+# "->>" is listed before "->" so the arrow of an MVD is not read as an FD.
+DEPENDENCY_PATTERN = re.compile(
+    r"^\s*(FD|MVD):\s*\((?P<determinant>[^)]*)\)\s*(?P<arrow>->>|->)"
+    r"\s*\((?P<dependent>[^)]*)\)\s*$"
+)
+
+DEPENDENCY_CLASSES = {
+    "->": FunctionalDependency,
+    "->>": MultivaluedDependency,
+}
 
 
 class ModelSchemaFilter(Filter):
     @override
     def apply(self, context: PipeLineContext) -> PipeLineContext:
-        """Process the context and returns it"""
-        raise NotImplementedError
+        """Model the SQL schema into generic table objects."""
+        context.schema = self.model_schema(context.sql, context.dialect)
+        return context
 
-    def schema_to_upper_case(self):
-        pass
+    def model_schema(self, sql: str, dialect: str) -> list[Table]:
+        """Build one Table per CREATE TABLE, skipping other statements."""
+        tables = []
+        for statement in sqlglot.parse(sql, dialect=dialect):
+            if (
+                isinstance(statement, exp.Create)
+                and statement.args.get("kind") == "TABLE"
+            ):
+                tables.append(self.table_to_generic_syntax(statement, dialect))
+        return tables
 
-    def table_to_generic_syntax(self):
-        pass
+    def table_to_generic_syntax(self, create: exp.Create, dialect: str) -> Table:
+        schema = create.this  # exp.Schema with the columns and constraints
+        table = Table(name=schema.this.name.upper())
+        primary_key_columns: list[str] | None = None
 
-    def detect_table(self, line_of_schema):
-        pass
+        for node in schema.expressions:
+            if isinstance(node, exp.ColumnDef):
+                column, inline_primary_key = self.detect_column(node, dialect)
+                table.columns.append(column)
+                if inline_primary_key:
+                    primary_key_columns = [column.name]
+            elif isinstance(node, exp.Constraint):
+                # Named constraints wrap the real node, e.g.
+                # CONSTRAINT fk_x FOREIGN KEY ...
+                primary_key_columns = self.detect_constraints(
+                    node.expressions, table, primary_key_columns
+                )
+            else:
+                primary_key_columns = self.detect_constraints(
+                    [node], table, primary_key_columns
+                )
 
-    def model_schema(self):
-        pass
+        if primary_key_columns is not None:
+            table.primary_key = PrimaryKey(columns=tuple(primary_key_columns))
 
-    def get_table_name(self):
-        pass
+        self.model_dependencies(table, schema.comments)
+        return table
 
+    def detect_constraints(
+        self,
+        nodes: list,
+        table: Table,
+        primary_key_columns: list[str] | None,
+    ) -> list[str] | None:
+        """Read PK/FK constraints into the table, keeping any PK found."""
+        for node in nodes:
+            if isinstance(node, exp.PrimaryKey):
+                primary_key_columns = [
+                    column.name.upper() for column in node.expressions
+                ]
+            elif isinstance(node, exp.ForeignKey):
+                table.foreign_keys.append(self.detect_foreign_key(node))
+        return primary_key_columns
 
+    def detect_column(
+        self, column_def: exp.ColumnDef, dialect: str
+    ) -> tuple[Column, bool]:
+        """Build a Column and report whether it declares an inline PK."""
+        inline_primary_key = any(
+            isinstance(constraint.kind, exp.PrimaryKeyColumnConstraint)
+            for constraint in column_def.constraints
+        )
+        column = Column(
+            name=column_def.name.upper(),
+            type=generic_type_of(column_def.kind, dialect),
+            size=self.detect_size(column_def.kind),
+        )
+        return column, inline_primary_key
 
+    @staticmethod
+    def detect_size(data_type: exp.DataType) -> tuple[int, ...]:
+        """Return numeric type parameters, e.g. (50,) or (10, 2).
+
+        Parameters that are not numbers (ENUM values) yield no size.
+        """
+        size = []
+        for parameter in data_type.expressions:
+            if not parameter.name.isdigit():
+                return ()
+            size.append(int(parameter.name))
+        return tuple(size)
+
+    @staticmethod
+    def detect_foreign_key(foreign_key: exp.ForeignKey) -> ForeignKey:
+        reference = foreign_key.args["reference"].this  # exp.Schema
+        return ForeignKey(
+            columns=tuple(
+                column.name.upper() for column in foreign_key.expressions
+            ),
+            referenced_table=reference.this.name.upper(),
+            referenced_columns=tuple(
+                column.name.upper() for column in reference.expressions
+            ),
+        )
+
+    def model_dependencies(
+        self, table: Table, comments: list[str] | None
+    ) -> None:
+        """Read FD/MVD declarations from the table's SQL comments."""
+        for comment in comments or []:
+            match = DEPENDENCY_PATTERN.match(comment)
+            if match is None:
+                continue
+            dependency = DEPENDENCY_CLASSES[match["arrow"]](
+                determinant=self._attributes(match["determinant"]),
+                dependent=self._attributes(match["dependent"]),
+            )
+            if isinstance(dependency, FunctionalDependency):
+                table.functional_dependencies.append(dependency)
+            else:
+                table.multivalued_dependencies.append(dependency)
+
+    @staticmethod
+    def _attributes(attribute_list: str) -> tuple[str, ...]:
+        return tuple(
+            name.strip().upper() for name in attribute_list.split(",")
+        )

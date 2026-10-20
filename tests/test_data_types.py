@@ -20,6 +20,7 @@ from schema_man.pipeline.filters.utils.data_types import (
         ("sqlite", "FOOBAR", GenericType.DECIMAL),
         ("mysql", "TINYINT", GenericType.INTEGER),
         ("mysql", "INT", GenericType.INTEGER),
+        ("mysql", "INT UNSIGNED", GenericType.INTEGER),
         ("mysql", "BIGINT", GenericType.INTEGER),
         ("mysql", "CHAR(5)", GenericType.STRING),
         ("mysql", "DECIMAL(10, 2)", GenericType.DECIMAL),

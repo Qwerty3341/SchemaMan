@@ -48,3 +48,34 @@ class Table:
         default_factory=list)
     multivalued_dependencies: list[MultivaluedDependency] = field(
         default_factory=list)
+
+    def to_generic(self) -> str:
+        """Render this table using the generic schema syntax."""
+        lines = [f"TABLE {self.name}:"]
+
+        for column in self.columns:
+            size = f": {', '.join(map(str, column.size))}" if column.size else ""
+            lines.append(f"    {column.name} {column.type}{size}")
+
+        if self.primary_key is not None:
+            columns = ", ".join(self.primary_key.columns)
+            lines.append(f"    PRIMARY KEY: ({columns})")
+
+        for foreign_key in self.foreign_keys:
+            columns = ", ".join(foreign_key.columns)
+            referenced = ", ".join(foreign_key.referenced_columns)
+            lines.append(
+                f"    FOREIGN KEY: ({columns}) -> "
+                f"{foreign_key.referenced_table}({referenced})")
+
+        for dependency in self.functional_dependencies:
+            determinant = ", ".join(dependency.determinant)
+            dependent = ", ".join(dependency.dependent)
+            lines.append(f"    FD: ({determinant}) -> ({dependent})")
+
+        for dependency in self.multivalued_dependencies:
+            determinant = ", ".join(dependency.determinant)
+            dependent = ", ".join(dependency.dependent)
+            lines.append(f"    MVD: ({determinant}) ->> ({dependent})")
+
+        return "\n".join(lines)
