@@ -47,6 +47,5 @@ def test_invalid_sql_reports_syntax_errors():
 
 
 def test_schema_rejected_with_wrong_dialect():
-    # PRAGMA is SQLite-only; MySQL must reject school.sql
     with pytest.raises(ValueError, match="SQL with syntax errors"):
         parse_context(load_schema("school.sql"), "mysql")
