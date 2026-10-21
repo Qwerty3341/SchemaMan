@@ -3,8 +3,6 @@
 {% block title %}Schema Man{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/gruvbox-dark.min.css">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/normalizator.css') }}">
 {% endblock %}
 
@@ -26,24 +24,35 @@
 
 			<div class="selector-container">
 				<label for="sql-normalization-selector" class="select-label">
-					<i class="fa-regular fa-file-code"></i> Normalization level:
+					<i class="fa-solid fa-shapes"></i>
 				</label>
 				<select class="select-for-sql" id="sql-normalization-selector">
-					<option>FN1</option>
-					<option>FN2</option>
-					<option>FN3</option>
+					<option>NF1</option>
+					<option>NF2</option>
+					<option>NF3</option>
 					<option>BCNF</option>
-					<option>FN4</option>
-					<option>FN5</option>
+					<option>NF4</option>
+					<option>NF5</option>
 				</select>
+			</div>
+
+			<div class="selector-container" id="file-chooser-container">
+				<button id="load-sql-label">
+					<i class="fa-solid fa-code"></i>
+					Load SQL
+				</button>
+				<input id="file-chooser" lang="en" type="file" accept=".sql,.txt,text/plain,application/sql" />
+				<div id="file-name-container">
+					<span id="file-name-span"></span>
+				</div>
 			</div>
 		</div>
 
-		<textarea class="sql-editor" id="sql-editor"></textarea>
+		<div id="sql-editor"></div>
 	</div>
 
 	<div class="container" id="report-container">
-		<button type="button" class="button-for-report" id="reporter-run">
+		<button type="button" class="button-for-report" id="run-btn">
 			Run
 			<i class="fa-solid fa-play" aria-hidden="true"></i>
 		</button>
@@ -54,7 +63,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/sql/sql.min.js"></script>
-<script src="{{ url_for('static', filename='js/codeEditor.js') }}"></script>
+<script src="{{ url_for('static', filename='js/codeEditor.bundle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/run.js') }}"></script>
+<script src="{{ url_for('static', filename='js/loadFile.js') }}"></script>
 {% endblock %}

@@ -1,8 +1,6 @@
 # SchemaMan
 
-SQL Schemas normalizator (Like an interpreter for normal forms)
-the system will generate reports for compliance and non-compliance for normal forms
-Is not expected that the system will generate code just the report
+Detector of normal forms (Like an interpreter for a programming language)
 
 ## Languages
 
@@ -10,33 +8,18 @@ Python + Flask
 
 ## Architecture
 
-Using Flask the architecture will be conditioned for the
-design pattern "App Factory" (Flask recommended design)
+Pipe and Filter
 
 ## Libs
 
 - sqlglot (SQL sintax verification)
 - jinja
 - pytest
-- WeasyPrint or reportlab (PDF download)
 
 ## DB engines
 
-For tesis
-
 - SQLite
 - MariaDB
-
-In future
-
-- Postgres
-- Oracle
-- TSQL
-
-## Links
-
-Figma <https://www.figma.com/design/zzviQvjM2nXhJkRYw5AyfL/TreeQL?node-id=0-1&p=f&t=TDRe5j9R17Q8Xmqy-0>
-
 
 ## Commands
 
@@ -58,6 +41,20 @@ py -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
+### Install JavaScript dependencies and build CodeMirror
+
+Install Node.js (which includes npm) first. From the project root, install the
+locked JavaScript dependencies and bundle the CodeMirror editor for Flask to
+serve:
+
+```shell
+npm ci
+npx esbuild schema_man/static/js/codeEditor.js --bundle --outfile=schema_man/static/js/codeEditor.bundle.js
+```
+
+Run the esbuild command again whenever `schema_man/static/js/codeEditor.js`
+changes. The Flask template loads the generated `codeEditor.bundle.js` file.
+
 ### Run system in debug mode
 
 ```shell
@@ -69,9 +66,6 @@ flask --app schema_man run --debug
 ```shell
 flask --app schema_man run
 ```
-
-The project does not currently configure a production WSGI server. Do not use
-Flask's development server for production deployments.
 
 ### Run tests
 

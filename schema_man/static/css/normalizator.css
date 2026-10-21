@@ -57,7 +57,7 @@
 
 .sql-selects {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	grid-template-columns: repeat(3, 1fr);
 	gap: 10px;
 }
 
@@ -69,19 +69,64 @@
 	overflow: hidden;
 }
 
-/* sql editor */
-.sql-editor {
-	flex: 1;
-	min-height: 0;
+/* file chooser */
+#load-sql-label {
+	text-align: center;
 }
 
-.CodeMirror {
+#file-chooser-container {
+	gap: clamp(5px, 2vw, 1rem);
+}
+
+#file-chooser {
+	display: none;
+}
+
+#load-sql-label {
+	background-color: var(--button-sql-color);
+	color: var(--button-font-color);
+	font-family: var(--body-font);
+	font-size: 1.05rem;
+	font-weight: 500;
+	cursor: pointer;
+	border: none;
+	height: 100%;
+	width: 60%;
+}
+
+#file-name-container {
+	height: 60%;
+	width: 60%;
+	padding: 0.5rem 1rem;
+	background-color: var(--selector-bg);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+}
+
+#file-name-span {
+	color: var(--selector-fg);
+	font-family: var(--body-font);
+	font-size: 1.05rem;
+}
+
+/* ********** *
+ * CodeMirror *
+ * ********** */
+
+#sql-editor {
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}
+
+#sql-editor .cm-editor {
 	height: 100%;
 	font-family: var(--text-editor-font);
 	font-size: var(--text-editor-font-size);
 }
 
-.CodeMirror-scroll {
-	overflow-y: auto;
-	overflow-x: auto;
+#sql-editor .cm-scroller {
+	overflow: auto;
 }
