@@ -1,7 +1,6 @@
 # SchemaMan
 
-SQL Schemas normalizator (Like an interpreter for normal forms)
-the system will generate reports for compliance and non-compliance for normal forms
+Detector of normal forms (Like an interpreter for a programming language)
 
 ## Languages
 

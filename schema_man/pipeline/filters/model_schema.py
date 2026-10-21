@@ -16,13 +16,18 @@ from .utils.table_classes import (
     Table,
 )
 
+"""
+Regular expression for detect the FD and MVD
+
 # Dependencies are declared as SQL comments: "-- FD: (a, b) -> (c)".
 # "->>" is listed before "->" so the arrow of an MVD is not read as an FD.
+"""
 DEPENDENCY_PATTERN = re.compile(
     r"^\s*(FD|MVD):\s*\((?P<determinant>[^)]*)\)\s*(?P<arrow>->>|->)"
     r"\s*\((?P<dependent>[^)]*)\)\s*$"
 )
 
+# Classes for store FD and MVD
 DEPENDENCY_CLASSES = {
     "->": FunctionalDependency,
     "->>": MultivaluedDependency,
@@ -37,13 +42,15 @@ class ModelSchemaFilter(Filter):
         return context
 
     def model_schema(self, sql: str, dialect: str) -> list[Table]:
-        """Build one Table per CREATE TABLE, skipping other statements"""
+        """
+        Build one Table per CREATE TABLE
+        skipping other statements (INSERTS, INDEX, ALTERS, ETC.)
+        """
+
         tables = []
         for statement in sqlglot.parse(sql, dialect=dialect):
-            if (
-                isinstance(statement, exp.Create)
-                and statement.args.get("kind") == "TABLE"
-            ):
+            if (isinstance(statement, exp.Create)
+                    and statement.args.get("kind") == "TABLE"):
                 tables.append(self.table_to_generic_syntax(statement, dialect))
         return tables
 
@@ -53,18 +60,19 @@ class ModelSchemaFilter(Filter):
         primary_key_columns: list[str] | None = None
 
         for node in schema.expressions:
+            # Detect a column
             if isinstance(node, exp.ColumnDef):
                 column, inline_primary_key = self.detect_column(node, dialect)
                 table.columns.append(column)
                 if inline_primary_key:
                     primary_key_columns = [column.name]
-            elif isinstance(node, exp.Constraint):
+            elif isinstance(node, exp.Constraint):  # Simple PK
                 # Named constraints wrap the real node
                 # CONSTRAINT fk_x FOREIGN KEY
                 primary_key_columns = self.detect_constraints(
                     node.expressions, table, primary_key_columns
                 )
-            else:
+            else:  # Composite PK
                 primary_key_columns = self.detect_constraints(
                     [node], table, primary_key_columns
                 )
@@ -76,7 +84,9 @@ class ModelSchemaFilter(Filter):
         return table
 
     def detect_constraints(self, nodes: list, table: Table, primary_key_columns: list[str] | None) -> list[str] | None:
-        """Read PK/FK constraints into the table, keeping any PK found"""
+        """
+        Read PK/FK constraints into the table, keeping any PK found
+        """
         for node in nodes:
             if isinstance(node, exp.PrimaryKey):
                 primary_key_columns = [
@@ -87,7 +97,10 @@ class ModelSchemaFilter(Filter):
         return primary_key_columns
 
     def detect_column(self, column_def: exp.ColumnDef, dialect: str) -> tuple[Column, bool]:
-        """Build a Column and report whether it declares an inline PK"""
+        """
+        Build a Column and report whether it declares an inline PK
+        """
+
         inline_primary_key = any(
             isinstance(constraint.kind, exp.PrimaryKeyColumnConstraint)
             for constraint in column_def.constraints
@@ -101,7 +114,8 @@ class ModelSchemaFilter(Filter):
 
     @staticmethod
     def detect_size(data_type: exp.DataType) -> tuple[int, ...]:
-        """Return numeric type parameters (50,) or (10, 2).
+        """
+        Return numeric type parameters (50,) or (10, 2).
 
         Parameters that are not numbers (ENUM values) no size.
         """
@@ -114,6 +128,9 @@ class ModelSchemaFilter(Filter):
 
     @staticmethod
     def detect_foreign_key(foreign_key: exp.ForeignKey) -> ForeignKey:
+        """
+        Make the ForeignKey class instance for the table
+        """
         reference = foreign_key.args["reference"].this  # exp.Schema
         return ForeignKey(
             columns=tuple(
@@ -126,7 +143,10 @@ class ModelSchemaFilter(Filter):
         )
 
     def model_dependencies(self, table: Table, comments: list[str] | None) -> None:
-        """Read FD/MVD declarations from the tables SQL comments"""
+        """
+        Read FD/MVD declarations from the tables SQL comments
+        """
+
         for comment in comments or []:
             match = DEPENDENCY_PATTERN.match(comment)
             if match is None:
@@ -142,6 +162,9 @@ class ModelSchemaFilter(Filter):
 
     @staticmethod
     def _attributes(attribute_list: str) -> tuple[str, ...]:
+        """
+        Normalize a comma-separated attribute list into a tuple of names.
+        """
         return tuple(
             name.strip().upper() for name in attribute_list.split(",")
         )
