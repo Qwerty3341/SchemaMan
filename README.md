@@ -1,6 +1,12 @@
 # SchemaMan
 
-Detector of normal forms (Like an interpreter for a programming language)
+<div align="center">
+    <img src="schema_man/static/img/MrDB.svg" alt="Schema Man Logo" width="400"/>
+</div>
+
+SQL Schemas normalizator (Like an interpreter for normal forms)
+the system will generate reports for compliance and non-compliance for normal forms
+Is not expected that the system will generate code just the report
 
 ## Languages
 
