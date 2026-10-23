@@ -1,11 +1,13 @@
-"""Translate SQL dialect types into types used by the schema model."""
+"""
+Translate SQL dialect types into types used
+by the schema model.
+"""
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 
 from sqlglot import exp
-
 
 DType = exp.DataType.Type
 
