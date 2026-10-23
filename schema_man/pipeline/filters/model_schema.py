@@ -1,7 +1,6 @@
 import re
 from typing import override
 
-import sqlglot
 from sqlglot import exp
 
 from ..context import PipeLineContext
@@ -38,17 +37,22 @@ class ModelSchemaFilter(Filter):
     @override
     def apply(self, context: PipeLineContext) -> PipeLineContext:
         """Model the SQL schema into generic table"""
-        context.schema = self.model_schema(context.sql, context.dialect)
+        if context.sql_ast is None:
+            raise ValueError("SQL must be parsed before modeling the schema")
+
+        context.schema = self.model_schema(context.sql_ast, context.dialect)
         return context
 
-    def model_schema(self, sql: str, dialect: str) -> list[Table]:
+    def model_schema(
+        self, statements: list[exp.Expression], dialect: str
+    ) -> list[Table]:
         """
         Build one Table per CREATE TABLE
         skipping other statements (INSERTS, INDEX, ALTERS, ETC.)
         """
 
         tables = []
-        for statement in sqlglot.parse(sql, dialect=dialect):
+        for statement in statements:
             if (isinstance(statement, exp.Create)
                     and statement.args.get("kind") == "TABLE"):
                 tables.append(self.table_to_generic_syntax(statement, dialect))

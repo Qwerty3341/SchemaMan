@@ -11,8 +11,11 @@ class ParseSqlFilter(Filter):
             raise ValueError("SQL must not be empty")
 
         try:
-            sqlglot.parse_one(context.sql, dialect=context.dialect)
+            statements = sqlglot.parse(context.sql, dialect=context.dialect)
         except sqlglot.ParseError as e:
             raise ValueError(f"SQL with syntax errors: {e}") from e
 
+        context.sql_ast = [
+            statement for statement in statements if statement is not None
+        ]
         return context

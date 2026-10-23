@@ -1,16 +1,23 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import TYPE_CHECKING, Any
+
+from sqlglot import exp
+
+if TYPE_CHECKING:
+    from .filters.utils.table_classes import Table
 
 
 @dataclass
 class PipeLineContext:
-    # data from interface
+    # Data from the interface
     sql: str
     dialect: str
     target_normal_form: str
 
-    # Resoults
-    sql_checked: Optional[Any] = None
-    schema: Optional[Any] = None
-    violations: List[Any] = field(default_factory=list)
-    report: Optional[Any] = None
+    # Results produced by pipeline filters
+    sql_ast: list[exp.Expression] | None = None
+    schema: list[Table] | None = None
+    violations: list[Any] = field(default_factory=list)
+    report: Any | None = None
