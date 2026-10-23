@@ -1,7 +1,7 @@
 # SchemaMan
 
 <div align="center">
-    <img src="schema_man/static/img/MrDB.svg" alt="Schema Man Logo" width="400"/>
+    <img src="schema_man/static/img/WholeLogo.webp" alt="Schema Man Logo" width="400"/>
 </div>
 
 **Normal Forms interpreter**
