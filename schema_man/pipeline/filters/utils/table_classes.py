@@ -49,6 +49,24 @@ class Table:
     multivalued_dependencies: list[MultivaluedDependency] = field(
         default_factory=list)
 
+    def get_name(self) -> str:
+        return self.name
+
+    def get_columns(self) -> tuple[Column, ...]:
+        return tuple(self.columns)
+
+    def get_primary_key(self) -> PrimaryKey | None:
+        return self.primary_key
+
+    def get_foreign_keys(self) -> tuple[ForeignKey, ...]:
+        return tuple(self.foreign_keys)
+
+    def get_functional_dependencies(self) -> tuple[FunctionalDependency, ...]:
+        return tuple(self.functional_dependencies)
+
+    def get_multivalued_dependencies(self) -> tuple[MultivaluedDependency, ...]:
+        return tuple(self.multivalued_dependencies)
+
     def to_generic(self) -> str:
         """Render this table using the generic schema syntax."""
         lines = [f"TABLE {self.name}:"]

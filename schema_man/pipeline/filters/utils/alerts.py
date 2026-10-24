@@ -4,6 +4,12 @@ from typing import assert_never
 
 
 class AlertColor(StrEnum):
+    """
+    Defines the priority of each color green
+    and yellow pass the normal form red and
+    gray stops the pipe flow
+    """
+
     GREEN = 'green'
     YELLOW = 'yellow'
     RED = 'red'
