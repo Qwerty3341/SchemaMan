@@ -9,7 +9,7 @@
    id="svg1"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
    sodipodi:docname="WholeLogo.svg"
-   inkscape:export-filename="WholeLogo.webp"
+   inkscape:export-filename="WholeLogo.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -26,9 +26,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.74715775"
-     inkscape:cx="216.15248"
-     inkscape:cy="201.43002"
+     inkscape:zoom="0.52832031"
+     inkscape:cx="53.944547"
+     inkscape:cy="339.75601"
      inkscape:window-width="1536"
      inkscape:window-height="786"
      inkscape:window-x="0"
@@ -42,13 +42,13 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="fill:#1a1a1a;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1"
+       style="fill:#1a1a1a;stroke:#e4e200;stroke-width:4.95164;stroke-linejoin:round;stroke-miterlimit:1;stroke-dasharray:none;stroke-opacity:1"
        id="rect1"
-       width="512"
-       height="512"
-       x="0"
-       y="0"
-       ry="42.828976" />
+       width="507.04837"
+       height="507.04837"
+       x="2.4758201"
+       y="2.475822"
+       ry="42.414768" />
     <g
        id="g2"
        transform="translate(1.6552658e-6,28.259775)">
