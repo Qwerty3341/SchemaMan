@@ -23,10 +23,14 @@ class FirstNormalFormDetecter:
 
         # Don't have pk
         if primary_key is None:
-            return Alert(AlertColor.RED, "THIS TABLE DOES NOT HAVE A PRIMARY KEY")
+            return Alert(
+                AlertColor.RED,
+                "THIS TABLE DOES NOT HAVE A PRIMARY KEY",
+                table.name,
+            )
 
         # Have the pk
-        return Alert(AlertColor.GREEN, "TABLE WITH PRIMARY KEY")
+        return Alert(AlertColor.GREEN, "TABLE WITH PRIMARY KEY", table.name)
 
     @staticmethod
     def detect_repeating_groups(table: Table) -> list[Alert]:
@@ -51,13 +55,15 @@ class FirstNormalFormDetecter:
             if len(columns) >= 3:  # RED Alert 3 or more columns
                 list_of_alerts.append(Alert(
                     AlertColor.RED,
-                    f"REPEATING GROUP '{base}' : '{', '.join(columns)}'"
+                    f"REPEATING GROUP '{base}' : '{', '.join(columns)}'",
+                    table.name,
                 ))
                 grouped_columns.update(columns)
             elif len(columns) == 2:  # Yellow, suspicion of repeatead groups
                 list_of_alerts.append(Alert(
                     AlertColor.YELLOW,
-                    f"POSSIBLE REPEATING GROUP '{base}' : '{', '.join(columns)}"
+                    f"POSSIBLE REPEATING GROUP '{base}' : '{', '.join(columns)}",
+                    table.name,
                 ))
                 grouped_columns.update(columns)
 
@@ -69,7 +75,8 @@ class FirstNormalFormDetecter:
             if n_a in n_b or n_b in n_a:
                 list_of_alerts.append(Alert(
                     AlertColor.YELLOW,
-                    f"SIMILAR COLUMN NAMES: {name_a}, {name_b}"
+                    f"SIMILAR COLUMN NAMES: {name_a}, {name_b}",
+                    table.name,
                 ))
 
         # At this point the alerts will be RED or Yellow
@@ -77,7 +84,11 @@ class FirstNormalFormDetecter:
             return list_of_alerts
 
         # If no alerts it means a GREEN Alert
-        list_of_alerts.append(Alert(AlertColor.GREEN, "NO REPEATING GROUPS FOUND"))
+        list_of_alerts.append(Alert(
+            AlertColor.GREEN,
+            "NO REPEATING GROUPS FOUND",
+            table.name,
+        ))
         return list_of_alerts
 
     # @staticmethod

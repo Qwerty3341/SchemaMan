@@ -30,6 +30,7 @@ class AlertColor(StrEnum):
 class Alert:
     color: AlertColor
     message: str
+    associated_table: str
 
     @property
     def blocks_pipeline(self) -> bool:

@@ -1,7 +1,9 @@
 from typing import override
+
+import sqlglot
+
 from ..context import PipeLineContext
 from ..filter import Filter
-import sqlglot
 
 
 class ParseSqlFilter(Filter):
