@@ -29,6 +29,7 @@ class AlertColor(StrEnum):
 @dataclass(frozen=True)
 class Alert:
     color: AlertColor
+    message: str
 
     @property
     def blocks_pipeline(self) -> bool:
