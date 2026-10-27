@@ -5,7 +5,7 @@
 	--text-editor-font-size: 1.5rem;
 	--selector-bg: #282828;
 	--selector-fg: #ebdbb2;
-	--button-sql-color: #689d6a;
+	--button-sql-color: #47844B;
 	--button-report-color: #d65d0e;
 	--button-font-color: #1A0F0A;
 }
@@ -111,6 +111,20 @@
 	font-size: 1.05rem;
 }
 
+/* ==========
+ * Report div
+ * ==========*/
+
+#report-terminal {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	background-color: black;
+	padding: 1rem;
+	font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+	border: 2px white solid;
+}
+
 /* ********** *
  * CodeMirror *
  * ********** */
@@ -119,6 +133,7 @@
 	flex: 1;
 	min-height: 0;
 	overflow: hidden;
+	border: 2px var(--accent-color) solid;
 }
 
 #sql-editor .cm-editor {

@@ -19,7 +19,8 @@
   "homepage": "https://github.com/Qwerty3341/SchemaMan#readme",
   "dependencies": {
     "@codemirror/lang-sql": "^6.10.0",
-    "@uiw/codemirror-theme-gruvbox-dark": "^4.25.12",
+    "@uiw/codemirror-theme-duotone": "^4.25.12",
+    "@uiw/codemirror-theme-vscode": "^4.25.12",
     "codemirror": "^6.0.2"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 import { basicSetup } from "codemirror";
 import { EditorView } from "@codemirror/view";
 import {sql} from "@codemirror/lang-sql";
-import { gruvboxDark } from "@uiw/codemirror-theme-gruvbox-dark";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
 const STORAGE_KEY = "schema.sql";
 const container = document.querySelector("#sql-editor");
@@ -15,7 +15,7 @@ if (container) {
     extensions: [
       basicSetup,
       sql(),
-      gruvboxDark,
+      vscodeDark,
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());

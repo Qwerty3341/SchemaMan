@@ -25283,273 +25283,159 @@
     return extension;
   };
 
-  // node_modules/@uiw/codemirror-theme-gruvbox-dark/esm/index.js
-  var defaultSettingsGruvboxDark = {
-    background: "#282828",
-    foreground: "#ebdbb2",
-    caret: "#ebdbb2",
-    selection: "#b99d555c",
-    selectionMatch: "#b99d555c",
-    lineHighlight: "#baa1602b",
-    gutterBackground: "#282828",
-    gutterForeground: "#7c6f64"
+  // node_modules/@uiw/codemirror-theme-vscode/esm/light.js
+  var defaultSettingsVscodeLight = {
+    background: "#ffffff",
+    foreground: "#383a42",
+    caret: "#000",
+    selection: "#add6ff",
+    selectionMatch: "#a8ac94",
+    lineHighlight: "#99999926",
+    gutterBackground: "#fff",
+    gutterForeground: "#237893",
+    gutterActiveForeground: "#0b216f",
+    fontFamily: 'Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace'
   };
-  var gruvboxDarkStyle = [{
-    tag: tags.keyword,
-    color: "#fb4934"
+  var vscodeLightStyle = [{
+    tag: [tags.keyword, tags.operatorKeyword, tags.modifier, tags.color, tags.constant(tags.name), tags.standard(tags.name), tags.standard(tags.tagName), tags.special(tags.brace), tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#0000ff"
   }, {
-    tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
-    color: "#8ec07c"
+    tag: [tags.moduleKeyword, tags.controlKeyword],
+    color: "#af00db"
   }, {
-    tag: [tags.variableName],
-    color: "#83a598"
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName, tags.propertyName, tags.variableName, tags.labelName, tags.definition(tags.name)],
+    color: "#0070c1"
   }, {
-    tag: [tags.function(tags.variableName)],
-    color: "#b8bb26",
-    fontStyle: "bold"
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#0070c1"
   }, {
-    tag: [tags.labelName],
-    color: "#ebdbb2"
+    tag: [tags.typeName, tags.className, tags.tagName, tags.number, tags.changed, tags.annotation, tags.self, tags.namespace],
+    color: "#267f99"
   }, {
-    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
-    color: "#d3869b"
+    tag: [tags.function(tags.variableName), tags.function(tags.propertyName)],
+    color: "#795e26"
   }, {
-    tag: [tags.definition(tags.name), tags.separator],
-    color: "#ebdbb2"
+    tag: [tags.number],
+    color: "#098658"
   }, {
-    tag: [tags.brace],
-    color: "#ebdbb2"
-  }, {
-    tag: [tags.annotation],
-    color: "#fb4934d"
-  }, {
-    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
-    color: "#d3869b"
-  }, {
-    tag: [tags.typeName, tags.className],
-    color: "#fabd2f"
-  }, {
-    tag: [tags.operator, tags.operatorKeyword],
-    color: "#fb4934"
-  }, {
-    tag: [tags.tagName],
-    color: "#8ec07c",
-    fontStyle: "bold"
-  }, {
-    tag: [tags.squareBracket],
-    color: "#fe8019"
-  }, {
-    tag: [tags.angleBracket],
-    color: "#83a598"
-  }, {
-    tag: [tags.attributeName],
-    color: "#8ec07c"
+    tag: [tags.operator, tags.punctuation, tags.separator, tags.url, tags.escape, tags.regexp],
+    color: "#383a42"
   }, {
     tag: [tags.regexp],
-    color: "#8ec07c"
+    color: "#af00db"
   }, {
-    tag: [tags.quote],
-    color: "#928374"
+    tag: [tags.special(tags.string), tags.processingInstruction, tags.string, tags.inserted],
+    color: "#a31515"
   }, {
-    tag: [tags.string],
-    color: "#ebdbb2"
-  }, {
-    tag: tags.link,
-    color: "#a89984",
-    textDecoration: "underline",
-    textUnderlinePosition: "under"
-  }, {
-    tag: [tags.url, tags.escape, tags.special(tags.string)],
-    color: "#d3869b"
-  }, {
-    tag: [tags.meta],
-    color: "#fabd2f"
-  }, {
-    tag: [tags.comment],
-    color: "#928374",
-    fontStyle: "italic"
+    tag: [tags.angleBracket],
+    color: "#383a42"
   }, {
     tag: tags.strong,
-    fontWeight: "bold",
-    color: "#fe8019"
+    fontWeight: "bold"
   }, {
     tag: tags.emphasis,
-    fontStyle: "italic",
-    color: "#b8bb26"
+    fontStyle: "italic"
   }, {
     tag: tags.strikethrough,
     textDecoration: "line-through"
   }, {
-    tag: tags.heading,
-    fontWeight: "bold",
-    color: "#b8bb26"
+    tag: [tags.meta, tags.comment],
+    color: "#008000"
   }, {
-    tag: [tags.heading1, tags.heading2],
-    fontWeight: "bold",
-    color: "#b8bb26"
-  }, {
-    tag: [tags.heading3, tags.heading4],
-    fontWeight: "bold",
-    color: "#fabd2f"
-  }, {
-    tag: [tags.heading5, tags.heading6],
-    color: "#fabd2f"
-  }, {
-    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
-    color: "#d3869b"
-  }, {
-    tag: [tags.processingInstruction, tags.inserted],
-    color: "#83a598"
-  }, {
-    tag: [tags.contentSeparator],
-    color: "#fb4934"
+    tag: tags.link,
+    color: "#4078f2",
+    textDecoration: "underline"
   }, {
     tag: tags.invalid,
-    color: "#fe8019",
-    borderBottom: "1px dotted #fb4934d"
+    color: "#e45649"
   }];
-  var gruvboxDarkInit = (options) => {
+  function vscodeLightInit(options) {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsVscodeLight, settings),
+      styles: [...vscodeLightStyle, ...styles]
+    });
+  }
+  var vscodeLight = vscodeLightInit();
+
+  // node_modules/@uiw/codemirror-theme-vscode/esm/dark.js
+  var defaultSettingsVscodeDark = {
+    background: "#1e1e1e",
+    foreground: "#9cdcfe",
+    caret: "#c6c6c6",
+    selection: "#6199ff2f",
+    selectionMatch: "#72a1ff59",
+    lineHighlight: "#ffffff0f",
+    gutterBackground: "#1e1e1e",
+    gutterForeground: "#838383",
+    gutterActiveForeground: "#fff",
+    fontFamily: 'Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono", "Courier New", monospace'
+  };
+  var vscodeDarkStyle = [{
+    tag: [tags.keyword, tags.operatorKeyword, tags.modifier, tags.color, tags.constant(tags.name), tags.standard(tags.name), tags.standard(tags.tagName), tags.special(tags.brace), tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#569cd6"
+  }, {
+    tag: [tags.controlKeyword, tags.moduleKeyword],
+    color: "#c586c0"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName, tags.propertyName, tags.variableName, tags.labelName, tags.definition(tags.name)],
+    color: "#9cdcfe"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#9cdcfe"
+  }, {
+    tag: [tags.typeName, tags.className, tags.tagName, tags.number, tags.changed, tags.annotation, tags.self, tags.namespace],
+    color: "#4ec9b0"
+  }, {
+    tag: [tags.function(tags.variableName), tags.function(tags.propertyName)],
+    color: "#dcdcaa"
+  }, {
+    tag: [tags.number],
+    color: "#b5cea8"
+  }, {
+    tag: [tags.operator, tags.punctuation, tags.separator, tags.url, tags.escape, tags.regexp],
+    color: "#d4d4d4"
+  }, {
+    tag: [tags.regexp],
+    color: "#d16969"
+  }, {
+    tag: [tags.special(tags.string), tags.processingInstruction, tags.string, tags.inserted],
+    color: "#ce9178"
+  }, {
+    tag: [tags.angleBracket],
+    color: "#808080"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: "#6a9955"
+  }, {
+    tag: tags.link,
+    color: "#6a9955",
+    textDecoration: "underline"
+  }, {
+    tag: tags.invalid,
+    color: "#ff0000"
+  }];
+  function vscodeDarkInit(options) {
     var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
     return createTheme({
       theme: theme2,
-      settings: _extends({}, defaultSettingsGruvboxDark, settings),
-      styles: [...gruvboxDarkStyle, ...styles]
+      settings: _extends({}, defaultSettingsVscodeDark, settings),
+      styles: [...vscodeDarkStyle, ...styles]
     });
-  };
-  var gruvboxDark = gruvboxDarkInit();
-  var defaultSettingsGruvboxLight = {
-    background: "#fbf1c7",
-    foreground: "#3c3836",
-    caret: "#af3a03",
-    selection: "#bdae9391",
-    selectionMatch: "#bdae9391",
-    lineHighlight: "#a37f2238",
-    gutterBackground: "#ebdbb2",
-    gutterForeground: "#665c54",
-    gutterBorder: "transparent"
-  };
-  var gruvboxLightInit = (options) => {
-    var _ref2 = options || {}, _ref2$theme = _ref2.theme, theme2 = _ref2$theme === void 0 ? "light" : _ref2$theme, _ref2$settings = _ref2.settings, settings = _ref2$settings === void 0 ? {} : _ref2$settings, _ref2$styles = _ref2.styles, styles = _ref2$styles === void 0 ? [] : _ref2$styles;
-    return createTheme({
-      theme: theme2,
-      settings: _extends({}, defaultSettingsGruvboxLight, settings),
-      styles: [{
-        tag: tags.keyword,
-        color: "#9d0006"
-      }, {
-        tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
-        color: "#427b58"
-      }, {
-        tag: [tags.variableName],
-        color: "#076678"
-      }, {
-        tag: [tags.function(tags.variableName)],
-        color: "#79740e",
-        fontStyle: "bold"
-      }, {
-        tag: [tags.labelName],
-        color: "#3c3836"
-      }, {
-        tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
-        color: "#8f3f71"
-      }, {
-        tag: [tags.definition(tags.name), tags.separator],
-        color: "#3c3836"
-      }, {
-        tag: [tags.brace],
-        color: "#3c3836"
-      }, {
-        tag: [tags.annotation],
-        color: "#9d0006"
-      }, {
-        tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
-        color: "#8f3f71"
-      }, {
-        tag: [tags.typeName, tags.className],
-        color: "#b57614"
-      }, {
-        tag: [tags.operator, tags.operatorKeyword],
-        color: "#9d0006"
-      }, {
-        tag: [tags.tagName],
-        color: "#427b58",
-        fontStyle: "bold"
-      }, {
-        tag: [tags.squareBracket],
-        color: "#af3a03"
-      }, {
-        tag: [tags.angleBracket],
-        color: "#076678"
-      }, {
-        tag: [tags.attributeName],
-        color: "#427b58"
-      }, {
-        tag: [tags.regexp],
-        color: "#427b58"
-      }, {
-        tag: [tags.quote],
-        color: "#928374"
-      }, {
-        tag: [tags.string],
-        color: "#3c3836"
-      }, {
-        tag: tags.link,
-        color: "#7c6f64",
-        textDecoration: "underline",
-        textUnderlinePosition: "under"
-      }, {
-        tag: [tags.url, tags.escape, tags.special(tags.string)],
-        color: "#8f3f71"
-      }, {
-        tag: [tags.meta],
-        color: "#b57614"
-      }, {
-        tag: [tags.comment],
-        color: "#928374",
-        fontStyle: "italic"
-      }, {
-        tag: tags.strong,
-        fontWeight: "bold",
-        color: "#af3a03"
-      }, {
-        tag: tags.emphasis,
-        fontStyle: "italic",
-        color: "#79740e"
-      }, {
-        tag: tags.strikethrough,
-        textDecoration: "line-through"
-      }, {
-        tag: tags.heading,
-        fontWeight: "bold",
-        color: "#79740e"
-      }, {
-        tag: [tags.heading1, tags.heading2],
-        fontWeight: "bold",
-        color: "#79740e"
-      }, {
-        tag: [tags.heading3, tags.heading4],
-        fontWeight: "bold",
-        color: "#b57614"
-      }, {
-        tag: [tags.heading5, tags.heading6],
-        color: "#b57614"
-      }, {
-        tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
-        color: "#8f3f71"
-      }, {
-        tag: [tags.processingInstruction, tags.inserted],
-        color: "#076678"
-      }, {
-        tag: [tags.contentSeparator],
-        color: "#9d0006"
-      }, {
-        tag: tags.invalid,
-        color: "#af3a03",
-        borderBottom: "1px dotted #9d0006"
-      }, ...styles]
-    });
-  };
-  var gruvboxLight = gruvboxLightInit();
+  }
+  var vscodeDark = vscodeDarkInit();
 
   // schema_man/static/js/codeEditor.js
   var STORAGE_KEY = "schema.sql";
@@ -25562,7 +25448,7 @@
       extensions: [
         basicSetup,
         sql(),
-        gruvboxDark,
+        vscodeDark,
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());
