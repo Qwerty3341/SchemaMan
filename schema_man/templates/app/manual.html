@@ -3,4 +3,100 @@
 {% block title %}Manual{% endblock %}
 
 {% block content %}
+
+<section id="manual-container">
+	<div class="div-container" id="alert-table-div">
+		<h2>Alert System</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Alert Color</td>
+					<th>Compliant?</td>
+					<th>When is it used?</td>
+					<th>Value</td>
+				</tr>
+			</thead>
+
+			<tbody>
+				<!--Alert colors | Compliant? | When is it used? | Value-->
+				<tr>
+					<td>Green</td>
+					<td>Pass</td>
+					<td>It's completely verifiable the compliant of the normal form</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Yellow</td>
+					<td>Possible violation</td>
+					<td>Used when is not possible to determine with certainty a particular aspect of the normal form
+					</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Red</td>
+					<td>Do not pass</td>
+					<td>It is fully verifiable that a table does not satisfy a normal form</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>Gray</td>
+					<td>Indeterminable</td>
+					<td>The algorithm does not have sufficient information to evaluate the normal form</td>
+					<td>1</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="div-container" id="dependencies-div">
+		<h2>Dependencies</h2>
+		<p>
+			Functional dependencies and multivalued dependencies by default is not possible to declare them
+			with SQL syntax, so for Schema Man will be declared by a special syntax.
+		</p>
+
+		<strong>NOTE: Dependencies are very important to detect from second to fourth normal forms</strong>
+
+		<div id="functional-dependency-div">
+			<h3>Functional Dependency</h3>
+
+			<pre class="dependency-example">
+				<code>
+					--FD: (determinants, ...) -> (dependents)
+				</code>
+			</pre>
+
+		</div>
+
+		<div id="multivalued-dependency-div">
+			<h3>Multivalued Dependency</h3>
+			<pre class="dependency-example">
+				<code>
+					--MVD: (determinants, ...) ->> (dependents)
+				</code>
+			</pre>
+		</div>
+	</div>
+
+	<div class=div-container id="normal-forms-div">
+		<h2>Normal forms detection</h2>
+		<p>
+			To detect the normal forms follow the next steps:
+		</p>
+		<ol>
+			<li>Select the engine</li>
+			<li>Select the level of normalization</li>
+			<li>Load the SQL
+				<ul>
+					<li>You can press the load SQL button to upload a SQL file</li>
+					<li>Can do a drag and drop</li>
+					<li>Or you can write directly the tables</li>
+				</ul>
+			</li>
+			<li>Write the functional and multivalued dependencies</li>
+			<li>Finally press the run button</li>
+		</ol>
+	</div>
+</section>
+
 {% endblock %}
