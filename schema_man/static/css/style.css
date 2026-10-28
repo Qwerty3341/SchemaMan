@@ -95,6 +95,7 @@ main.content {
 	overflow-y: auto;
 	scrollbar-color: var(--accent-color) var(--header-color);
 	scrollbar-width: thin;
+	scrollbar-gutter: stable both-edges;
 	/* flex-direction: column; */
 }
 
