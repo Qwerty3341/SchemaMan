@@ -1512,8 +1512,8 @@
     /**
     Define a new facet.
     */
-    static define(config2 = {}) {
-      return new _Facet(config2.combine || ((a) => a), config2.compareInput || ((a, b) => a === b), config2.compare || (!config2.combine ? sameArray : (a, b) => a === b), !!config2.static, config2.enables);
+    static define(config15 = {}) {
+      return new _Facet(config15.combine || ((a) => a), config15.compareInput || ((a, b) => a === b), config15.compare || (!config15.combine ? sameArray : (a, b) => a === b), !!config15.static, config15.enables);
     }
     /**
     Returns an extension that adds the given value to this facet.
@@ -1690,10 +1690,10 @@
     /**
     Define a state field.
     */
-    static define(config2) {
-      let field = new _StateField(nextID++, config2.create, config2.update, config2.compare || ((a, b) => a === b), config2);
-      if (config2.provide)
-        field.provides = config2.provide(field);
+    static define(config15) {
+      let field = new _StateField(nextID++, config15.create, config15.update, config15.compare || ((a, b) => a === b), config15);
+      if (config15.provide)
+        field.provides = config15.provide(field);
       return field;
     }
     create(state) {
@@ -2294,12 +2294,12 @@
     };
   }
   var EditorState = class _EditorState {
-    constructor(config2, doc2, selection, values, computeSlot, tr) {
-      this.config = config2;
+    constructor(config15, doc2, selection, values, computeSlot, tr) {
+      this.config = config15;
       this.doc = doc2;
       this.selection = selection;
       this.values = values;
-      this.status = config2.statusTemplate.slice();
+      this.status = config15.statusTemplate.slice();
       this.computeSlot = computeSlot;
       if (tr)
         tr._state = this;
@@ -2470,7 +2470,7 @@
     to [`toJSON`](https://codemirror.net/6/docs/ref/#state.EditorState.toJSON) when serializing as
     third argument.
     */
-    static fromJSON(json, config2 = {}, fields) {
+    static fromJSON(json, config15 = {}, fields) {
       if (!json || typeof json.doc != "string")
         throw new RangeError("Invalid JSON representation for EditorState");
       let fieldInit = [];
@@ -2484,7 +2484,7 @@
       return _EditorState.create({
         doc: json.doc,
         selection: EditorSelection.fromJSON(json.selection),
-        extensions: config2.extensions ? fieldInit.concat([config2.extensions]) : fieldInit
+        extensions: config15.extensions ? fieldInit.concat([config15.extensions]) : fieldInit
       });
     }
     /**
@@ -2492,10 +2492,10 @@
     initializing an editor—updated states are created by applying
     transactions.
     */
-    static create(config2 = {}) {
-      let configuration = Configuration.resolve(config2.extensions || [], /* @__PURE__ */ new Map());
-      let doc2 = config2.doc instanceof Text ? config2.doc : Text.of((config2.doc || "").split(configuration.staticFacet(_EditorState.lineSeparator) || DefaultSplit));
-      let selection = !config2.selection ? EditorSelection.single(0) : config2.selection instanceof EditorSelection ? config2.selection : EditorSelection.single(config2.selection.anchor, config2.selection.head);
+    static create(config15 = {}) {
+      let configuration = Configuration.resolve(config15.extensions || [], /* @__PURE__ */ new Map());
+      let doc2 = config15.doc instanceof Text ? config15.doc : Text.of((config15.doc || "").split(configuration.staticFacet(_EditorState.lineSeparator) || DefaultSplit));
+      let selection = !config15.selection ? EditorSelection.single(0) : config15.selection instanceof EditorSelection ? config15.selection : EditorSelection.single(config15.selection.anchor, config15.selection.head);
       checkSelection(selection, doc2.length);
       if (!configuration.staticFacet(allowMultipleSelections))
         selection = selection.asSingle();
@@ -2632,9 +2632,9 @@
   Compartment.reconfigure = /* @__PURE__ */ StateEffect.define();
   function combineConfig(configs, defaults4, combine = {}) {
     let result = {};
-    for (let config2 of configs)
-      for (let key of Object.keys(config2)) {
-        let value = config2[key], current = result[key];
+    for (let config15 of configs)
+      for (let key of Object.keys(config15)) {
+        let value = config15[key], current = result[key];
         if (current === void 0)
           result[key] = value;
         else if (current === value || value === void 0) ;
@@ -3806,7 +3806,7 @@
     if (!b)
       b = noAttrs;
     let keysA = Object.keys(a), keysB = Object.keys(b);
-    if (keysA.length - (ignore && keysA.indexOf(ignore) > -1 ? 1 : 0) != keysB.length - (ignore && keysB.indexOf(ignore) > -1 ? 1 : 0))
+    if (keysA.length - 0 != keysB.length - 0)
       return false;
     for (let key of keysA) {
       if (key != ignore && (keysB.indexOf(key) == -1 || a[key] !== b[key]))
@@ -4126,6 +4126,8 @@
     }
   };
   BlockWrapper.prototype.startSide = BlockWrapper.prototype.endSide = -1;
+  var isElt = (node) => node.nodeType == 1;
+  var isText = (node) => node.nodeType == 3;
   function getSelection(root) {
     let target;
     if (root.nodeType == 11) {
@@ -4148,9 +4150,9 @@
     }
   }
   function clientRectsFor(dom) {
-    if (dom.nodeType == 3)
+    if (isText(dom))
       return textRange(dom, 0, dom.nodeValue.length).getClientRects();
-    else if (dom.nodeType == 1)
+    else if (isElt(dom))
       return dom.getClientRects();
     else
       return [];
@@ -4166,7 +4168,7 @@
     }
   }
   function isBlockElement(node) {
-    return node.nodeType == 1 && /^(DIV|P|LI|UL|OL|BLOCKQUOTE|DD|DT|H\d|SECTION|PRE)$/.test(node.nodeName);
+    return isElt(node) && /^(DIV|P|LI|UL|OL|BLOCKQUOTE|DD|DT|H\d|SECTION|PRE)$/.test(node.nodeName);
   }
   function scanFor(node, off, targetNode, targetOff, dir) {
     for (; ; ) {
@@ -4176,13 +4178,13 @@
         if (node.nodeName == "DIV")
           return false;
         let parent = node.parentNode;
-        if (!parent || parent.nodeType != 1)
+        if (!parent || !isElt(parent))
           return false;
         off = domIndex(node) + (dir < 0 ? 0 : 1);
         node = parent;
-      } else if (node.nodeType == 1) {
+      } else if (isElt(node)) {
         node = node.childNodes[off + (dir < 0 ? -1 : 0)];
-        if (node.nodeType == 1 && node.contentEditable == "false")
+        if (isElt(node) && (node.nodeName == "IMG" || node.nodeName == "BR" || node.contentEditable == "false"))
           return false;
         off = dir < 0 ? maxOffset(node) : 0;
       } else {
@@ -4191,7 +4193,7 @@
     }
   }
   function maxOffset(node) {
-    return node.nodeType == 3 ? node.nodeValue.length : node.childNodes.length;
+    return isText(node) ? node.nodeValue.length : node.childNodes.length;
   }
   function flattenRect(rect, toLeft) {
     let { left, right } = rect;
@@ -4228,15 +4230,20 @@
   function scrollRectIntoView(dom, rect, side, x, y, xMargin, yMargin, ltr) {
     let doc2 = dom.ownerDocument, win = doc2.defaultView || window;
     for (let cur2 = dom, stop = false; cur2 && !stop; ) {
-      if (cur2.nodeType == 1) {
+      if (isElt(cur2)) {
         let bounding, top2 = cur2 == doc2.body;
-        let scaleX = 1, scaleY = 1;
+        let scaleX = 1, scaleY = 1, xScroll = true, yScroll = true;
         if (top2) {
           bounding = windowRect(win);
         } else {
-          if (/^(fixed|sticky)$/.test(getComputedStyle(cur2).position))
+          let style = getComputedStyle(cur2);
+          if (/^(fixed|sticky)$/.test(style.position))
             stop = true;
-          if (cur2.scrollHeight <= cur2.clientHeight && cur2.scrollWidth <= cur2.clientWidth) {
+          if (cur2.scrollHeight <= cur2.clientHeight || !/auto|scroll/.test(style.overflowY))
+            yScroll = false;
+          if (cur2.scrollWidth <= cur2.clientWidth || !/auto|scroll/.test(style.overflowX))
+            xScroll = false;
+          if (!xScroll && !yScroll) {
             cur2 = cur2.assignedSlot || cur2.parentNode;
             continue;
           }
@@ -4250,7 +4257,8 @@
           };
         }
         let moveX = 0, moveY = 0;
-        if (y == "nearest") {
+        if (!yScroll) ;
+        else if (y == "nearest") {
           if (rect.top < bounding.top + yMargin) {
             moveY = rect.top - (bounding.top + yMargin);
             if (side > 0 && rect.bottom > bounding.bottom + moveY)
@@ -4265,7 +4273,8 @@
           let targetTop = y == "center" && rectHeight <= boundingHeight ? rect.top + rectHeight / 2 - boundingHeight / 2 : y == "start" || y == "center" && side < 0 ? rect.top - yMargin : rect.bottom - boundingHeight + yMargin;
           moveY = targetTop - bounding.top;
         }
-        if (x == "nearest") {
+        if (!xScroll) ;
+        else if (x == "nearest") {
           if (rect.left < bounding.left + xMargin) {
             moveX = rect.left - (bounding.left + xMargin);
             if (side > 0 && rect.right > bounding.right + moveX)
@@ -4328,10 +4337,10 @@
     for (let cur2 = dom.parentNode; cur2; ) {
       if (cur2 == doc2.body || (!getX || x) && y) {
         break;
-      } else if (cur2.nodeType == 1) {
-        if (!y && cur2.scrollHeight > cur2.clientHeight)
+      } else if (isElt(cur2)) {
+        if (!y && cur2.scrollHeight > cur2.clientHeight && /scroll|auto/.test(getComputedStyle(cur2).overflowY))
           y = cur2;
-        if (getX && !x && cur2.scrollWidth > cur2.clientWidth)
+        if (getX && !x && cur2.scrollWidth > cur2.clientWidth && /scroll|auto/.test(getComputedStyle(cur2).overflowX))
           x = cur2;
         cur2 = cur2.assignedSlot || cur2.parentNode;
       } else if (cur2.nodeType == 11) {
@@ -4366,7 +4375,7 @@
   function getScrollStack(target) {
     let stack = [];
     for (let cur2 = target; cur2; cur2 = cur2.nodeType == 11 ? cur2.host : cur2.parentNode) {
-      if (cur2.nodeType == 1)
+      if (isElt(cur2))
         stack.push({ node: cur2, left: cur2.scrollLeft, top: cur2.scrollTop });
     }
     return stack;
@@ -4433,7 +4442,7 @@
     offset = Math.min(offset, maxOffset(node));
     for (; ; ) {
       if (offset) {
-        if (node.nodeType != 1)
+        if (!isElt(node))
           return false;
         let prev = node.childNodes[offset - 1];
         if (prev.contentEditable == "false")
@@ -4457,9 +4466,9 @@
   }
   function textNodeBefore(startNode, startOffset) {
     for (let node = startNode, offset = startOffset; ; ) {
-      if (node.nodeType == 3 && offset > 0) {
+      if (isText(node) && offset > 0) {
         return { node, offset };
-      } else if (node.nodeType == 1 && offset > 0) {
+      } else if (isElt(node) && offset > 0) {
         if (node.contentEditable == "false")
           return null;
         node = node.childNodes[offset - 1];
@@ -4474,9 +4483,9 @@
   }
   function textNodeAfter(startNode, startOffset) {
     for (let node = startNode, offset = startOffset; ; ) {
-      if (node.nodeType == 3 && offset < node.nodeValue.length) {
+      if (isText(node) && offset < node.nodeValue.length) {
         return { node, offset };
-      } else if (node.nodeType == 1 && offset < node.childNodes.length) {
+      } else if (isElt(node) && offset < node.childNodes.length) {
         if (node.contentEditable == "false")
           return null;
         node = node.childNodes[offset];
@@ -4880,7 +4889,6 @@
       if (type == 2 || type == 4)
         return RTL;
     }
-    return LTR;
   }
   var clickAddsSelectionRange = /* @__PURE__ */ Facet.define();
   var dragMovesSelection$1 = /* @__PURE__ */ Facet.define();
@@ -5052,8 +5060,6 @@
         let level = result;
         for (let i2 = active.length - 1; i2 >= 0; i2--, open--) {
           let direction = active[i2].spec.bidiIsolate, update;
-          if (direction == null)
-            direction = autoDirection(line.text, from, to);
           if (open > 0 && level.length && (update = level[level.length - 1]).to == from && update.direction == direction) {
             update.to = to;
             level = update.inner;
@@ -5065,7 +5071,28 @@
         }
       }
     });
-    return result;
+    return resolveIsolates(line.text, result);
+  }
+  function resolveIsolates(text, isolates) {
+    for (let i2 of isolates) {
+      if (i2.direction == null) {
+        for (let pos = i2.from, j = 0; pos < i2.to; j++) {
+          let nextInner = j < i2.inner.length ? i2.inner[j] : null;
+          let dir = autoDirection(text, pos, nextInner ? nextInner.from : i2.to);
+          if (dir) {
+            i2.direction = dir;
+            break;
+          }
+          if (!nextInner)
+            break;
+          pos = nextInner.to;
+        }
+        if (i2.direction == null)
+          i2.direction = Direction.LTR;
+      }
+      resolveIsolates(text, i2.inner);
+    }
+    return isolates;
   }
   var scrollMargins = /* @__PURE__ */ Facet.define();
   function getScrollMargins(view) {
@@ -5263,7 +5290,7 @@
     sync(track) {
       this.flags |= 2;
       if (this.flags & 4) {
-        this.flags &= ~4;
+        this.flags &= -5;
         let attrs = this.domAttrs;
         if (attrs)
           setAttrs(this.dom, attrs);
@@ -5309,7 +5336,7 @@
       return new DOMPos(this.parent.dom, index + (after ? 1 : 0), off == 0 || off == this.length);
     }
     markDirty(attrs) {
-      this.flags &= ~2;
+      this.flags &= -3;
       if (attrs)
         this.flags |= 4;
       if (this.parent && this.parent.flags & 2)
@@ -5503,7 +5530,7 @@
     // Side -2/2 is handled specially, in that it allows the position
     // returned to be before (-2) or after (2) widgets that would always
     // be after/before a cursor position.
-    resolveInline(pos, side, forCoords) {
+    resolveInline(pos, side, forCoords = false) {
       let before = null, beforeOff = -1, after = null, afterOff = -1;
       function scan(tile, pos2) {
         for (let i2 = 0, off = 0; i2 < tile.children.length && off <= pos2; i2++) {
@@ -5511,10 +5538,10 @@
           if (end >= pos2) {
             if (child.isComposite()) {
               scan(child, pos2 - off);
-            } else if ((!after || after.isHidden && (side > 0 && !(after.flags & 32) || forCoords && onSameLine(after, child))) && (end > pos2 || child.flags & 32 && side <= 1)) {
+            } else if ((!after || forCoords && after.isHidden && (side > 0 && !(after.flags & 32) || forCoords && onSameLine(after, child))) && (end > pos2 || child.flags & 32 && side <= 1)) {
               after = child;
               afterOff = pos2 - off;
-            } else if (off < pos2 || child.flags & 16 && !child.isHidden && side >= -1) {
+            } else if (off < pos2 || child.flags & 16 && !(forCoords && child.isHidden) && side >= -1) {
               before = child;
               beforeOff = pos2 - off;
             }
@@ -6114,7 +6141,7 @@
                 2
                 /* Reused.DOM */
               );
-              return new WidgetTile(tile.dom, length, widget, tile.flags & ~(496 | 1) | flags);
+              return new WidgetTile(tile.dom, length, widget, tile.flags & -498 | flags);
             }
           }
         }
@@ -6210,7 +6237,7 @@
             } else {
               let widget = to > 0 || from < tile.length ? WidgetTile.of(tile.widget, this.view, to - from, tile.flags & 496, this.cache.maybeReuse(tile)) : this.cache.reuse(tile);
               if (widget.flags & 256) {
-                widget.flags &= ~1;
+                widget.flags &= -2;
                 this.builder.addBlockWidget(widget);
               } else {
                 this.builder.ensureLine(null);
@@ -6228,7 +6255,7 @@
             }
             openMarks = activeMarks.length;
           } else if (tile.isLine()) {
-            tile.flags &= ~1;
+            tile.flags &= -2;
             this.cache.reused.set(
               tile,
               1
@@ -6978,7 +7005,7 @@
     }
   }
   function betweenUneditable(pos) {
-    return pos.node.nodeType == 1 && pos.node.firstChild && (pos.offset == 0 || pos.node.childNodes[pos.offset - 1].contentEditable == "false") && (pos.offset == pos.node.childNodes.length || pos.node.childNodes[pos.offset].contentEditable == "false");
+    return isElt(pos.node) && pos.node.firstChild && (pos.offset == 0 || pos.node.childNodes[pos.offset - 1].contentEditable == "false") && (pos.offset == pos.node.childNodes.length || pos.node.childNodes[pos.offset].contentEditable == "false");
   }
   function findCompositionNode(view, headPos) {
     let sel = view.observer.selectionRange;
@@ -7016,7 +7043,7 @@
     return { range: new ChangedRange(inv.mapPos(from), inv.mapPos(to), from, to), text: textNode };
   }
   function nextToUneditable(node, offset) {
-    if (node.nodeType != 1)
+    if (!isElt(node))
       return 0;
     return (offset && node.childNodes[offset - 1].contentEditable == "false" ? 1 : 0) | (offset < node.childNodes.length && node.childNodes[offset].contentEditable == "false" ? 2 : 0);
   }
@@ -7059,9 +7086,8 @@
   }
   function inUneditable(node, inside) {
     for (let cur2 = node; cur2 && cur2 != inside; cur2 = cur2.assignedSlot || cur2.parentNode) {
-      if (cur2.nodeType == 1 && cur2.contentEditable == "false") {
+      if (isElt(cur2) && cur2.contentEditable == "false")
         return true;
-      }
     }
     return false;
   }
@@ -7165,14 +7191,14 @@
     if (coords) {
       let editorRect = view.dom.getBoundingClientRect();
       let direction = view.textDirectionAt(block.from);
-      let pos = view.posAtCoords({
+      let pos = view.posAndSideAtCoords({
         x: forward == (direction == Direction.LTR) ? editorRect.right - 1 : editorRect.left + 1,
         y: (coords.top + coords.bottom) / 2
       });
-      if (pos != null)
-        return EditorSelection.cursor(pos, forward ? -1 : 1);
+      if (pos)
+        return EditorSelection.cursor(pos.pos, pos.assoc);
     }
-    return EditorSelection.cursor(forward ? block.to : block.from, forward ? -1 : 1);
+    return EditorSelection.cursor(forward ? block.to : block.from, forward ? 1 : -1);
   }
   function moveByChar(view, start, forward, by) {
     let line = view.state.doc.lineAt(start.head), spans = view.bidiSpans(line);
@@ -7466,7 +7492,7 @@
         let child2 = tile.children[i2];
         if (child2.flags & 48)
           return null;
-        return (child2.dom.nodeType == 1 ? child2.dom : textRange(child2.dom, 0, child2.length)).getClientRects();
+        return (isElt(child2.dom) ? child2.dom : textRange(child2.dom, 0, child2.length)).getClientRects();
       });
       let child = tile.children[scan.i], pos = positions[scan.i];
       if (child.isText())
@@ -7549,12 +7575,12 @@
           else
             this.append(i2.value);
         }
-      } else if (node.nodeType == 3) {
+      } else if (isText(node)) {
         this.readTextNode(node);
       } else if (node.nodeName == "BR") {
         if (node.nextSibling)
           this.lineBreak();
-      } else if (node.nodeType == 1) {
+      } else if (isElt(node)) {
         this.readRange(node.firstChild, null);
       }
     }
@@ -7565,7 +7591,7 @@
     }
     findPointInside(node, length) {
       for (let point of this.points)
-        if (node.nodeType == 3 ? point.node == node : node.contains(point.node))
+        if (isText(node) ? point.node == node : node.contains(point.node))
           point.pos = this.text.length + (isAtEnd(node, point.node, point.offset) ? length : 0);
     }
   };
@@ -8570,14 +8596,14 @@
     view.observer.clearSelectionRange();
     updateForFocusChange(view);
   };
-  observers.compositionstart = observers.compositionupdate = (view) => {
+  observers.compositionstart = observers.compositionupdate = (view, event) => {
     if (view.observer.editContext)
       return;
     if (view.inputState.compositionFirstChange == null)
       view.inputState.compositionFirstChange = true;
     if (view.inputState.composing < 0) {
       let { main } = view.state.selection;
-      if (!main.empty && view.lineBlockAt(main.from).from != view.lineBlockAt(main.to).from) {
+      if (!main.empty && view.lineBlockAt(main.from).from != view.lineBlockAt(main.to).from && !view.state.readOnly) {
         view.dispatch({
           changes: view.state.selection.ranges.filter((r) => !r.empty).map((r) => ({ from: r.from, to: r.to })),
           userEvent: "input"
@@ -8802,7 +8828,7 @@
       return (this.flags & 2) > 0;
     }
     set outdated(value) {
-      this.flags = (value ? 2 : 0) | this.flags & ~2;
+      this.flags = (value ? 2 : 0) | this.flags & -3;
     }
     setHeight(height) {
       if (this.height != height) {
@@ -9379,17 +9405,16 @@
     let left = Math.max(0, rect.left), right = Math.min(win.innerWidth, rect.right);
     let top2 = Math.max(0, rect.top), bottom = Math.min(win.innerHeight, rect.bottom);
     for (let parent = dom.parentNode; parent && parent != doc2.body; ) {
-      if (parent.nodeType == 1) {
-        let elt = parent;
-        let style = window.getComputedStyle(elt);
-        if ((elt.scrollHeight > elt.clientHeight || elt.scrollWidth > elt.clientWidth) && style.overflow != "visible") {
-          let parentRect = elt.getBoundingClientRect();
+      if (isElt(parent)) {
+        let style = window.getComputedStyle(parent);
+        if ((parent.scrollHeight > parent.clientHeight || parent.scrollWidth > parent.clientWidth) && style.overflow != "visible") {
+          let parentRect = parent.getBoundingClientRect();
           left = Math.max(left, parentRect.left);
           right = Math.min(right, parentRect.right);
           top2 = Math.max(top2, parentRect.top);
           bottom = Math.min(parent == dom.parentNode ? win.innerHeight : bottom, parentRect.bottom);
         }
-        parent = style.position == "absolute" || style.position == "fixed" ? elt.offsetParent : elt.parentNode;
+        parent = style.position == "absolute" || style.position == "fixed" ? parent.offsetParent : parent.parentNode;
       } else if (parent.nodeType == 11) {
         parent = parent.host;
       } else {
@@ -9517,7 +9542,7 @@
     }
     updateScaler() {
       let scaler = this.scaler;
-      this.scaler = this.heightMap.height <= 7e6 ? IdScaler : new BigScaler(this.heightOracle, this.heightMap, this.viewports);
+      this.scaler = this.heightMap.height <= 7e6 ? IdScaler : BigScaler.get(this.heightOracle, this.heightMap, this.viewports);
       return scaler.eq(this.scaler) ? 0 : 2;
     }
     updateViewportLines() {
@@ -9872,7 +9897,7 @@
       return this.scrollParent == this.view.scrollDOM ? this.scrollParent.scrollTop * this.scaleY : (this.scrollParent ? this.scrollParent.getBoundingClientRect().top : 0) - this.view.contentDOM.getBoundingClientRect().top;
     }
     scrollAnchorAt(scrollOffset) {
-      let block = this.lineBlockAtHeight(scrollOffset + 8);
+      let block = this.lineBlockAtHeight(scrollOffset + 12 - this.paddingTop);
       return block.from >= this.viewport.from || this.viewportLines[0].top - scrollOffset > 200 ? block : this.viewportLines[0];
     }
     elementAtHeight(height) {
@@ -9960,20 +9985,27 @@
     return deco;
   }
   var BigScaler = class _BigScaler {
-    constructor(oracle, heightMap, viewports) {
+    constructor(scale, viewports) {
+      this.scale = scale;
+      this.viewports = viewports;
+    }
+    static get(oracle, heightMap, viewports) {
       let vpHeight = 0, base2 = 0, domBase = 0;
-      this.viewports = viewports.map(({ from, to }) => {
+      let vps = viewports.map(({ from, to }) => {
         let top2 = heightMap.lineAt(from, QueryType.ByPos, oracle, 0, 0).top;
         let bottom = heightMap.lineAt(to, QueryType.ByPos, oracle, 0, 0).bottom;
         vpHeight += bottom - top2;
         return { from, to, top: top2, bottom, domTop: 0, domBottom: 0 };
       });
-      this.scale = (7e6 - vpHeight) / (heightMap.height - vpHeight);
-      for (let obj of this.viewports) {
-        obj.domTop = domBase + (obj.top - base2) * this.scale;
+      if (heightMap.height - vpHeight < 10)
+        return IdScaler;
+      let scale = (7e6 - vpHeight) / (heightMap.height - vpHeight);
+      for (let obj of vps) {
+        obj.domTop = domBase + (obj.top - base2) * scale;
         domBase = obj.domBottom = obj.domTop + (obj.bottom - obj.top);
         base2 = obj.bottom;
       }
+      return new _BigScaler(scale, vps);
     }
     toDOM(n) {
       for (let i2 = 0, base2 = 0, domBase = 0; ; i2++) {
@@ -10256,7 +10288,7 @@
       verticalAlign: "bottom"
     },
     ".cm-widgetBuffer": {
-      verticalAlign: "text-top",
+      verticalAlign: "baseline",
       height: "1em",
       width: 0,
       display: "inline"
@@ -10412,7 +10444,7 @@
     }
     onScroll(e) {
       if (this.intersecting)
-        this.flush(false);
+        this.flush(this.pendingRecords().length > 0);
       if (this.editContext)
         this.view.requestMeasure(this.editContext.measureReq);
       this.onScrollChanged(e);
@@ -10491,7 +10523,7 @@
       this.parentCheck = -1;
       let i2 = 0, changed = null;
       for (let dom = this.dom; dom; ) {
-        if (dom.nodeType == 1) {
+        if (isElt(dom)) {
           if (!changed && i2 < this.scrollTargets.length && this.scrollTargets[i2] == dom)
             i2++;
           else if (!changed)
@@ -10645,14 +10677,14 @@
         return false;
       if (readSelection)
         this.readSelectionRange();
-      let domChange = this.readChange();
+      let selChange = this.selectionChanged, domChange = this.readChange();
       if (!domChange) {
         this.view.requestMeasure();
         return false;
       }
       let startState = this.view.state;
       let handled = applyDOMChange(this.view, domChange);
-      if (this.view.state == startState && (domChange.domChanged || domChange.newSel && !sameSelPos(this.view.state.selection, domChange.newSel.main)))
+      if (this.view.state == startState && (domChange.domChanged || selChange))
         this.view.update([]);
       return handled;
     }
@@ -11030,7 +11062,7 @@
     option, or put `view.dom` into your document after creating a
     view, so that the user can see the editor.
     */
-    constructor(config2 = {}) {
+    constructor(config15 = {}) {
       var _a2;
       this.plugins = [];
       this.pluginMap = /* @__PURE__ */ new Map();
@@ -11053,15 +11085,15 @@
       this.dom = document.createElement("div");
       this.dom.appendChild(this.announceDOM);
       this.dom.appendChild(this.scrollDOM);
-      if (config2.parent)
-        config2.parent.appendChild(this.dom);
-      let { dispatch } = config2;
-      this.dispatchTransactions = config2.dispatchTransactions || dispatch && ((trs) => trs.forEach((tr) => dispatch(tr, this))) || ((trs) => this.update(trs));
+      if (config15.parent)
+        config15.parent.appendChild(this.dom);
+      let { dispatch } = config15;
+      this.dispatchTransactions = config15.dispatchTransactions || dispatch && ((trs) => trs.forEach((tr) => dispatch(tr, this))) || ((trs) => this.update(trs));
       this.dispatch = this.dispatch.bind(this);
-      this._root = config2.root || getRoot(config2.parent) || document;
-      this.viewState = new ViewState(this, config2.state || EditorState.create(config2));
-      if (config2.scrollTo && config2.scrollTo.is(scrollIntoView))
-        this.viewState.scrollTarget = config2.scrollTo.value.clip(this.viewState.state);
+      this._root = config15.root || getRoot(config15.parent) || document;
+      this.viewState = new ViewState(this, config15.state || EditorState.create(config15));
+      if (config15.scrollTo && config15.scrollTo.is(scrollIntoView))
+        this.viewState.scrollTarget = config15.scrollTo.value.clip(this.viewState.state);
       this.plugins = this.state.facet(viewPlugin).map((spec) => new PluginInstance(spec));
       for (let plugin of this.plugins)
         plugin.update(this);
@@ -11439,7 +11471,7 @@
     /**
     Schedule a layout measurement, optionally providing callbacks to
     do custom DOM measuring followed by a DOM write phase. Using
-    this is preferable reading DOM layout directly from, for
+    this is preferable to reading DOM layout directly from, for
     example, an event handler, because it'll make sure measuring and
     drawing done by other components is synchronized, avoiding
     unnecessary DOM layout computations.
@@ -12389,12 +12421,13 @@
     }
   };
   var layerOrder = /* @__PURE__ */ Facet.define();
-  function layer(config2) {
+  function layer(config15) {
     return [
-      ViewPlugin.define((v) => new LayerView(v, config2)),
-      layerOrder.of(config2)
+      ViewPlugin.define((v) => new LayerView(v, config15)),
+      layerOrder.of(config15)
     ];
   }
+  var drawMainRange = !browser.ios;
   var selectionConfig = /* @__PURE__ */ Facet.define({
     combine(configs) {
       return combineConfig(configs, {
@@ -12407,9 +12440,9 @@
       });
     }
   });
-  function drawSelection(config2 = {}) {
+  function drawSelection(config15 = {}) {
     return [
-      selectionConfig.of(config2),
+      selectionConfig.of(config15),
       cursorLayer,
       selectionLayer,
       hideNativeSelection,
@@ -12456,7 +12489,7 @@
     markers(view) {
       let markers = [], { main, ranges } = view.state.selection;
       for (let r of ranges)
-        if (!r.empty) {
+        if (!r.empty && (drawMainRange || r != main)) {
           for (let marker of RectangleMarker.forRange(view, "cm-selectionBackground", r))
             markers.push(marker);
         }
@@ -12476,16 +12509,20 @@
   var selectionBg = browser.gecko && browser.gecko_version == 153 ? "#ffffff01" : "transparent";
   var hideNativeSelection = /* @__PURE__ */ Prec.highest(/* @__PURE__ */ EditorView.theme({
     ".cm-line": {
-      "& ::selection, &::selection": { backgroundColor: `${selectionBg} !important` },
+      ...drawMainRange ? {
+        "& ::selection, &::selection": { backgroundColor: `${selectionBg} !important` }
+      } : {},
       caretColor: "transparent !important"
     },
     ".cm-content": {
       caretColor: "transparent !important",
       "& :focus": {
         caretColor: "initial !important",
-        "&::selection, & ::selection": {
-          backgroundColor: "Highlight !important"
-        }
+        ...drawMainRange ? {
+          "&::selection, & ::selection": {
+            backgroundColor: "Highlight !important"
+          }
+        } : {}
       }
     }
   }));
@@ -12607,8 +12644,8 @@
     /**
     Create a decorator.
     */
-    constructor(config2) {
-      const { regexp, decoration, decorate, boundary, maxLength = 1e3 } = config2;
+    constructor(config15) {
+      const { regexp, decoration, decorate, boundary, maxLength = 1e3 } = config15;
       if (!regexp.global)
         throw new RangeError("The regular expression given to MatchDecorator should have its 'g' flag set");
       this.regexp = regexp;
@@ -12728,20 +12765,20 @@
   }
   var specialCharConfig = /* @__PURE__ */ Facet.define({
     combine(configs) {
-      let config2 = combineConfig(configs, {
+      let config15 = combineConfig(configs, {
         render: null,
         specialChars: Specials,
         addSpecialChars: null
       });
-      if (config2.replaceTabs = !supportsTabSize())
-        config2.specialChars = new RegExp("	|" + config2.specialChars.source, UnicodeRegexpSupport);
-      if (config2.addSpecialChars)
-        config2.specialChars = new RegExp(config2.specialChars.source + "|" + config2.addSpecialChars.source, UnicodeRegexpSupport);
-      return config2;
+      if (config15.replaceTabs = !supportsTabSize())
+        config15.specialChars = new RegExp("	|" + config15.specialChars.source, UnicodeRegexpSupport);
+      if (config15.addSpecialChars)
+        config15.specialChars = new RegExp(config15.specialChars.source + "|" + config15.addSpecialChars.source, UnicodeRegexpSupport);
+      return config15;
     }
   });
-  function highlightSpecialChars(config2 = {}) {
-    return [specialCharConfig.of(config2), specialCharPlugin()];
+  function highlightSpecialChars(config15 = {}) {
+    return [specialCharConfig.of(config15), specialCharPlugin()];
   }
   var _plugin = null;
   function specialCharPlugin() {
@@ -13030,9 +13067,20 @@
       return true;
     }
   };
+  function fixedRange(view) {
+    let docElt = view.dom.ownerDocument.documentElement, width = docElt.clientWidth;
+    let style = getComputedStyle(docElt);
+    if (!/stable/.test(style.scrollbarGutter || ""))
+      return { left: 0, right: width };
+    let rect = docElt.getBoundingClientRect(), scrollX = view.win.scrollX;
+    return {
+      left: Math.max(0, rect.left + scrollX - parseFloat(style.marginLeft)),
+      right: Math.min(width, rect.right + scrollX + parseFloat(style.marginRight))
+    };
+  }
   function windowSpace(view) {
-    let docElt = view.dom.ownerDocument.documentElement;
-    return { top: 0, left: 0, bottom: docElt.clientHeight, right: docElt.clientWidth };
+    let { left, right } = fixedRange(view);
+    return { top: 0, left, right, bottom: view.dom.ownerDocument.documentElement.clientHeight };
   }
   var tooltipConfig = /* @__PURE__ */ Facet.define({
     combine: (values) => {
@@ -13053,9 +13101,9 @@
       this.madeAbsolute = false;
       this.lastTransaction = 0;
       this.measureTimeout = -1;
-      let config2 = view.state.facet(tooltipConfig);
-      this.position = config2.position;
-      this.parent = config2.parent;
+      let config15 = view.state.facet(tooltipConfig);
+      this.position = config15.position;
+      this.parent = config15.parent;
       this.classes = view.themeClasses;
       this.createContainer();
       this.measureReq = { read: this.readMeasure.bind(this), write: this.writeMeasure.bind(this), key: this };
@@ -13159,7 +13207,7 @@
       clearTimeout(this.measureTimeout);
     }
     readMeasure() {
-      let scaleX = 1, scaleY = 1, makeAbsolute = false;
+      let scaleX = 1, scaleY = 1, makeAbsolute = false, fixedLeft = 0;
       if (this.position == "fixed" && this.manager.tooltipViews.length) {
         let { dom } = this.manager.tooltipViews[0];
         if (browser.safari) {
@@ -13179,6 +13227,8 @@
         } else {
           ({ scaleX, scaleY } = this.view.viewState);
         }
+      } else {
+        fixedLeft = fixedRange(this.view).left;
       }
       let visible = this.view.scrollDOM.getBoundingClientRect(), margins = getScrollMargins(this.view);
       return {
@@ -13197,7 +13247,8 @@
         space: this.view.state.facet(tooltipConfig).tooltipSpace(this.view),
         scaleX,
         scaleY,
-        makeAbsolute
+        makeAbsolute,
+        fixedLeft
       };
     }
     writeMeasure(measured) {
@@ -13248,7 +13299,7 @@
           setLeftStyle(dom, (left - measured.parent.left) / scaleX);
         } else {
           dom.style.top = top2 / scaleY + "px";
-          setLeftStyle(dom, left / scaleX);
+          setLeftStyle(dom, (left - measured.fixedLeft) / scaleX);
         }
         if (arrow) {
           let arrowLeft = pos.left + (ltr ? offset.x : -offset.x) - (left + 14 - 7);
@@ -13818,10 +13869,10 @@
   var showPanel = /* @__PURE__ */ Facet.define({
     enables: panelPlugin
   });
-  function showDialog(view, config2) {
+  function showDialog(view, config15) {
     let resolve;
     let promise = new Promise((r) => resolve = r);
-    let panelCtor = (view2) => createDialog(view2, config2, resolve);
+    let panelCtor = (view2) => createDialog(view2, config15, resolve);
     if (view.state.field(dialogField, false)) {
       view.dispatch({ effects: openDialogEffect.of(panelCtor) });
     } else {
@@ -13863,22 +13914,22 @@
   });
   var openDialogEffect = /* @__PURE__ */ StateEffect.define();
   var closeDialogEffect = /* @__PURE__ */ StateEffect.define();
-  function createDialog(view, config2, result) {
-    let content2 = config2.content ? config2.content(view, () => done(null)) : null;
+  function createDialog(view, config15, result) {
+    let content2 = config15.content ? config15.content(view, () => done(null)) : null;
     if (!content2) {
       content2 = crelt("form");
-      if (config2.input) {
-        let input = crelt("input", config2.input);
+      if (config15.input) {
+        let input = crelt("input", config15.input);
         if (/^(text|password|number|email|tel|url)$/.test(input.type))
           input.classList.add("cm-textfield");
         if (!input.name)
           input.name = "input";
-        content2.appendChild(crelt("label", (config2.label || "") + ": ", input));
+        content2.appendChild(crelt("label", (config15.label || "") + ": ", input));
       } else {
-        content2.appendChild(document.createTextNode(config2.label || ""));
+        content2.appendChild(document.createTextNode(config15.label || ""));
       }
       content2.appendChild(document.createTextNode(" "));
-      content2.appendChild(crelt("button", { class: "cm-button", type: "submit" }, config2.submitLabel || "OK"));
+      content2.appendChild(crelt("button", { class: "cm-button", type: "submit" }, config15.submitLabel || "OK"));
     }
     let forms = content2.nodeName == "FORM" ? [content2] : content2.querySelectorAll("form");
     for (let i2 = 0; i2 < forms.length; i2++) {
@@ -13903,9 +13954,10 @@
       class: "cm-dialog-close",
       type: "button"
     }, ["\xD7"]));
-    if (config2.class)
-      panel.className = config2.class;
+    if (config15.class)
+      panel.className = config15.class;
     panel.classList.add("cm-dialog");
+    let focus = typeof config15.focus == "string" ? content2.querySelector(config15.focus) : config15.focus ? content2.querySelector("input") || content2.querySelector("button") : null;
     function done(form) {
       if (panel.contains(panel.ownerDocument.activeElement))
         view.focus();
@@ -13913,20 +13965,16 @@
     }
     return {
       dom: panel,
-      top: config2.top,
+      top: config15.top,
       mount: () => {
-        if (config2.focus) {
-          let focus;
-          if (typeof config2.focus == "string")
-            focus = content2.querySelector(config2.focus);
-          else
-            focus = content2.querySelector("input") || content2.querySelector("button");
-          if (focus && "select" in focus)
+        if (focus) {
+          if ("select" in focus)
             focus.select();
-          else if (focus && "focus" in focus)
+          else if ("focus" in focus)
             focus.focus();
         }
-      }
+      },
+      destroy: () => result(null)
     };
   }
   var GutterMarker = class extends RangeValue {
@@ -13970,17 +14018,17 @@
     side: "before"
   };
   var activeGutters = /* @__PURE__ */ Facet.define();
-  function gutter(config2) {
-    return [gutters(), activeGutters.of({ ...defaults, ...config2 })];
+  function gutter(config15) {
+    return [gutters(), activeGutters.of({ ...defaults, ...config15 })];
   }
   var unfixGutters = /* @__PURE__ */ Facet.define({
     combine: (values) => values.some((x) => x)
   });
-  function gutters(config2) {
+  function gutters(config15) {
     let result = [
       gutterView
     ];
-    if (config2 && config2.fixed === false)
+    if (config15 && config15.fixed === false)
       result.push(unfixGutters.of(true));
     return result;
   }
@@ -14193,14 +14241,14 @@
     }
   };
   var SingleGutterView = class {
-    constructor(view, config2) {
+    constructor(view, config15) {
       this.view = view;
-      this.config = config2;
+      this.config = config15;
       this.elements = [];
       this.spacer = null;
       this.dom = document.createElement("div");
       this.dom.className = "cm-gutter" + (this.config.class ? " " + this.config.class : "");
-      for (let prop in config2.domEventHandlers) {
+      for (let prop in config15.domEventHandlers) {
         this.dom.addEventListener(prop, (event) => {
           let target = event.target, y;
           if (target != this.dom && this.dom.contains(target)) {
@@ -14212,13 +14260,13 @@
             y = event.clientY;
           }
           let line = view.lineBlockAtHeight(y - view.documentTop);
-          if (config2.domEventHandlers[prop](view, line, event))
+          if (config15.domEventHandlers[prop](view, line, event))
             event.preventDefault();
         });
       }
-      this.markers = asArray2(config2.markers(view));
-      if (config2.initialSpacer) {
-        this.spacer = new GutterElement(view, 0, 0, [config2.initialSpacer(view)]);
+      this.markers = asArray2(config15.markers(view));
+      if (config15.initialSpacer) {
+        this.spacer = new GutterElement(view, 0, 0, [config15.initialSpacer(view)]);
         this.dom.appendChild(this.spacer.dom);
         this.spacer.dom.style.cssText += "visibility: hidden; pointer-events: none";
       }
@@ -14371,9 +14419,9 @@
     domEventHandlers: state.facet(lineNumberConfig).domEventHandlers,
     side: "before"
   }));
-  function lineNumbers(config2 = {}) {
+  function lineNumbers(config15 = {}) {
     return [
-      lineNumberConfig.of(config2),
+      lineNumberConfig.of(config15),
       gutters(),
       lineNumberGutter
     ];
@@ -14418,13 +14466,13 @@
     /**
     Create a new node prop type.
     */
-    constructor(config2 = {}) {
+    constructor(config15 = {}) {
       this.id = nextPropID++;
-      this.perNode = !!config2.perNode;
-      this.deserialize = config2.deserialize || (() => {
+      this.perNode = !!config15.perNode;
+      this.deserialize = config15.deserialize || (() => {
         throw new Error("This node type doesn't define a deserialize function");
       });
-      this.combine = config2.combine || null;
+      this.combine = config15.combine || null;
     }
     /**
     This is meant to be used with
@@ -14772,8 +14820,8 @@
     which may have children grouped into subtrees with type
     [`NodeType.none`](#common.NodeType^none).
     */
-    balance(config2 = {}) {
-      return this.children.length <= 8 ? this : balanceRange(NodeType.none, this.children, this.positions, 0, this.children.length, 0, this.length, (children, positions, length) => new _Tree(this.type, children, positions, length, this.propValues), config2.makeTree || ((children, positions, length) => new _Tree(NodeType.none, children, positions, length)));
+    balance(config15 = {}) {
+      return this.children.length <= 8 ? this : balanceRange(NodeType.none, this.children, this.positions, 0, this.children.length, 0, this.length, (children, positions, length) => new _Tree(this.type, children, positions, length, this.propValues), config15.makeTree || ((children, positions, length) => new _Tree(NodeType.none, children, positions, length)));
     }
     /**
     Build a tree from a postfix-ordered buffer of node information,
@@ -15687,13 +15735,14 @@
         cursor.next();
         let localChildren = [], localPositions = [];
         let localInRepeat = id >= minRepeatType ? id : -1;
-        let lastGroup = 0, lastEnd = end;
+        let lastGroup = 0, lastEnd = end, groupLookAhead = lookAheadAtStart;
         while (cursor.pos > endPos) {
           if (localInRepeat >= 0 && cursor.id == localInRepeat && cursor.size >= 0) {
             if (cursor.end <= lastEnd - maxBufferLength) {
-              makeRepeatLeaf(localChildren, localPositions, start, lastGroup, cursor.end, lastEnd, localInRepeat, lookAheadAtStart, contextAtStart);
+              makeRepeatLeaf(localChildren, localPositions, start, lastGroup, cursor.end, lastEnd, localInRepeat, groupLookAhead, contextAtStart);
               lastGroup = localChildren.length;
               lastEnd = cursor.end;
+              groupLookAhead = lookAhead;
             }
             cursor.next();
           } else if (depth > 2500) {
@@ -15703,7 +15752,7 @@
           }
         }
         if (localInRepeat >= 0 && lastGroup > 0 && lastGroup < localChildren.length)
-          makeRepeatLeaf(localChildren, localPositions, start, lastGroup, start, lastEnd, localInRepeat, lookAheadAtStart, contextAtStart);
+          makeRepeatLeaf(localChildren, localPositions, start, lastGroup, start, lastEnd, localInRepeat, groupLookAhead, contextAtStart);
         localChildren.reverse();
         localPositions.reverse();
         if (localInRepeat > -1 && lastGroup > 0) {
@@ -15753,7 +15802,7 @@
           if (!lastI && last2.type == type && last2.length == length2)
             return last2;
           if (lookAheadProp = last2.prop(NodeProp.lookAhead))
-            lookAhead2 = positions2[lastI] + last2.length + lookAheadProp;
+            lookAhead2 = positions2[lastI] + last2.length + lookAheadProp - length2;
         }
         return makeTree(type, children2, positions2, length2, lookAhead2, contextHash2);
       };
@@ -16102,8 +16151,8 @@
       let configs = powerSet(mods);
       for (let parent of base2.set)
         if (!parent.modified.length)
-          for (let config2 of configs)
-            set.push(_Modifier.get(parent, config2));
+          for (let config15 of configs)
+            set.push(_Modifier.get(parent, config15));
       return tag;
     }
   };
@@ -17777,10 +17826,10 @@
       return combineConfig(values, defaultConfig);
     }
   });
-  function codeFolding(config2) {
+  function codeFolding(config15) {
     let result = [foldState, baseTheme$12];
-    if (config2)
-      result.push(foldConfig.of(config2));
+    if (config15)
+      result.push(foldConfig.of(config15));
     return result;
   }
   function widgetToDOM(view, prepared) {
@@ -17827,9 +17876,9 @@
     foldingChanged: () => false
   };
   var FoldMarker = class extends GutterMarker {
-    constructor(config2, open) {
+    constructor(config15, open) {
       super();
-      this.config = config2;
+      this.config = config15;
       this.open = open;
     }
     eq(other) {
@@ -17844,8 +17893,8 @@
       return span;
     }
   };
-  function foldGutter(config2 = {}) {
-    let fullConfig = { ...foldGutterDefaults, ...config2 };
+  function foldGutter(config15 = {}) {
+    let fullConfig = { ...foldGutterDefaults, ...config15 };
     let canFold = new FoldMarker(fullConfig, true), canUnfold = new FoldMarker(fullConfig, false);
     let markers = ViewPlugin.fromClass(class {
       constructor(view) {
@@ -18124,13 +18173,13 @@
   }
   function bracketDeco(state) {
     let decorations2 = [];
-    let config2 = state.facet(bracketMatchingConfig);
+    let config15 = state.facet(bracketMatchingConfig);
     for (let range of state.selection.ranges) {
       if (!range.empty)
         continue;
-      let match = matchBrackets(state, range.head, -1, config2) || range.head > 0 && matchBrackets(state, range.head - 1, 1, config2) || config2.afterCursor && (matchBrackets(state, range.head, 1, config2) || range.head < state.doc.length && matchBrackets(state, range.head + 1, -1, config2));
+      let match = matchBrackets(state, range.head, -1, config15) || range.head > 0 && matchBrackets(state, range.head - 1, 1, config15) || config15.afterCursor && (matchBrackets(state, range.head, 1, config15) || range.head < state.doc.length && matchBrackets(state, range.head + 1, -1, config15));
       if (match)
-        decorations2 = decorations2.concat(config2.renderMatch(match, state));
+        decorations2 = decorations2.concat(config15.renderMatch(match, state));
     }
     return Decoration.set(decorations2, true);
   }
@@ -18157,8 +18206,8 @@
     bracketMatcher,
     baseTheme2
   ];
-  function bracketMatching(config2 = {}) {
-    return [bracketMatchingConfig.of(config2), bracketMatchingUnique];
+  function bracketMatching(config15 = {}) {
+    return [bracketMatchingConfig.of(config15), bracketMatchingUnique];
   }
   var bracketMatchingHandle = /* @__PURE__ */ new NodeProp();
   function matchingNodes(node, dir, brackets) {
@@ -18176,8 +18225,8 @@
     let hasHandle = node.type.prop(bracketMatchingHandle);
     return hasHandle ? hasHandle(node.node) : node;
   }
-  function matchBrackets(state, pos, dir, config2 = {}) {
-    let maxScanDistance = config2.maxScanDistance || DefaultScanDist, brackets = config2.brackets || DefaultBrackets;
+  function matchBrackets(state, pos, dir, config15 = {}) {
+    let maxScanDistance = config15.maxScanDistance || DefaultScanDist, brackets = config15.brackets || DefaultBrackets;
     let tree = syntaxTree(state), node = tree.resolveInner(pos, dir);
     for (let cur2 = node; cur2; cur2 = cur2.parent) {
       let matches = matchingNodes(cur2.type, dir, brackets);
@@ -18317,8 +18366,8 @@
 
   // node_modules/@codemirror/commands/dist/index.js
   var toggleComment = (target) => {
-    let { state } = target, line = state.doc.lineAt(state.selection.main.from), config2 = getConfig(target.state, line.from);
-    return config2.line ? toggleLineComment(target) : config2.block ? toggleBlockCommentByLine(target) : false;
+    let { state } = target, line = state.doc.lineAt(state.selection.main.from), config15 = getConfig(target.state, line.from);
+    return config15.line ? toggleLineComment(target) : config15.block ? toggleBlockCommentByLine(target) : false;
   };
   function command(f, option) {
     return ({ state, dispatch }) => {
@@ -18494,13 +18543,13 @@
       return HistoryState.empty;
     },
     update(state, tr) {
-      let config2 = tr.state.facet(historyConfig);
+      let config15 = tr.state.facet(historyConfig);
       let fromHist = tr.annotation(fromHistory);
       if (fromHist) {
         let item = HistEvent.fromTransaction(tr, fromHist.selection), from = fromHist.side;
         let other = from == 0 ? state.undone : state.done;
         if (item)
-          other = updateBranch(other, other.length, config2.minDepth, item);
+          other = updateBranch(other, other.length, config15.minDepth, item);
         else
           other = addSelection(other, tr.startState.selection);
         return new HistoryState(from == 0 ? fromHist.rest : other, from == 0 ? other : fromHist.rest);
@@ -18513,9 +18562,9 @@
       let event = HistEvent.fromTransaction(tr);
       let time = tr.annotation(Transaction.time), userEvent = tr.annotation(Transaction.userEvent);
       if (event)
-        state = state.addChanges(event, time, userEvent, config2, tr);
+        state = state.addChanges(event, time, userEvent, config15, tr);
       else if (tr.selection)
-        state = state.addSelection(tr.startState.selection, time, userEvent, config2.newGroupDelay);
+        state = state.addSelection(tr.startState.selection, time, userEvent, config15.newGroupDelay);
       if (isolate == "full" || isolate == "after")
         state = state.isolate();
       return state;
@@ -18527,10 +18576,10 @@
       return new HistoryState(json.done.map(HistEvent.fromJSON), json.undone.map(HistEvent.fromJSON));
     }
   });
-  function history(config2 = {}) {
+  function history(config15 = {}) {
     return [
       historyField_,
-      historyConfig.of(config2),
+      historyConfig.of(config15),
       EditorView.domEventHandlers({
         beforeinput(e, view) {
           let command2 = e.inputType == "historyUndo" ? undo : e.inputType == "historyRedo" ? redo : null;
@@ -18682,13 +18731,13 @@
     isolate() {
       return this.prevTime ? new _HistoryState(this.done, this.undone) : this;
     }
-    addChanges(event, time, userEvent, config2, tr) {
+    addChanges(event, time, userEvent, config15, tr) {
       let done = this.done, lastEvent = done[done.length - 1];
-      if (lastEvent && lastEvent.changes && !lastEvent.changes.empty && event.changes && (!userEvent || joinableUserEvent.test(userEvent)) && (!lastEvent.selectionsAfter.length && time - this.prevTime < config2.newGroupDelay && config2.joinToEvent(tr, isAdjacent(lastEvent.changes, event.changes)) || // For compose (but not compose.start) events, always join with previous event
+      if (lastEvent && lastEvent.changes && !lastEvent.changes.empty && event.changes && (!userEvent || joinableUserEvent.test(userEvent)) && (!lastEvent.selectionsAfter.length && time - this.prevTime < config15.newGroupDelay && config15.joinToEvent(tr, isAdjacent(lastEvent.changes, event.changes)) || // For compose (but not compose.start) events, always join with previous event
       userEvent == "input.type.compose")) {
-        done = updateBranch(done, done.length - 1, config2.minDepth, new HistEvent(event.changes.compose(lastEvent.changes), conc(StateEffect.mapEffects(event.effects, lastEvent.changes), lastEvent.effects), lastEvent.mapped, lastEvent.startSelection, none2));
+        done = updateBranch(done, done.length - 1, config15.minDepth, new HistEvent(event.changes.compose(lastEvent.changes), conc(StateEffect.mapEffects(event.effects, lastEvent.changes), lastEvent.effects), lastEvent.mapped, lastEvent.startSelection, none2));
       } else {
-        done = updateBranch(done, done.length, config2.minDepth, event);
+        done = updateBranch(done, done.length, config15.minDepth, event);
       }
       return new _HistoryState(done, none2, time, userEvent);
     }
@@ -19880,16 +19929,16 @@
     /**
     Create a query object.
     */
-    constructor(config2) {
-      this.search = config2.search;
-      this.caseSensitive = !!config2.caseSensitive;
-      this.literal = !!config2.literal;
-      this.regexp = !!config2.regexp;
-      this.replace = config2.replace || "";
+    constructor(config15) {
+      this.search = config15.search;
+      this.caseSensitive = !!config15.caseSensitive;
+      this.literal = !!config15.literal;
+      this.regexp = !!config15.regexp;
+      this.replace = config15.replace || "";
       this.valid = !!this.search && (!this.regexp || validRegExp(this.search));
       this.unquoted = this.unquote(this.search);
-      this.wholeWord = !!config2.wholeWord;
-      this.test = config2.test;
+      this.wholeWord = !!config15.wholeWord;
+      this.test = config15.test;
     }
     /**
     @internal
@@ -20148,10 +20197,10 @@
     if (!next)
       return false;
     let selection = EditorSelection.single(next.from, next.to);
-    let config2 = view.state.facet(searchConfigFacet);
+    let config15 = view.state.facet(searchConfigFacet);
     view.dispatch({
       selection,
-      effects: [announceMatch(view, next), config2.scrollToMatch(selection.main, view)],
+      effects: [announceMatch(view, next), config15.scrollToMatch(selection.main, view)],
       userEvent: "select.search"
     });
     selectSearchInput(view);
@@ -20163,10 +20212,10 @@
     if (!prev)
       return false;
     let selection = EditorSelection.single(prev.from, prev.to);
-    let config2 = view.state.facet(searchConfigFacet);
+    let config15 = view.state.facet(searchConfigFacet);
     view.dispatch({
       selection,
-      effects: [announceMatch(view, prev), config2.scrollToMatch(selection.main, view)],
+      effects: [announceMatch(view, prev), config15.scrollToMatch(selection.main, view)],
       userEvent: "select.search"
     });
     selectSearchInput(view);
@@ -20261,13 +20310,13 @@
     let selText = sel.empty || sel.to > sel.from + 100 ? "" : state.sliceDoc(sel.from, sel.to);
     if (fallback && !selText)
       return fallback;
-    let config2 = state.facet(searchConfigFacet);
+    let config15 = state.facet(searchConfigFacet);
     return new SearchQuery({
-      search: ((_a2 = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _a2 !== void 0 ? _a2 : config2.literal) ? selText : selText.replace(/\n/g, "\\n"),
-      caseSensitive: (_b = fallback === null || fallback === void 0 ? void 0 : fallback.caseSensitive) !== null && _b !== void 0 ? _b : config2.caseSensitive,
-      literal: (_c = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _c !== void 0 ? _c : config2.literal,
-      regexp: (_d = fallback === null || fallback === void 0 ? void 0 : fallback.regexp) !== null && _d !== void 0 ? _d : config2.regexp,
-      wholeWord: (_e = fallback === null || fallback === void 0 ? void 0 : fallback.wholeWord) !== null && _e !== void 0 ? _e : config2.wholeWord
+      search: ((_a2 = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _a2 !== void 0 ? _a2 : config15.literal) ? selText : selText.replace(/\n/g, "\\n"),
+      caseSensitive: (_b = fallback === null || fallback === void 0 ? void 0 : fallback.caseSensitive) !== null && _b !== void 0 ? _b : config15.caseSensitive,
+      literal: (_c = fallback === null || fallback === void 0 ? void 0 : fallback.literal) !== null && _c !== void 0 ? _c : config15.literal,
+      regexp: (_d = fallback === null || fallback === void 0 ? void 0 : fallback.regexp) !== null && _d !== void 0 ? _d : config15.regexp,
+      wholeWord: (_e = fallback === null || fallback === void 0 ? void 0 : fallback.wholeWord) !== null && _e !== void 0 ? _e : config15.wholeWord
     });
   }
   function getSearchInput(view) {
@@ -20857,9 +20906,9 @@
     };
   }
   var setSelectedEffect = /* @__PURE__ */ StateEffect.define();
-  function optionContent(config2) {
-    let content2 = config2.addToOptions.slice();
-    if (config2.icons)
+  function optionContent(config15) {
+    let content2 = config15.addToOptions.slice();
+    if (config15.icons)
       content2.push({
         render(completion) {
           let icon = document.createElement("div");
@@ -20931,11 +20980,11 @@
       this.currentClass = "";
       let cState = view.state.field(stateField);
       let { options, selected } = cState.open;
-      let config2 = view.state.facet(completionConfig);
-      this.optionContent = optionContent(config2);
-      this.optionClass = config2.optionClass;
-      this.tooltipClass = config2.tooltipClass;
-      this.range = rangeAroundSelected(options.length, selected, config2.maxRenderedOptions);
+      let config15 = view.state.facet(completionConfig);
+      this.optionContent = optionContent(config15);
+      this.optionClass = config15.optionClass;
+      this.tooltipClass = config15.tooltipClass;
+      this.range = rangeAroundSelected(options.length, selected, config15.maxRenderedOptions);
       this.dom = document.createElement("div");
       this.dom.className = "cm-tooltip-autocomplete";
       this.updateTooltipClass(view.state);
@@ -21710,7 +21759,7 @@
   var commitCharacters = /* @__PURE__ */ Prec.highest(/* @__PURE__ */ EditorView.domEventHandlers({
     keydown(event, view) {
       let field = view.state.field(completionState, false);
-      if (!field || !field.open || field.open.disabled || field.open.selected < 0 || event.key.length > 1 || event.ctrlKey && !(windows && event.altKey) || event.metaKey)
+      if (!field || !field.open || field.open.disabled || field.open.selected < 0 || !event.key || event.key.length > 1 || event.ctrlKey && !(windows && event.altKey) || event.metaKey)
         return false;
       let option = field.open.options[field.open.selected];
       let result = field.active.find((a) => a.source == option.source);
@@ -21991,8 +22040,8 @@
       userEvent: "input.type"
     });
   }
-  function handleSame(state, token, allowTriple, config2) {
-    let stringPrefixes = config2.stringPrefixes || defaults2.stringPrefixes;
+  function handleSame(state, token, allowTriple, config15) {
+    let stringPrefixes = config15.stringPrefixes || defaults2.stringPrefixes;
     let dont = null, changes = state.changeByRange((range) => {
       if (!range.empty)
         return {
@@ -22074,11 +22123,11 @@
     }
     return -1;
   }
-  function autocompletion(config2 = {}) {
+  function autocompletion(config15 = {}) {
     return [
       commitCharacters,
       completionState,
-      completionConfig.of(config2),
+      completionConfig.of(config15),
       completionPlugin,
       completionKeymapExt,
       baseTheme4
@@ -22928,19 +22977,18 @@
     /**
     @internal
     */
-    useNode(value, next) {
+    useNode(value, next, start) {
       let index = this.p.reused.length - 1;
       if (index < 0 || this.p.reused[index] != value) {
         this.p.reused.push(value);
         index++;
       }
-      let start = this.pos;
-      this.reducePos = this.pos = start + value.length;
+      let end = this.reducePos = this.pos = start + value.length;
       this.pushState(next, start);
       this.buffer.push(
         index,
         start,
-        this.reducePos,
+        end,
         -1
         /* size == -1 means this is a reused value */
       );
@@ -23177,7 +23225,7 @@
     emitContext() {
       let last2 = this.buffer.length - 1;
       if (last2 < 0 || this.buffer[last2] != -3)
-        this.buffer.push(this.curContext.hash, this.pos, this.pos, -3);
+        this.storeNode(this.curContext.hash, this.reducePos, this.reducePos, -3, true);
     }
     /**
     @internal
@@ -23666,9 +23714,9 @@
     }
   }
   var FragmentCursor = class {
-    constructor(fragments, nodeSet) {
+    constructor(fragments, minRepeat) {
       this.fragments = fragments;
-      this.nodeSet = nodeSet;
+      this.minRepeat = minRepeat;
       this.i = 0;
       this.fragment = null;
       this.safeFrom = -1;
@@ -23676,6 +23724,8 @@
       this.trees = [];
       this.start = [];
       this.index = [];
+      this.lastRepeat = null;
+      this.lastRepeatPos = -1;
       this.nextFragment();
     }
     nextFragment() {
@@ -23724,14 +23774,18 @@
           return null;
         }
         if (next instanceof Tree) {
-          if (start == pos) {
-            if (start < this.safeFrom)
-              return null;
-            let end = start + next.length;
-            if (end <= this.safeTo) {
-              let lookAhead = next.prop(NodeProp.lookAhead);
-              if (!lookAhead || end + lookAhead < this.fragment.to)
+          let storeRepeat = start > this.lastRepeatPos && next.type.id >= this.minRepeat;
+          if (start == pos || storeRepeat) {
+            let end = start + next.length, lookahead;
+            if (start >= this.safeFrom && end <= this.safeTo && (!(lookahead = next.prop(NodeProp.lookAhead)) || end + lookahead < this.fragment.to)) {
+              if (storeRepeat) {
+                this.lastRepeat = next;
+                this.lastRepeatPos = start;
+              }
+              if (start == pos)
                 return next;
+            } else if (start == pos) {
+              return null;
             }
           }
           this.index[last2]++;
@@ -23885,7 +23939,7 @@
       this.topTerm = parser2.top[1];
       let { from } = ranges[0];
       this.stacks = [Stack.start(this, parser2.top[0], from)];
-      this.fragments = fragments.length && this.stream.end - from > parser2.bufferLength * 4 ? new FragmentCursor(fragments, parser2.nodeSet) : null;
+      this.fragments = fragments.length && this.stream.end - from > parser2.bufferLength * 4 ? new FragmentCursor(fragments, parser2.minRepeatTerm) : null;
     }
     get parsedPos() {
       return this.minStackPos;
@@ -23993,6 +24047,28 @@
         throw new RangeError("Can't move stoppedAt forward");
       this.stoppedAt = pos;
     }
+    // See if a given tree, or a descendant right at its start, can be
+    // reused in the given stack.
+    tryReuse(stack, start, tree, repeatOnly) {
+      if (!tree)
+        return null;
+      let strictCx = stack.curContext && stack.curContext.tracker.strict, cxHash = strictCx ? stack.curContext.hash : 0;
+      for (; tree; ) {
+        let match = this.parser.nodeSet.types[tree.type.id] != tree.type ? -1 : this.parser.getGoto(stack.state, tree.type.id);
+        if (match > -1 && tree.length && (!strictCx || (tree.prop(NodeProp.contextHash) || 0) == cxHash)) {
+          stack.useNode(tree, match, start);
+          return tree;
+        }
+        if (tree.children.length == 0 || tree.positions[0] > 0)
+          break;
+        let inner = tree.children[0];
+        if (inner instanceof Tree && (!repeatOnly || inner.type.id >= this.parser.minRepeatTerm))
+          tree = inner;
+        else
+          break;
+      }
+      return null;
+    }
     // Returns an updated version of the given stack, or null if the
     // stack can't advance normally. When `split` and `stacks` are
     // given, stacks split off by ambiguous operations will be pushed to
@@ -24003,22 +24079,11 @@
       if (this.stoppedAt != null && start > this.stoppedAt)
         return stack.forceReduce() ? stack : null;
       if (this.fragments) {
-        let strictCx = stack.curContext && stack.curContext.tracker.strict, cxHash = strictCx ? stack.curContext.hash : 0;
-        for (let cached = this.fragments.nodeAt(start); cached; ) {
-          let match = this.parser.nodeSet.types[cached.type.id] == cached.type ? parser2.getGoto(stack.state, cached.type.id) : -1;
-          if (match > -1 && cached.length && (!strictCx || (cached.prop(NodeProp.contextHash) || 0) == cxHash)) {
-            stack.useNode(cached, match);
-            if (verbose)
-              console.log(base2 + this.stackID(stack) + ` (via reuse of ${parser2.getName(cached.type.id)})`);
-            return true;
-          }
-          if (!(cached instanceof Tree) || cached.children.length == 0 || cached.positions[0] > 0)
-            break;
-          let inner = cached.children[0];
-          if (inner instanceof Tree && cached.positions[0] == 0)
-            cached = inner;
-          else
-            break;
+        let reused = stack.reducePos < start && stack.buffer.length && stack.buffer[stack.buffer.length - 2] <= stack.reducePos && this.fragments.lastRepeatPos == stack.reducePos && this.tryReuse(stack, stack.reducePos, this.fragments.lastRepeat, true) || this.tryReuse(stack, start, this.fragments.nodeAt(start), false);
+        if (reused) {
+          if (verbose)
+            console.log(base2 + this.stackID(stack) + ` (via reuse of ${parser2.getName(reused.type.id)})`);
+          return true;
         }
       }
       let defaultReduce = parser2.stateSlot(
@@ -24359,25 +24424,25 @@
     given settings modified. Settings not provided in `config` are
     kept from the original parser.
     */
-    configure(config2) {
+    configure(config15) {
       let copy = Object.assign(Object.create(_LRParser.prototype), this);
-      if (config2.props)
-        copy.nodeSet = this.nodeSet.extend(...config2.props);
-      if (config2.top) {
-        let info = this.topRules[config2.top];
+      if (config15.props)
+        copy.nodeSet = this.nodeSet.extend(...config15.props);
+      if (config15.top) {
+        let info = this.topRules[config15.top];
         if (!info)
-          throw new RangeError(`Invalid top rule name ${config2.top}`);
+          throw new RangeError(`Invalid top rule name ${config15.top}`);
         copy.top = info;
       }
-      if (config2.tokenizers)
+      if (config15.tokenizers)
         copy.tokenizers = this.tokenizers.map((t2) => {
-          let found = config2.tokenizers.find((r) => r.from == t2);
+          let found = config15.tokenizers.find((r) => r.from == t2);
           return found ? found.to : t2;
         });
-      if (config2.specializers) {
+      if (config15.specializers) {
         copy.specializers = this.specializers.slice();
         copy.specializerSpecs = this.specializerSpecs.map((s, i2) => {
-          let found = config2.specializers.find((r) => r.from == s.external);
+          let found = config15.specializers.find((r) => r.from == s.external);
           if (!found)
             return s;
           let spec = Object.assign(Object.assign({}, s), { external: found.to });
@@ -24385,16 +24450,16 @@
           return spec;
         });
       }
-      if (config2.contextTracker)
-        copy.context = config2.contextTracker;
-      if (config2.dialect)
-        copy.dialect = this.parseDialect(config2.dialect);
-      if (config2.strict != null)
-        copy.strict = config2.strict;
-      if (config2.wrap)
-        copy.wrappers = copy.wrappers.concat(config2.wrap);
-      if (config2.bufferLength != null)
-        copy.bufferLength = config2.bufferLength;
+      if (config15.contextTracker)
+        copy.context = config15.contextTracker;
+      if (config15.dialect)
+        copy.dialect = this.parseDialect(config15.dialect);
+      if (config15.strict != null)
+        copy.strict = config15.strict;
+      if (config15.wrap)
+        copy.wrappers = copy.wrappers.concat(config15.wrap);
+      if (config15.bufferLength != null)
+        copy.bufferLength = config15.bufferLength;
       return copy;
     }
     /**
@@ -25108,20 +25173,20 @@
   function keywordCompletionSource(dialect2, upperCase = false, build) {
     return completeKeywords(dialect2.dialect.words, upperCase, build || defaultKeyword);
   }
-  function schemaCompletionSource(config2) {
-    return config2.schema ? completeFromSchema(config2.schema, config2.tables, config2.schemas, config2.defaultTable, config2.defaultSchema, config2.dialect || StandardSQL) : () => null;
+  function schemaCompletionSource(config15) {
+    return config15.schema ? completeFromSchema(config15.schema, config15.tables, config15.schemas, config15.defaultTable, config15.defaultSchema, config15.dialect || StandardSQL) : () => null;
   }
-  function schemaCompletion(config2) {
-    return config2.schema ? (config2.dialect || StandardSQL).language.data.of({
-      autocomplete: schemaCompletionSource(config2)
+  function schemaCompletion(config15) {
+    return config15.schema ? (config15.dialect || StandardSQL).language.data.of({
+      autocomplete: schemaCompletionSource(config15)
     }) : [];
   }
-  function sql(config2 = {}) {
-    let lang = config2.dialect || StandardSQL;
+  function sql(config15 = {}) {
+    let lang = config15.dialect || StandardSQL;
     return new LanguageSupport(lang.language, [
-      schemaCompletion(config2),
+      schemaCompletion(config15),
       lang.language.data.of({
-        autocomplete: keywordCompletionSource(lang, config2.upperCaseKeywords, config2.keywordCompletion)
+        autocomplete: keywordCompletionSource(lang, config15.upperCaseKeywords, config15.keywordCompletion)
       })
     ]);
   }
@@ -25283,6 +25348,3440 @@
     return extension;
   };
 
+  // node_modules/@uiw/codemirror-theme-abcdef/esm/index.js
+  var defaultSettingsAbcdef = {
+    background: "#0f0f0f",
+    foreground: "#defdef",
+    caret: "#00FF00",
+    selection: "#515151",
+    selectionMatch: "#515151",
+    gutterBackground: "#555",
+    gutterForeground: "#FFFFFF",
+    lineHighlight: "#0a6bcb3d"
+  };
+  var abcdefDarkStyle = [
+    {
+      tag: tags.keyword,
+      color: "darkgoldenrod",
+      fontWeight: "bold"
+    },
+    {
+      tag: tags.atom,
+      color: "#77F"
+    },
+    {
+      tag: tags.comment,
+      color: "#7a7b7c",
+      fontStyle: "italic"
+    },
+    {
+      tag: tags.number,
+      color: "violet"
+    },
+    {
+      tag: tags.definition(tags.variableName),
+      color: "#fffabc"
+    },
+    {
+      tag: tags.variableName,
+      color: "#abcdef"
+    },
+    {
+      tag: tags.function(tags.variableName),
+      color: "#fffabc"
+    },
+    {
+      tag: tags.typeName,
+      color: "#FFDD44"
+    },
+    {
+      tag: tags.tagName,
+      color: "#def"
+    },
+    {
+      tag: tags.string,
+      color: "#2b4"
+    },
+    {
+      tag: tags.meta,
+      color: "#C9F"
+    },
+    // { tag: t.qualifier, color: '#FFF700' },
+    // { tag: t.builtin, color: '#30aabc' },
+    {
+      tag: tags.bracket,
+      color: "#8a8a8a"
+    },
+    {
+      tag: tags.attributeName,
+      color: "#DDFF00"
+    },
+    {
+      tag: tags.heading,
+      color: "aquamarine",
+      fontWeight: "bold"
+    },
+    {
+      tag: tags.link,
+      color: "blueviolet",
+      fontWeight: "bold"
+    }
+  ];
+  var abcdefInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsAbcdef, settings),
+      styles: [...abcdefDarkStyle, ...styles]
+    });
+  };
+  var abcdef = abcdefInit();
+
+  // node_modules/@uiw/codemirror-theme-abyss/esm/color.js
+  var config2 = {
+    background: "#000c18",
+    foreground: "#6688cc",
+    selection: "#770811",
+    selectionMatch: "#770811",
+    cursor: "#ddbb88",
+    dropdownBackground: "#181f2f",
+    activeLine: "#0055ff30",
+    matchingBracket: "#082050",
+    keyword: "#225588",
+    storage: "#225588",
+    variable: "#2277ff",
+    parameter: "#2277ff",
+    function: "#9966b8",
+    string: "#22aa44",
+    constant: "#f280d0",
+    type: "#9966b8",
+    class: "#ddbb88",
+    number: "#f280d0",
+    comment: "#384887",
+    heading: "#6688cc",
+    invalid: "#A22D44",
+    regexp: "#22aa44",
+    tag: "#225588"
+  };
+
+  // node_modules/@uiw/codemirror-theme-abyss/esm/index.js
+  var defaultSettingsAbyss = {
+    background: config2.background,
+    foreground: config2.foreground,
+    caret: config2.cursor,
+    selection: config2.selection,
+    selectionMatch: config2.selectionMatch,
+    gutterBackground: config2.background,
+    gutterForeground: config2.foreground,
+    lineHighlight: config2.activeLine
+  };
+  var abyssDarkStyle = [{
+    tag: tags.keyword,
+    color: config2.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config2.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config2.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config2.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config2.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config2.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config2.variable
+  }, {
+    tag: [tags.className],
+    color: config2.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config2.number
+  }, {
+    tag: [tags.typeName],
+    color: config2.type,
+    fontStyle: config2.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config2.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config2.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config2.comment
+  }, {
+    tag: tags.tagName,
+    color: config2.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config2.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config2.variable
+  }, {
+    tag: tags.invalid,
+    color: config2.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var abyssInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsAbyss, settings),
+      styles: [...abyssDarkStyle, ...styles]
+    });
+  };
+  var abyss = abyssInit();
+
+  // node_modules/@uiw/codemirror-theme-androidstudio/esm/index.js
+  var defaultSettingsAndroidstudio = {
+    background: "#282b2e",
+    foreground: "#a9b7c6",
+    caret: "#00FF00",
+    selection: "#4e5254",
+    selectionMatch: "#4e5254",
+    lineHighlight: "#7f85891f"
+  };
+  var androidstudioDarkStyle = [{
+    tag: [tags.keyword, tags.deleted, tags.className],
+    color: "#cc7832"
+  }, {
+    tag: [tags.number, tags.literal, tags.derefOperator],
+    color: "#6897bb"
+  }, {
+    tag: [tags.link, tags.variableName],
+    color: "#629755"
+  }, {
+    tag: [tags.comment, tags.quote],
+    color: "grey"
+  }, {
+    tag: [tags.meta, tags.documentMeta],
+    color: "#bbb529"
+  }, {
+    tag: [tags.string, tags.propertyName, tags.attributeValue],
+    color: "#6a8759"
+  }, {
+    tag: [tags.heading, tags.typeName],
+    color: "#ffc66d"
+  }, {
+    tag: [tags.attributeName],
+    color: "#a9b7c6"
+  }, {
+    tag: [tags.emphasis],
+    fontStyle: "italic"
+  }];
+  var androidstudioInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsAndroidstudio, settings),
+      styles: [...androidstudioDarkStyle, ...styles]
+    });
+  };
+  var androidstudio = androidstudioInit();
+
+  // node_modules/@uiw/codemirror-theme-andromeda/esm/color.js
+  var config3 = {
+    background: "#23262E",
+    foreground: "#D5CED9",
+    selection: "#db45a280",
+    selectionMatch: "#db45a280",
+    cursor: "#FFF",
+    dropdownBackground: "#2b303b",
+    dropdownBorder: "#363c49",
+    activeLine: "#596a992e",
+    matchingBracket: "#746f77",
+    keyword: "#c74ded",
+    storage: "#c74ded",
+    variable: "#00e8c6",
+    parameter: "#00e8c6",
+    function: "#FFE66D",
+    string: "#96E072",
+    constant: "#ee5d43",
+    type: "#FFE66D",
+    class: "#FFE66D",
+    number: "#ee5d43",
+    comment: "#A0A1A7cc",
+    heading: "#ff00aa",
+    invalid: null,
+    regexp: "#96E072",
+    tag: "#f92672"
+  };
+
+  // node_modules/@uiw/codemirror-theme-andromeda/esm/index.js
+  var defaultSettingsAndromeda = {
+    background: config3.background,
+    foreground: config3.foreground,
+    caret: config3.cursor,
+    selection: config3.selection,
+    selectionMatch: config3.selectionMatch,
+    gutterBackground: config3.background,
+    gutterForeground: config3.foreground,
+    lineHighlight: config3.activeLine
+  };
+  var andromedaDarkStyle = [{
+    tag: tags.keyword,
+    color: config3.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config3.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config3.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config3.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config3.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config3.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config3.variable
+  }, {
+    tag: [tags.className],
+    color: config3.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config3.number
+  }, {
+    tag: [tags.typeName],
+    color: config3.type,
+    fontStyle: config3.type
+  }, {
+    tag: [tags.operator],
+    color: config3.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config3.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config3.comment
+  }, {
+    tag: tags.tagName,
+    color: config3.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config3.heading
+  }, {
+    tag: [tags.atom, tags.special(tags.variableName)],
+    color: config3.variable
+  }, {
+    tag: tags.invalid,
+    color: config3.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: [tags.operatorKeyword, tags.bool, tags.null, tags.variableName],
+    color: config3.constant
+  }];
+  var andromedaInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsAndromeda, settings),
+      styles: [...andromedaDarkStyle, ...styles]
+    });
+  };
+  var andromeda = andromedaInit();
+
+  // node_modules/@uiw/codemirror-theme-atomone/esm/index.js
+  var defaultSettingsAtomone = {
+    background: "#272C35",
+    foreground: "#9d9b97",
+    caret: "#797977",
+    selection: "#3d4c64",
+    selectionMatch: "#3d4c64",
+    gutterBackground: "#272C35",
+    gutterForeground: "#465063",
+    gutterBorder: "transparent",
+    lineHighlight: "#2e3f5940"
+  };
+  var atomoneDarkStyle = [{
+    tag: [tags.function(tags.variableName), tags.function(tags.propertyName), tags.url, tags.processingInstruction],
+    color: "hsl(207, 82%, 66%)"
+  }, {
+    tag: [tags.tagName, tags.heading],
+    color: "#e06c75"
+  }, {
+    tag: tags.comment,
+    color: "#54636D"
+  }, {
+    tag: [tags.propertyName],
+    color: "hsl(220, 14%, 71%)"
+  }, {
+    tag: [tags.attributeName, tags.number],
+    color: "hsl( 29, 54%, 61%)"
+  }, {
+    tag: tags.className,
+    color: "hsl( 39, 67%, 69%)"
+  }, {
+    tag: tags.keyword,
+    color: "hsl(286, 60%, 67%)"
+  }, {
+    tag: [tags.string, tags.regexp, tags.special(tags.propertyName)],
+    color: "#98c379"
+  }];
+  var atomoneInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsAtomone, settings),
+      styles: [...atomoneDarkStyle, ...styles]
+    });
+  };
+  var atomone = atomoneInit();
+
+  // node_modules/@uiw/codemirror-theme-aura/esm/index.js
+  var defaultSettingsAura = {
+    background: "#21202e",
+    foreground: "#edecee",
+    caret: "#a277ff",
+    selection: "#5a51898f",
+    selectionMatch: "#5a51898f",
+    gutterBackground: "#21202e",
+    gutterForeground: "#edecee",
+    gutterBorder: "transparent",
+    lineHighlight: "#a394f033"
+  };
+  var auraDarkStyle = [{
+    tag: tags.keyword,
+    color: "#a277ff"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: "#edecee"
+  }, {
+    tag: [tags.propertyName],
+    color: "#ffca85"
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: "#61ffca"
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: "#ffca85"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#61ffca"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#edecee"
+  }, {
+    tag: [tags.className],
+    color: "#82e2ff"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#61ffca"
+  }, {
+    tag: [tags.typeName],
+    color: "#82e2ff"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#a277ff"
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: "#61ffca"
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: "#6d6d6d"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#a277ff"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#edecee"
+  }, {
+    tag: tags.invalid,
+    color: "#ff6767"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var auraInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsAura, settings),
+      styles: [...auraDarkStyle, ...styles]
+    });
+  };
+  var aura = auraInit();
+
+  // node_modules/@uiw/codemirror-theme-basic/esm/dark.js
+  var defaultSettingsBasicDark = {
+    background: "#2E3235",
+    foreground: "#DDDDDD",
+    caret: "#DDDDDD",
+    selection: "#202325",
+    selectionMatch: "#202325",
+    gutterBackground: "#292d30",
+    gutterForeground: "#808080",
+    gutterBorder: "1px solid #ffffff10",
+    lineHighlight: "#B9D2FF30"
+  };
+  var basicDarkStyle = [{
+    tag: tags.keyword,
+    color: "#fda331"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
+    color: "#b5bd68"
+  }, {
+    tag: [tags.variableName],
+    color: "#6fb3d2"
+  }, {
+    tag: [tags.function(tags.variableName)],
+    color: "#fda331"
+  }, {
+    tag: [tags.labelName],
+    color: "#fc6d24"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#fda331"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#cc99cc"
+  }, {
+    tag: [tags.brace],
+    color: "#cc99cc"
+  }, {
+    tag: [tags.annotation],
+    color: "#fc6d24"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#fda331"
+  }, {
+    tag: [tags.typeName, tags.className],
+    color: "#6fb3d2"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#cc99cc"
+  }, {
+    tag: [tags.tagName],
+    color: "#fda331"
+  }, {
+    tag: [tags.squareBracket],
+    color: "#cc99cc"
+  }, {
+    tag: [tags.angleBracket],
+    color: "#cc99cc"
+  }, {
+    tag: [tags.attributeName],
+    color: "#6fb3d2"
+  }, {
+    tag: [tags.regexp],
+    color: "#fda331"
+  }, {
+    tag: [tags.quote],
+    color: "#DDDDDD"
+  }, {
+    tag: [tags.string],
+    color: "#b5bd68"
+  }, {
+    tag: tags.link,
+    color: "#6987AF",
+    textDecoration: "underline",
+    textUnderlinePosition: "under"
+  }, {
+    tag: [tags.url, tags.escape, tags.special(tags.string)],
+    color: "#8abeb7"
+  }, {
+    tag: [tags.meta],
+    color: "#A54543"
+  }, {
+    tag: [tags.comment],
+    color: "#808080",
+    fontStyle: "italic"
+  }, {
+    tag: tags.monospace,
+    color: "#DDDDDD"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold",
+    color: "#fda331"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic",
+    color: "#6fb3d2"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#DDDDDD"
+  }, {
+    tag: tags.special(tags.heading1),
+    fontWeight: "bold",
+    color: "#DDDDDD"
+  }, {
+    tag: tags.heading1,
+    fontWeight: "bold",
+    color: "#DDDDDD"
+  }, {
+    tag: [tags.heading2, tags.heading3, tags.heading4],
+    fontWeight: "bold",
+    color: "#DDDDDD"
+  }, {
+    tag: [tags.heading5, tags.heading6],
+    color: "#DDDDDD"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#8abeb7"
+  }, {
+    tag: [tags.processingInstruction, tags.inserted],
+    color: "#8abeb7"
+  }, {
+    tag: [tags.contentSeparator],
+    color: "#6fb3d2"
+  }, {
+    tag: tags.invalid,
+    color: "#B9D2FF",
+    borderBottom: "1px dotted #fc6d24"
+  }];
+  var basicDarkInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsBasicDark, settings),
+      styles: [...basicDarkStyle, ...styles]
+    });
+  };
+  var basicDark = basicDarkInit();
+
+  // node_modules/@uiw/codemirror-theme-basic/esm/light.js
+  var defaultSettingsBasicLight = {
+    background: "#ffffff",
+    foreground: "#2e3440",
+    caret: "#3b4252",
+    selection: "#eceff4",
+    selectionMatch: "#e5e9f0",
+    gutterBackground: "#eceff4",
+    gutterForeground: "#2e3440",
+    gutterBorder: "none",
+    lineHighlight: "#02255f11"
+  };
+  var basicLightStyle = [{
+    tag: tags.keyword,
+    color: "#5e81ac"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
+    color: "#d08770"
+  }, {
+    tag: [tags.variableName],
+    color: "#d08770"
+  }, {
+    tag: [tags.function(tags.variableName)],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.labelName],
+    color: "#81a1c1"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#a3be8c"
+  }, {
+    tag: [tags.brace],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.annotation],
+    color: "#d30102"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#88c0d0"
+  }, {
+    tag: [tags.typeName, tags.className],
+    color: "#ebcb8b"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#a3be8c"
+  }, {
+    tag: [tags.tagName],
+    color: "#b48ead"
+  }, {
+    tag: [tags.squareBracket],
+    color: "#bf616a"
+  }, {
+    tag: [tags.angleBracket],
+    color: "#d08770"
+  }, {
+    tag: [tags.attributeName],
+    color: "#ebcb8b"
+  }, {
+    tag: [tags.regexp],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.quote],
+    color: "#3b4252"
+  }, {
+    tag: [tags.string],
+    color: "#d08770"
+  }, {
+    tag: tags.link,
+    color: "#8fbcbb",
+    textDecoration: "underline",
+    textUnderlinePosition: "under"
+  }, {
+    tag: [tags.url, tags.escape, tags.special(tags.string)],
+    color: "#d08770"
+  }, {
+    tag: [tags.meta],
+    color: "#88c0d0"
+  }, {
+    tag: [tags.comment],
+    color: "#434c5e",
+    fontStyle: "italic"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic",
+    color: "#5e81ac"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: tags.special(tags.heading1),
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: tags.heading1,
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: [tags.heading2, tags.heading3, tags.heading4],
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: [tags.heading5, tags.heading6],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#d08770"
+  }, {
+    tag: [tags.processingInstruction, tags.inserted],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.contentSeparator],
+    color: "#ebcb8b"
+  }, {
+    tag: tags.invalid,
+    color: "#434c5e",
+    borderBottom: "1px dotted #d30102"
+  }];
+  var basicLightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsBasicLight, settings),
+      styles: [...basicLightStyle, ...styles]
+    });
+  };
+  var basicLight = basicLightInit();
+
+  // node_modules/@uiw/codemirror-theme-bbedit/esm/index.js
+  var defaultSettingsBbedit = {
+    background: "#FFFFFF",
+    foreground: "#000000",
+    caret: "#FBAC52",
+    selection: "#FFD420",
+    selectionMatch: "#FFD420",
+    gutterBackground: "#f5f5f5",
+    gutterForeground: "#4D4D4C",
+    gutterBorder: "transparent",
+    lineHighlight: "#00000012"
+  };
+  var bbeditLightStyle = [{
+    tag: [tags.meta, tags.comment],
+    color: "#804000"
+  }, {
+    tag: [tags.keyword, tags.strong],
+    color: "#0000FF"
+  }, {
+    tag: [tags.number],
+    color: "#FF0080"
+  }, {
+    tag: [tags.string],
+    color: "#FF0080"
+  }, {
+    tag: [tags.variableName],
+    color: "#006600"
+  }, {
+    tag: [tags.escape],
+    color: "#33CC33"
+  }, {
+    tag: [tags.tagName],
+    color: "#1C02FF"
+  }, {
+    tag: [tags.heading],
+    color: "#0C07FF"
+  }, {
+    tag: [tags.quote],
+    color: "#000000"
+  }, {
+    tag: [tags.list],
+    color: "#B90690"
+  }, {
+    tag: [tags.documentMeta],
+    color: "#888888"
+  }, {
+    tag: [tags.function(tags.variableName)],
+    color: "#0000A2"
+  }, {
+    tag: [tags.definition(tags.typeName), tags.typeName],
+    color: "#6D79DE"
+  }];
+  var bbeditInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsBbedit, settings),
+      styles: [...bbeditLightStyle, ...styles]
+    });
+  };
+  var bbedit = bbeditInit();
+
+  // node_modules/@uiw/codemirror-theme-bespin/esm/index.js
+  var defaultSettingsBespin = {
+    background: "#28211c",
+    foreground: "#9d9b97",
+    caret: "#797977",
+    selection: "#4f382b",
+    selectionMatch: "#4f382b",
+    gutterBackground: "#28211c",
+    gutterForeground: "#666666",
+    lineHighlight: "#ffffff1a"
+  };
+  var bespinDarkStyle = [{
+    tag: [tags.atom, tags.number, tags.link, tags.bool],
+    color: "#9b859d"
+  }, {
+    tag: tags.comment,
+    color: "#937121"
+  }, {
+    tag: [tags.keyword, tags.tagName],
+    color: "#cf6a4c"
+  }, {
+    tag: tags.string,
+    color: "#f9ee98"
+  }, {
+    tag: tags.bracket,
+    color: "#9d9b97"
+  }, {
+    tag: [tags.variableName],
+    color: "#5ea6ea"
+  }, {
+    tag: tags.definition(tags.variableName),
+    color: "#cf7d34"
+  }, {
+    tag: [tags.function(tags.variableName), tags.className],
+    color: "#cf7d34"
+  }, {
+    tag: [tags.propertyName, tags.attributeName],
+    color: "#54be0d"
+  }];
+  var bespinInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsBespin, settings),
+      styles: [...bespinDarkStyle, ...styles]
+    });
+  };
+  var bespin = bespinInit();
+
+  // node_modules/@uiw/codemirror-theme-console/esm/dark.js
+  var defaultSettingsConsoleDark = {
+    background: "#000",
+    foreground: "#fff",
+    caret: "#fff",
+    selection: "#5c6c9b",
+    selectionMatch: "#2a3967",
+    gutterBackground: "#000",
+    gutterForeground: "#ada9a9",
+    gutterActiveForeground: "#fff",
+    lineHighlight: "#82828275"
+  };
+  var consoleDarkInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsConsoleDark, settings),
+      styles: [...styles]
+    });
+  };
+  var consoleDark = consoleDarkInit();
+
+  // node_modules/@uiw/codemirror-theme-console/esm/light.js
+  var defaultSettingsConsoleLight = {
+    background: "#fff",
+    foreground: "#000",
+    caret: "#000",
+    selection: "#c2d2ff",
+    selectionMatch: "#b1c1ef",
+    gutterBackground: "#fff",
+    gutterForeground: "#ada9a9",
+    gutterActiveForeground: "#000",
+    lineHighlight: "#c7c5c575"
+  };
+  var consoleLightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsConsoleLight, settings),
+      styles: [...styles]
+    });
+  };
+  var consoleLight = consoleLightInit();
+
+  // node_modules/@uiw/codemirror-theme-copilot/esm/color.js
+  var config4 = {
+    background: "#232a2f",
+    foreground: "#939da5",
+    selection: "#204062",
+    selectionMatch: "#204062",
+    cursor: "#939da5",
+    dropdownBackground: "#1a2023",
+    activeLine: "#4469832b",
+    matchingBracket: "#204062",
+    keyword: "#ba8ef7",
+    storage: "#ba8ef7",
+    variable: "#939da5",
+    parameter: "#939da5",
+    function: "#ffea6b",
+    string: "#5bec95",
+    constant: "#939da5",
+    type: "#89ddff",
+    class: "#ffea6b",
+    number: "#89ddff",
+    comment: "#707a84",
+    heading: "#5bec95",
+    invalid: "#ff6a80",
+    regexp: "#56adb7",
+    tag: "#ff6a80"
+  };
+
+  // node_modules/@uiw/codemirror-theme-copilot/esm/index.js
+  var defaultSettingsCopilot = {
+    background: config4.background,
+    foreground: config4.foreground,
+    caret: config4.cursor,
+    selection: config4.selection,
+    selectionMatch: config4.selectionMatch,
+    gutterBackground: config4.background,
+    gutterForeground: config4.foreground,
+    lineHighlight: config4.activeLine
+  };
+  var copilotDarkStyle = [{
+    tag: tags.keyword,
+    color: config4.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config4.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config4.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config4.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config4.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config4.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config4.variable
+  }, {
+    tag: [tags.className],
+    color: config4.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config4.number
+  }, {
+    tag: [tags.typeName],
+    color: config4.type,
+    fontStyle: config4.type
+  }, {
+    tag: [tags.operator],
+    color: config4.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config4.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config4.comment
+  }, {
+    tag: tags.tagName,
+    color: config4.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config4.heading
+  }, {
+    tag: [tags.atom, tags.special(tags.variableName)],
+    color: config4.variable
+  }, {
+    tag: tags.invalid,
+    color: config4.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: [tags.operatorKeyword, tags.bool, tags.null, tags.variableName],
+    color: config4.constant
+  }];
+  var copilotInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsCopilot, settings),
+      styles: [...copilotDarkStyle, ...styles]
+    });
+  };
+  var copilot = copilotInit();
+
+  // node_modules/@uiw/codemirror-theme-darcula/esm/index.js
+  var defaultSettingsDarcula = {
+    background: "#2B2B2B",
+    foreground: "#f8f8f2",
+    caret: "#FFFFFF",
+    selection: "rgba(255, 255, 255, 0.1)",
+    selectionMatch: "rgba(255, 255, 255, 0.2)",
+    gutterBackground: "rgba(255, 255, 255, 0.1)",
+    gutterForeground: "#999",
+    gutterBorder: "transparent",
+    lineHighlight: "rgba(255, 255, 255, 0.1)"
+  };
+  var darculaDarkStyle = [{
+    tag: [tags.atom, tags.number],
+    color: "#bd93f9"
+  }, {
+    tag: [tags.comment],
+    color: "#61A151"
+  }, {
+    tag: [tags.string],
+    color: "#6A8759"
+  }, {
+    tag: [tags.variableName, tags.operator],
+    color: "#A9B7C6"
+  }, {
+    tag: [tags.meta, tags.className],
+    color: "#A9B7C6"
+  }, {
+    tag: [tags.propertyName],
+    color: "#FFC66D"
+  }, {
+    tag: [tags.keyword],
+    color: "#CC7832"
+  }, {
+    tag: [tags.tagName],
+    color: "#ff79c6"
+  }, {
+    tag: [tags.typeName],
+    color: "#ffb86c"
+  }];
+  var darculaInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsDarcula, settings),
+      styles: [...darculaDarkStyle, ...styles]
+    });
+  };
+  var darcula = darculaInit();
+
+  // node_modules/@uiw/codemirror-theme-dracula/esm/index.js
+  var defaultSettingsDracula = {
+    background: "#282a36",
+    foreground: "#f8f8f2",
+    caret: "#f8f8f0",
+    selection: "rgba(255, 255, 255, 0.1)",
+    selectionMatch: "rgba(255, 255, 255, 0.2)",
+    gutterBackground: "#282a36",
+    gutterForeground: "#6D8A88",
+    gutterBorder: "transparent",
+    lineHighlight: "rgba(255, 255, 255, 0.1)"
+  };
+  var draculaDarkStyle = [{
+    tag: tags.comment,
+    color: "#6272a4"
+  }, {
+    tag: tags.string,
+    color: "#f1fa8c"
+  }, {
+    tag: tags.atom,
+    color: "#bd93f9"
+  }, {
+    tag: tags.meta,
+    color: "#f8f8f2"
+  }, {
+    tag: [tags.keyword, tags.operator, tags.tagName],
+    color: "#ff79c6"
+  }, {
+    tag: [tags.function(tags.propertyName), tags.propertyName],
+    color: "#66d9ef"
+  }, {
+    tag: [tags.definition(tags.variableName), tags.function(tags.variableName), tags.className, tags.attributeName],
+    color: "#50fa7b"
+  }, {
+    tag: tags.atom,
+    color: "#bd93f9"
+  }];
+  var draculaInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsDracula, settings),
+      styles: [...draculaDarkStyle, ...styles]
+    });
+  };
+  var dracula = draculaInit();
+
+  // node_modules/@uiw/codemirror-theme-duotone/esm/index.js
+  var defaultSettingsDuotoneLight = {
+    background: "#faf8f5",
+    foreground: "#b29762",
+    caret: "#93abdc",
+    selection: "#e3dcce",
+    selectionMatch: "#e3dcce",
+    gutterBackground: "#faf8f5",
+    gutterForeground: "#cdc4b1",
+    gutterBorder: "transparent",
+    lineHighlight: "#ddceb154"
+  };
+  var douToneLightStyle = [{
+    tag: [tags.comment, tags.bracket],
+    color: "#b6ad9a"
+  }, {
+    tag: [tags.atom, tags.number, tags.keyword, tags.link, tags.attributeName, tags.quote],
+    color: "#063289"
+  }, {
+    tag: [tags.emphasis, tags.heading, tags.tagName, tags.propertyName, tags.variableName],
+    color: "#2d2006"
+  }, {
+    tag: [tags.typeName, tags.url, tags.string],
+    color: "#896724"
+  }, {
+    tag: [tags.operator, tags.string],
+    color: "#1659df"
+  }, {
+    tag: [tags.propertyName],
+    color: "#b29762"
+  }, {
+    tag: [tags.unit, tags.punctuation],
+    color: "#063289"
+  }];
+  var duotoneLightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsDuotoneLight, settings),
+      styles: [...douToneLightStyle, ...styles]
+    });
+  };
+  var duotoneLight = duotoneLightInit();
+  var defaultSettingsDuotoneDark = {
+    background: "#2a2734",
+    foreground: "#6c6783",
+    caret: "#ffad5c",
+    selection: "#91ff6c26",
+    selectionMatch: "#91ff6c26",
+    gutterBackground: "#2a2734",
+    gutterForeground: "#545167",
+    lineHighlight: "#36334280"
+  };
+  var duotoneDarkStyle = [{
+    tag: [tags.comment, tags.bracket],
+    color: "#6c6783"
+  }, {
+    tag: [tags.atom, tags.number, tags.keyword, tags.link, tags.attributeName, tags.quote],
+    color: "#ffcc99"
+  }, {
+    tag: [tags.emphasis, tags.heading, tags.tagName, tags.propertyName, tags.className, tags.variableName],
+    color: "#eeebff"
+  }, {
+    tag: [tags.typeName, tags.url],
+    color: "#7a63ee"
+  }, {
+    tag: tags.operator,
+    color: "#ffad5c"
+  }, {
+    tag: tags.string,
+    color: "#ffb870"
+  }, {
+    tag: [tags.propertyName],
+    color: "#9a86fd"
+  }, {
+    tag: [tags.unit, tags.punctuation],
+    color: "#e09142"
+  }];
+  var duotoneDarkInit = (options) => {
+    var _ref2 = options || {}, _ref2$theme = _ref2.theme, theme2 = _ref2$theme === void 0 ? "dark" : _ref2$theme, _ref2$settings = _ref2.settings, settings = _ref2$settings === void 0 ? {} : _ref2$settings, _ref2$styles = _ref2.styles, styles = _ref2$styles === void 0 ? [] : _ref2$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsDuotoneDark, settings),
+      styles: [...duotoneDarkStyle, ...styles]
+    });
+  };
+  var duotoneDark = duotoneDarkInit();
+
+  // node_modules/@uiw/codemirror-theme-eclipse/esm/index.js
+  var defaultSettingsEclipse = {
+    background: "#fff",
+    foreground: "#000",
+    caret: "#FFFFFF",
+    selection: "#d7d4f0",
+    selectionMatch: "#d7d4f0",
+    gutterBackground: "#f7f7f7",
+    gutterForeground: "#999",
+    lineHighlight: "#006fff1c",
+    gutterBorder: "transparent"
+  };
+  var eclipseLightStyle = [{
+    tag: [tags.comment],
+    color: "#3F7F5F"
+  }, {
+    tag: [tags.documentMeta],
+    color: "#FF1717"
+  }, {
+    tag: tags.keyword,
+    color: "#7F0055",
+    fontWeight: "bold"
+  }, {
+    tag: tags.atom,
+    color: "#00f"
+  }, {
+    tag: tags.number,
+    color: "#164"
+  }, {
+    tag: tags.propertyName,
+    color: "#164"
+  }, {
+    tag: [tags.variableName, tags.definition(tags.variableName)],
+    color: "#0000C0"
+  }, {
+    tag: tags.function(tags.variableName),
+    color: "#0000C0"
+  }, {
+    tag: tags.string,
+    color: "#2A00FF"
+  }, {
+    tag: tags.operator,
+    color: "black"
+  }, {
+    tag: tags.tagName,
+    color: "#170"
+  }, {
+    tag: tags.attributeName,
+    color: "#00c"
+  }, {
+    tag: tags.link,
+    color: "#219"
+  }];
+  var eclipseInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsEclipse, settings),
+      styles: [...eclipseLightStyle, ...styles]
+    });
+  };
+  var eclipse = eclipseInit();
+
+  // node_modules/@uiw/codemirror-theme-github/esm/index.js
+  var defaultSettingsGithubLight = {
+    background: "#fff",
+    foreground: "#24292e",
+    selection: "#BBDFFF",
+    selectionMatch: "#BBDFFF",
+    gutterBackground: "#fff",
+    gutterForeground: "#6e7781"
+  };
+  var githubLightStyle = [{
+    tag: [tags.standard(tags.tagName), tags.tagName],
+    color: "#116329"
+  }, {
+    tag: [tags.comment, tags.bracket],
+    color: "#6a737d"
+  }, {
+    tag: [tags.className, tags.propertyName],
+    color: "#6f42c1"
+  }, {
+    tag: [tags.variableName, tags.attributeName, tags.number, tags.operator],
+    color: "#005cc5"
+  }, {
+    tag: [tags.keyword, tags.typeName, tags.typeOperator, tags.typeName],
+    color: "#d73a49"
+  }, {
+    tag: [tags.string, tags.meta, tags.regexp],
+    color: "#032f62"
+  }, {
+    tag: [tags.name, tags.quote],
+    color: "#22863a"
+  }, {
+    tag: [tags.heading, tags.strong],
+    color: "#24292e",
+    fontWeight: "bold"
+  }, {
+    tag: [tags.emphasis],
+    color: "#24292e",
+    fontStyle: "italic"
+  }, {
+    tag: [tags.deleted],
+    color: "#b31d28",
+    backgroundColor: "ffeef0"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#e36209"
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: "#032f62"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.invalid,
+    color: "#cb2431"
+  }];
+  var githubLightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsGithubLight, settings),
+      styles: [...githubLightStyle, ...styles]
+    });
+  };
+  var githubLight = githubLightInit();
+  var defaultSettingsGithubDark = {
+    background: "#0d1117",
+    foreground: "#c9d1d9",
+    caret: "#c9d1d9",
+    selection: "#003d73",
+    selectionMatch: "#003d73",
+    lineHighlight: "#36334280"
+  };
+  var githubDarkStyle = [{
+    tag: [tags.standard(tags.tagName), tags.tagName],
+    color: "#7ee787"
+  }, {
+    tag: [tags.comment, tags.bracket],
+    color: "#8b949e"
+  }, {
+    tag: [tags.className, tags.propertyName],
+    color: "#d2a8ff"
+  }, {
+    tag: [tags.variableName, tags.attributeName, tags.number, tags.operator],
+    color: "#79c0ff"
+  }, {
+    tag: [tags.keyword, tags.typeName, tags.typeOperator, tags.typeName],
+    color: "#ff7b72"
+  }, {
+    tag: [tags.string, tags.meta, tags.regexp],
+    color: "#a5d6ff"
+  }, {
+    tag: [tags.name, tags.quote],
+    color: "#7ee787"
+  }, {
+    tag: [tags.heading, tags.strong],
+    color: "#d2a8ff",
+    fontWeight: "bold"
+  }, {
+    tag: [tags.emphasis],
+    color: "#d2a8ff",
+    fontStyle: "italic"
+  }, {
+    tag: [tags.deleted],
+    color: "#ffdcd7",
+    backgroundColor: "ffeef0"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#ffab70"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.invalid,
+    color: "#f97583"
+  }];
+  var githubDarkInit = (options) => {
+    var _ref2 = options || {}, _ref2$theme = _ref2.theme, theme2 = _ref2$theme === void 0 ? "dark" : _ref2$theme, _ref2$settings = _ref2.settings, settings = _ref2$settings === void 0 ? {} : _ref2$settings, _ref2$styles = _ref2.styles, styles = _ref2$styles === void 0 ? [] : _ref2$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsGithubDark, settings),
+      styles: [...githubDarkStyle, ...styles]
+    });
+  };
+  var githubDark = githubDarkInit();
+
+  // node_modules/@uiw/codemirror-theme-gruvbox-dark/esm/index.js
+  var defaultSettingsGruvboxDark = {
+    background: "#282828",
+    foreground: "#ebdbb2",
+    caret: "#ebdbb2",
+    selection: "#b99d555c",
+    selectionMatch: "#b99d555c",
+    lineHighlight: "#baa1602b",
+    gutterBackground: "#282828",
+    gutterForeground: "#7c6f64"
+  };
+  var gruvboxDarkStyle = [{
+    tag: tags.keyword,
+    color: "#fb4934"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
+    color: "#8ec07c"
+  }, {
+    tag: [tags.variableName],
+    color: "#83a598"
+  }, {
+    tag: [tags.function(tags.variableName)],
+    color: "#b8bb26",
+    fontStyle: "bold"
+  }, {
+    tag: [tags.labelName],
+    color: "#ebdbb2"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#d3869b"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#ebdbb2"
+  }, {
+    tag: [tags.brace],
+    color: "#ebdbb2"
+  }, {
+    tag: [tags.annotation],
+    color: "#fb4934d"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#d3869b"
+  }, {
+    tag: [tags.typeName, tags.className],
+    color: "#fabd2f"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#fb4934"
+  }, {
+    tag: [tags.tagName],
+    color: "#8ec07c",
+    fontStyle: "bold"
+  }, {
+    tag: [tags.squareBracket],
+    color: "#fe8019"
+  }, {
+    tag: [tags.angleBracket],
+    color: "#83a598"
+  }, {
+    tag: [tags.attributeName],
+    color: "#8ec07c"
+  }, {
+    tag: [tags.regexp],
+    color: "#8ec07c"
+  }, {
+    tag: [tags.quote],
+    color: "#928374"
+  }, {
+    tag: [tags.string],
+    color: "#ebdbb2"
+  }, {
+    tag: tags.link,
+    color: "#a89984",
+    textDecoration: "underline",
+    textUnderlinePosition: "under"
+  }, {
+    tag: [tags.url, tags.escape, tags.special(tags.string)],
+    color: "#d3869b"
+  }, {
+    tag: [tags.meta],
+    color: "#fabd2f"
+  }, {
+    tag: [tags.comment],
+    color: "#928374",
+    fontStyle: "italic"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold",
+    color: "#fe8019"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic",
+    color: "#b8bb26"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#b8bb26"
+  }, {
+    tag: [tags.heading1, tags.heading2],
+    fontWeight: "bold",
+    color: "#b8bb26"
+  }, {
+    tag: [tags.heading3, tags.heading4],
+    fontWeight: "bold",
+    color: "#fabd2f"
+  }, {
+    tag: [tags.heading5, tags.heading6],
+    color: "#fabd2f"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#d3869b"
+  }, {
+    tag: [tags.processingInstruction, tags.inserted],
+    color: "#83a598"
+  }, {
+    tag: [tags.contentSeparator],
+    color: "#fb4934"
+  }, {
+    tag: tags.invalid,
+    color: "#fe8019",
+    borderBottom: "1px dotted #fb4934d"
+  }];
+  var gruvboxDarkInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsGruvboxDark, settings),
+      styles: [...gruvboxDarkStyle, ...styles]
+    });
+  };
+  var gruvboxDark = gruvboxDarkInit();
+  var defaultSettingsGruvboxLight = {
+    background: "#fbf1c7",
+    foreground: "#3c3836",
+    caret: "#af3a03",
+    selection: "#bdae9391",
+    selectionMatch: "#bdae9391",
+    lineHighlight: "#a37f2238",
+    gutterBackground: "#ebdbb2",
+    gutterForeground: "#665c54",
+    gutterBorder: "transparent"
+  };
+  var gruvboxLightInit = (options) => {
+    var _ref2 = options || {}, _ref2$theme = _ref2.theme, theme2 = _ref2$theme === void 0 ? "light" : _ref2$theme, _ref2$settings = _ref2.settings, settings = _ref2$settings === void 0 ? {} : _ref2$settings, _ref2$styles = _ref2.styles, styles = _ref2$styles === void 0 ? [] : _ref2$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsGruvboxLight, settings),
+      styles: [{
+        tag: tags.keyword,
+        color: "#9d0006"
+      }, {
+        tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
+        color: "#427b58"
+      }, {
+        tag: [tags.variableName],
+        color: "#076678"
+      }, {
+        tag: [tags.function(tags.variableName)],
+        color: "#79740e",
+        fontStyle: "bold"
+      }, {
+        tag: [tags.labelName],
+        color: "#3c3836"
+      }, {
+        tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+        color: "#8f3f71"
+      }, {
+        tag: [tags.definition(tags.name), tags.separator],
+        color: "#3c3836"
+      }, {
+        tag: [tags.brace],
+        color: "#3c3836"
+      }, {
+        tag: [tags.annotation],
+        color: "#9d0006"
+      }, {
+        tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+        color: "#8f3f71"
+      }, {
+        tag: [tags.typeName, tags.className],
+        color: "#b57614"
+      }, {
+        tag: [tags.operator, tags.operatorKeyword],
+        color: "#9d0006"
+      }, {
+        tag: [tags.tagName],
+        color: "#427b58",
+        fontStyle: "bold"
+      }, {
+        tag: [tags.squareBracket],
+        color: "#af3a03"
+      }, {
+        tag: [tags.angleBracket],
+        color: "#076678"
+      }, {
+        tag: [tags.attributeName],
+        color: "#427b58"
+      }, {
+        tag: [tags.regexp],
+        color: "#427b58"
+      }, {
+        tag: [tags.quote],
+        color: "#928374"
+      }, {
+        tag: [tags.string],
+        color: "#3c3836"
+      }, {
+        tag: tags.link,
+        color: "#7c6f64",
+        textDecoration: "underline",
+        textUnderlinePosition: "under"
+      }, {
+        tag: [tags.url, tags.escape, tags.special(tags.string)],
+        color: "#8f3f71"
+      }, {
+        tag: [tags.meta],
+        color: "#b57614"
+      }, {
+        tag: [tags.comment],
+        color: "#928374",
+        fontStyle: "italic"
+      }, {
+        tag: tags.strong,
+        fontWeight: "bold",
+        color: "#af3a03"
+      }, {
+        tag: tags.emphasis,
+        fontStyle: "italic",
+        color: "#79740e"
+      }, {
+        tag: tags.strikethrough,
+        textDecoration: "line-through"
+      }, {
+        tag: tags.heading,
+        fontWeight: "bold",
+        color: "#79740e"
+      }, {
+        tag: [tags.heading1, tags.heading2],
+        fontWeight: "bold",
+        color: "#79740e"
+      }, {
+        tag: [tags.heading3, tags.heading4],
+        fontWeight: "bold",
+        color: "#b57614"
+      }, {
+        tag: [tags.heading5, tags.heading6],
+        color: "#b57614"
+      }, {
+        tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+        color: "#8f3f71"
+      }, {
+        tag: [tags.processingInstruction, tags.inserted],
+        color: "#076678"
+      }, {
+        tag: [tags.contentSeparator],
+        color: "#9d0006"
+      }, {
+        tag: tags.invalid,
+        color: "#af3a03",
+        borderBottom: "1px dotted #9d0006"
+      }, ...styles]
+    });
+  };
+  var gruvboxLight = gruvboxLightInit();
+
+  // node_modules/@uiw/codemirror-theme-kimbie/esm/color.js
+  var config5 = {
+    background: "#221a0f",
+    foreground: "#d3af86",
+    selection: "#84613daa",
+    selectionMatch: "#84613daa",
+    cursor: "#d3af86",
+    dropdownBackground: "#51412c",
+    activeLine: "#5e452b52",
+    matchingBracket: "#5e452b",
+    keyword: "#98676a",
+    storage: "#98676a",
+    variable: "#dc3958",
+    parameter: "#dc3958",
+    function: "#7e602c",
+    string: "#889b4a",
+    constant: "#f79a32",
+    type: "#f06431",
+    class: "#f06431",
+    number: "#f79a32",
+    comment: "#a57a4c",
+    heading: "#8ab1b0",
+    invalid: "#dc3958",
+    regexp: "#7e602c",
+    tag: "#dc3958"
+  };
+
+  // node_modules/@uiw/codemirror-theme-kimbie/esm/index.js
+  var defaultSettingsKimbie = {
+    background: config5.background,
+    foreground: config5.foreground,
+    caret: config5.cursor,
+    selection: config5.selection,
+    selectionMatch: config5.selection,
+    gutterBackground: config5.background,
+    gutterForeground: config5.foreground,
+    lineHighlight: config5.activeLine
+  };
+  var kimbieDarkStyle = [{
+    tag: tags.keyword,
+    color: config5.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config5.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config5.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config5.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config5.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config5.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config5.variable
+  }, {
+    tag: [tags.className],
+    color: config5.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config5.number
+  }, {
+    tag: [tags.typeName],
+    color: config5.type,
+    fontStyle: config5.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config5.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config5.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config5.comment
+  }, {
+    tag: tags.tagName,
+    color: config5.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config5.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config5.variable
+  }, {
+    tag: tags.invalid,
+    color: config5.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var kimbieInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsKimbie, settings),
+      styles: [...kimbieDarkStyle, ...styles]
+    });
+  };
+  var kimbie = kimbieInit();
+
+  // node_modules/@uiw/codemirror-theme-material/esm/index.js
+  var defaultSettingsMaterial = {
+    background: "#2e3235",
+    foreground: "#bdbdbd",
+    caret: "#a0a4ae",
+    selection: "#d7d4f063",
+    selectionMatch: "#d7d4f063",
+    gutterBackground: "#2e3235",
+    gutterForeground: "#999",
+    gutterActiveForeground: "#4f5b66",
+    lineHighlight: "#545b6130"
+  };
+  var materialDarkStyle = [{
+    tag: tags.keyword,
+    color: "#cf6edf"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: "#56c8d8"
+  }, {
+    tag: [tags.propertyName],
+    color: "#facf4e"
+  }, {
+    tag: [tags.variableName],
+    color: "#bdbdbd"
+  }, {
+    tag: [tags.function(tags.variableName)],
+    color: "#56c8d8"
+  }, {
+    tag: [tags.labelName],
+    color: "#cf6edf"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#facf4e"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#fa5788"
+  }, {
+    tag: [tags.brace],
+    color: "#cf6edf"
+  }, {
+    tag: [tags.annotation],
+    color: "#ff5f52"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#ffad42"
+  }, {
+    tag: [tags.typeName, tags.className],
+    color: "#ffad42"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#7186f0"
+  }, {
+    tag: [tags.tagName],
+    color: "#99d066"
+  }, {
+    tag: [tags.squareBracket],
+    color: "#ff5f52"
+  }, {
+    tag: [tags.angleBracket],
+    color: "#606f7a"
+  }, {
+    tag: [tags.attributeName],
+    color: "#bdbdbd"
+  }, {
+    tag: [tags.regexp],
+    color: "#ff5f52"
+  }, {
+    tag: [tags.quote],
+    color: "#6abf69"
+  }, {
+    tag: [tags.string],
+    color: "#99d066"
+  }, {
+    tag: tags.link,
+    color: "#56c8d8",
+    textDecoration: "underline",
+    textUnderlinePosition: "under"
+  }, {
+    tag: [tags.url, tags.escape, tags.special(tags.string)],
+    color: "#facf4e"
+  }, {
+    tag: [tags.meta],
+    color: "#707d8b"
+  }, {
+    tag: [tags.comment],
+    color: "#707d8b",
+    fontStyle: "italic"
+  }, {
+    tag: tags.monospace,
+    color: "#bdbdbd"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold",
+    color: "#ff5f52"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic",
+    color: "#99d066"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#facf4e"
+  }, {
+    tag: tags.heading1,
+    fontWeight: "bold",
+    color: "#facf4e"
+  }, {
+    tag: [tags.heading2, tags.heading3, tags.heading4],
+    fontWeight: "bold",
+    color: "#facf4e"
+  }, {
+    tag: [tags.heading5, tags.heading6],
+    color: "#facf4e"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#56c8d8"
+  }, {
+    tag: [tags.processingInstruction, tags.inserted],
+    color: "#ff5f52"
+  }, {
+    tag: [tags.contentSeparator],
+    color: "#56c8d8"
+  }, {
+    tag: tags.invalid,
+    color: "#606f7a",
+    borderBottom: "1px dotted #ff5f52"
+  }];
+  var materialInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsMaterial, settings),
+      styles: [...materialDarkStyle, ...styles]
+    });
+  };
+  var materialDark = materialInit();
+  var material = materialInit();
+  var defaultSettingsMaterialLight = {
+    background: "#FAFAFA",
+    foreground: "#90A4AE",
+    caret: "#272727",
+    selection: "#80CBC440",
+    selectionMatch: "#80CBC440",
+    gutterBackground: "#FAFAFA",
+    gutterForeground: "#90A4AE",
+    gutterBorder: "transparent",
+    lineHighlight: "#CCD7DA50"
+  };
+  var materialLightStyle = [{
+    tag: tags.keyword,
+    color: "#39ADB5"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: "#90A4AE"
+  }, {
+    tag: [tags.propertyName],
+    color: "#6182B8"
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: "#91B859"
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: "#6182B8"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#39ADB5"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#90A4AE"
+  }, {
+    tag: [tags.className],
+    color: "#E2931D"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#F76D47"
+  }, {
+    tag: [tags.typeName],
+    color: "#E2931D",
+    fontStyle: "#E2931D"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#39ADB5"
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: "#91B859"
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: "#90A4AE"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#39ADB5"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#90A4AE"
+  }, {
+    tag: tags.invalid,
+    color: "#E5393570"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var materialLightInit = (options) => {
+    var _ref2 = options || {}, _ref2$theme = _ref2.theme, theme2 = _ref2$theme === void 0 ? "light" : _ref2$theme, _ref2$settings = _ref2.settings, settings = _ref2$settings === void 0 ? {} : _ref2$settings, _ref2$styles = _ref2.styles, styles = _ref2$styles === void 0 ? [] : _ref2$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsMaterialLight, settings),
+      styles: [...materialLightStyle, ...styles]
+    });
+  };
+  var materialLight = materialLightInit();
+
+  // node_modules/@uiw/codemirror-theme-monokai/esm/color.js
+  var config6 = {
+    background: "#272822",
+    foreground: "#f8f8f2",
+    selection: "#4a4a76",
+    selectionMatch: "#4a4a76",
+    cursor: "#f8f8f0",
+    dropdownBackground: "#414339",
+    activeLine: "#3e3d3257",
+    matchingBracket: "#3e3d32",
+    keyword: "#F92672",
+    storage: "#F92672",
+    variable: "#FD971F",
+    parameter: "#FD971F",
+    function: "#66D9EF",
+    string: "#E6DB74",
+    constant: "#AE81FF",
+    type: "#66D9EF",
+    class: "#A6E22E",
+    number: "#AE81FF",
+    comment: "#88846f",
+    heading: "#A6E22E",
+    invalid: "#F44747",
+    regexp: "#E6DB74",
+    tag: "#F92672"
+  };
+
+  // node_modules/@uiw/codemirror-theme-monokai/esm/index.js
+  var defaultSettingsMonokai = {
+    background: config6.background,
+    foreground: config6.foreground,
+    caret: config6.cursor,
+    selection: config6.selection,
+    selectionMatch: config6.selection,
+    gutterBackground: config6.background,
+    gutterForeground: config6.foreground,
+    lineHighlight: config6.activeLine
+  };
+  var monokaiDarkStyle = [{
+    tag: tags.keyword,
+    color: config6.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config6.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config6.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config6.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config6.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config6.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config6.variable
+  }, {
+    tag: [tags.className],
+    color: config6.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config6.number
+  }, {
+    tag: [tags.typeName],
+    color: config6.type,
+    fontStyle: config6.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config6.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config6.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config6.comment
+  }, {
+    tag: tags.tagName,
+    color: config6.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config6.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config6.variable
+  }, {
+    tag: tags.invalid,
+    color: config6.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var monokaiInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsMonokai, settings),
+      styles: [...monokaiDarkStyle, ...styles]
+    });
+  };
+  var monokai = monokaiInit();
+
+  // node_modules/@uiw/codemirror-theme-monokai-dimmed/esm/color.js
+  var config7 = {
+    background: "#1e1e1e",
+    foreground: "#c5c8c6",
+    selection: "#4747a1",
+    selectionMatch: "#4747a1",
+    cursor: "#c07020",
+    dropdownBackground: "#525252",
+    activeLine: "#30303078",
+    matchingBracket: "#303030",
+    keyword: "#676867",
+    storage: "#676867",
+    variable: "#c7444a",
+    parameter: "#6089B4",
+    function: "#9872A2",
+    string: "#D08442",
+    constant: "#8080FF",
+    type: "#9B0000",
+    class: "#CE6700",
+    number: "#6089B4",
+    comment: "#9A9B99",
+    heading: "#D0B344",
+    invalid: "#FF0B00",
+    regexp: "#D08442",
+    tag: "#6089B4"
+  };
+
+  // node_modules/@uiw/codemirror-theme-monokai-dimmed/esm/index.js
+  var defaultSettingsMonokaiDimmed = {
+    background: config7.background,
+    foreground: config7.foreground,
+    caret: config7.cursor,
+    selection: config7.selection,
+    selectionMatch: config7.selection,
+    gutterBackground: config7.background,
+    gutterForeground: config7.foreground,
+    lineHighlight: config7.activeLine
+  };
+  var monokaiDimmedDarkStyle = [{
+    tag: tags.keyword,
+    color: config7.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config7.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config7.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config7.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config7.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config7.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config7.variable
+  }, {
+    tag: [tags.className],
+    color: config7.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config7.number
+  }, {
+    tag: [tags.typeName],
+    color: config7.type,
+    fontStyle: config7.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config7.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config7.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config7.comment
+  }, {
+    tag: tags.tagName,
+    color: config7.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config7.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config7.variable
+  }, {
+    tag: tags.invalid,
+    color: config7.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var monokaiDimmedInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsMonokaiDimmed, settings),
+      styles: [...monokaiDimmedDarkStyle, ...styles]
+    });
+  };
+  var monokaiDimmed = monokaiDimmedInit();
+
+  // node_modules/@uiw/codemirror-theme-noctis-lilac/esm/index.js
+  var defaultSettingsNoctisLilac = {
+    background: "#f2f1f8",
+    foreground: "#0c006b",
+    caret: "#5c49e9",
+    selection: "#d5d1f2",
+    selectionMatch: "#d5d1f2",
+    gutterBackground: "#f2f1f8",
+    gutterForeground: "#0c006b70",
+    lineHighlight: "#16067911"
+  };
+  var noctisLilacLightStyle = [{
+    tag: tags.comment,
+    color: "#9995b7"
+  }, {
+    tag: tags.keyword,
+    color: "#ff5792",
+    fontWeight: "bold"
+  }, {
+    tag: [tags.definitionKeyword, tags.modifier],
+    color: "#ff5792"
+  }, {
+    tag: [tags.className, tags.tagName, tags.definition(tags.typeName)],
+    color: "#0094f0"
+  }, {
+    tag: [tags.number, tags.bool, tags.null, tags.special(tags.brace)],
+    color: "#5842ff"
+  }, {
+    tag: [tags.definition(tags.propertyName), tags.function(tags.variableName)],
+    color: "#0095a8"
+  }, {
+    tag: tags.typeName,
+    color: "#b3694d"
+  }, {
+    tag: [tags.propertyName, tags.variableName],
+    color: "#fa8900"
+  }, {
+    tag: tags.operator,
+    color: "#ff5792"
+  }, {
+    tag: tags.self,
+    color: "#e64100"
+  }, {
+    tag: [tags.string, tags.regexp],
+    color: "#00b368"
+  }, {
+    tag: [tags.paren, tags.bracket],
+    color: "#0431fa"
+  }, {
+    tag: tags.labelName,
+    color: "#00bdd6"
+  }, {
+    tag: tags.attributeName,
+    color: "#e64100"
+  }, {
+    tag: tags.angleBracket,
+    color: "#9995b7"
+  }];
+  var noctisLilacInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsNoctisLilac, settings),
+      styles: [...noctisLilacLightStyle, ...styles]
+    });
+  };
+  var noctisLilac = noctisLilacInit();
+
+  // node_modules/@uiw/codemirror-theme-nord/esm/index.js
+  var defaultSettingsNord = {
+    background: "#2e3440",
+    foreground: "#FFFFFF",
+    caret: "#FFFFFF",
+    selection: "#00000073",
+    selectionMatch: "#00000073",
+    gutterBackground: "#2e3440",
+    gutterForeground: "#4c566a",
+    gutterActiveForeground: "#d8dee9",
+    lineHighlight: "#4c566a29"
+  };
+  var nordDarkStyle = [{
+    tag: tags.keyword,
+    color: "#5e81ac"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.propertyName, tags.macroName],
+    color: "#88c0d0"
+  }, {
+    tag: [tags.variableName],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.function(tags.variableName)],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.labelName],
+    color: "#81a1c1"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#a3be8c"
+  }, {
+    tag: [tags.brace],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.annotation],
+    color: "#d30102"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#b48ead"
+  }, {
+    tag: [tags.typeName, tags.className],
+    color: "#ebcb8b"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#a3be8c"
+  }, {
+    tag: [tags.tagName],
+    color: "#b48ead"
+  }, {
+    tag: [tags.squareBracket],
+    color: "#bf616a"
+  }, {
+    tag: [tags.angleBracket],
+    color: "#d08770"
+  }, {
+    tag: [tags.attributeName],
+    color: "#ebcb8b"
+  }, {
+    tag: [tags.regexp],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.quote],
+    color: "#b48ead"
+  }, {
+    tag: [tags.string],
+    color: "#a3be8c"
+  }, {
+    tag: tags.link,
+    color: "#a3be8c",
+    textDecoration: "underline",
+    textUnderlinePosition: "under"
+  }, {
+    tag: [tags.url, tags.escape, tags.special(tags.string)],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.meta],
+    color: "#88c0d0"
+  }, {
+    tag: [tags.monospace],
+    color: "#d8dee9",
+    fontStyle: "italic"
+  }, {
+    tag: [tags.comment],
+    color: "#4c566a",
+    fontStyle: "italic"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic",
+    color: "#5e81ac"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: tags.special(tags.heading1),
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: tags.heading1,
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: [tags.heading2, tags.heading3, tags.heading4],
+    fontWeight: "bold",
+    color: "#5e81ac"
+  }, {
+    tag: [tags.heading5, tags.heading6],
+    color: "#5e81ac"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#d08770"
+  }, {
+    tag: [tags.processingInstruction, tags.inserted],
+    color: "#8fbcbb"
+  }, {
+    tag: [tags.contentSeparator],
+    color: "#ebcb8b"
+  }, {
+    tag: tags.invalid,
+    color: "#434c5e",
+    borderBottom: "1px dotted #d30102"
+  }];
+  var nordInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsNord, settings),
+      styles: [...nordDarkStyle, ...styles]
+    });
+  };
+  var nord = nordInit();
+
+  // node_modules/@uiw/codemirror-theme-okaidia/esm/index.js
+  var defaultSettingsOkaidia = {
+    background: "#272822",
+    foreground: "#FFFFFF",
+    caret: "#FFFFFF",
+    selection: "#49483E",
+    selectionMatch: "#49483E",
+    gutterBackground: "#272822",
+    gutterForeground: "#FFFFFF70",
+    lineHighlight: "#0000003b"
+  };
+  var okaidiaDarkStyle = [
+    {
+      tag: [tags.comment, tags.documentMeta],
+      color: "#8292a2"
+    },
+    {
+      tag: [tags.number, tags.bool, tags.null, tags.atom],
+      color: "#ae81ff"
+    },
+    {
+      tag: [tags.attributeValue, tags.className, tags.name],
+      color: "#e6db74"
+    },
+    {
+      tag: [tags.propertyName, tags.attributeName],
+      color: "#a6e22e"
+    },
+    {
+      tag: [tags.variableName],
+      color: "#9effff"
+    },
+    {
+      tag: [tags.squareBracket],
+      color: "#bababa"
+    },
+    {
+      tag: [tags.string, tags.special(tags.brace)],
+      color: "#e6db74"
+    },
+    {
+      tag: [tags.regexp, tags.className, tags.typeName, tags.definition(tags.typeName)],
+      color: "#66d9ef"
+    },
+    {
+      tag: [tags.definition(tags.variableName), tags.definition(tags.propertyName), tags.function(tags.variableName)],
+      color: "#fd971f"
+    },
+    // { tag: t.keyword, color: '#f92672' },
+    {
+      tag: [tags.keyword, tags.definitionKeyword, tags.modifier, tags.tagName, tags.angleBracket],
+      color: "#f92672"
+    }
+  ];
+  var okaidiaInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsOkaidia, settings),
+      styles: [...okaidiaDarkStyle, ...styles]
+    });
+  };
+  var okaidia = okaidiaInit();
+
+  // node_modules/@uiw/codemirror-theme-quietlight/esm/color.js
+  var config8 = {
+    background: "#F5F5F5",
+    foreground: "#333333",
+    selection: "#C9D0D9",
+    selectionMatch: "#C9D0D9",
+    cursor: "#54494B",
+    dropdownBackground: "#F5F5F5",
+    activeLine: "#79ff002b",
+    matchingBracket: "#E4F6D4",
+    keyword: "#4B69C6",
+    storage: "#4B69C6",
+    variable: "#7A3E9D",
+    parameter: "#7A3E9D",
+    function: "#AA3731",
+    string: "#448C27",
+    constant: "#9C5D27",
+    type: "#7A3E9D",
+    class: "#AA3731",
+    number: "#9C5D27",
+    comment: "#AAAAAA",
+    heading: "#AA3731",
+    invalid: "#cd3131",
+    regexp: "#4B69C6",
+    tag: "#4B69C6"
+  };
+
+  // node_modules/@uiw/codemirror-theme-quietlight/esm/index.js
+  var defaultSettingsQuietlight = {
+    background: config8.background,
+    foreground: config8.foreground,
+    caret: config8.cursor,
+    selection: config8.selection,
+    selectionMatch: config8.selection,
+    gutterBackground: config8.background,
+    gutterForeground: config8.foreground,
+    gutterBorder: "transparent",
+    lineHighlight: config8.activeLine
+  };
+  var quietlightStyle = [{
+    tag: tags.keyword,
+    color: config8.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config8.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config8.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config8.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config8.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config8.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config8.variable
+  }, {
+    tag: [tags.className],
+    color: config8.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config8.number
+  }, {
+    tag: [tags.typeName],
+    color: config8.type,
+    fontStyle: config8.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config8.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config8.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config8.comment
+  }, {
+    tag: tags.tagName,
+    color: config8.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config8.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config8.variable
+  }, {
+    tag: tags.invalid,
+    color: config8.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var quietlightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsQuietlight, settings),
+      styles: [...quietlightStyle, ...styles]
+    });
+  };
+  var quietlight = quietlightInit();
+
+  // node_modules/@uiw/codemirror-theme-red/esm/color.js
+  var config9 = {
+    background: "#390000",
+    foreground: "#F8F8F8",
+    selection: "#750000",
+    selectionMatch: "#750000",
+    cursor: "#970000",
+    dropdownBackground: "#580000",
+    activeLine: "#ff000033",
+    matchingBracket: "#ff000033",
+    keyword: "#f12727ff",
+    storage: "#ff6262ff",
+    variable: "#edef7dff",
+    parameter: "#edef7dff",
+    function: "#ffb454ff",
+    string: "#edef7dff",
+    constant: "#ec0d1e",
+    type: "#9df39fff",
+    class: "#fec758ff",
+    number: "#994646ff",
+    comment: "#e7c0c0ff",
+    heading: "#fec758ff",
+    invalid: "#ffffffff",
+    regexp: "#edef7dff",
+    tag: "#aa5507ff"
+  };
+
+  // node_modules/@uiw/codemirror-theme-red/esm/index.js
+  var defaultSettingsRed = {
+    background: config9.background,
+    foreground: config9.foreground,
+    caret: config9.cursor,
+    selection: config9.selection,
+    selectionMatch: config9.selection,
+    gutterBackground: config9.background,
+    gutterForeground: config9.foreground,
+    lineHighlight: config9.activeLine
+  };
+  var redDarkStyle = [{
+    tag: tags.keyword,
+    color: config9.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config9.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config9.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config9.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config9.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config9.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config9.variable
+  }, {
+    tag: [tags.className],
+    color: config9.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config9.number
+  }, {
+    tag: [tags.typeName],
+    color: config9.type,
+    fontStyle: config9.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config9.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config9.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config9.comment
+  }, {
+    tag: tags.tagName,
+    color: config9.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config9.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config9.variable
+  }, {
+    tag: tags.invalid,
+    color: config9.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var redInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsRed, settings),
+      styles: [...redDarkStyle, ...styles]
+    });
+  };
+  var red = redInit();
+
+  // node_modules/@uiw/codemirror-theme-solarized/esm/dark-color.js
+  var config10 = {
+    background: "#002B36",
+    foreground: "#839496",
+    selection: "#004454AA",
+    selectionMatch: "#005A6FAA",
+    cursor: "#D30102",
+    dropdownBackground: "#00212B",
+    dropdownBorder: "#2AA19899",
+    activeLine: "#00cafe11",
+    matchingBracket: "#073642",
+    keyword: "#859900",
+    storage: "#93A1A1",
+    variable: "#268BD2",
+    parameter: "#268BD2",
+    function: "#268BD2",
+    string: "#2AA198",
+    constant: "#CB4B16",
+    type: "#859900",
+    class: "#268BD2",
+    number: "#D33682",
+    comment: "#586E75",
+    heading: "#268BD2",
+    invalid: "#DC322F",
+    regexp: "#DC322F",
+    tag: "#268BD2"
+  };
+
+  // node_modules/@uiw/codemirror-theme-solarized/esm/dark.js
+  var defaultSettingsSolarizedDark = {
+    background: config10.background,
+    foreground: config10.foreground,
+    caret: config10.cursor,
+    selection: config10.selection,
+    selectionMatch: config10.selection,
+    gutterBackground: config10.background,
+    gutterForeground: config10.foreground,
+    gutterBorder: "transparent",
+    lineHighlight: config10.activeLine
+  };
+  var solarizedDarkStyle = [{
+    tag: tags.keyword,
+    color: config10.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config10.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config10.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config10.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config10.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config10.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config10.variable
+  }, {
+    tag: [tags.className],
+    color: config10.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config10.number
+  }, {
+    tag: [tags.typeName],
+    color: config10.type,
+    fontStyle: config10.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config10.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config10.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config10.comment
+  }, {
+    tag: tags.tagName,
+    color: config10.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config10.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config10.variable
+  }, {
+    tag: tags.invalid,
+    color: config10.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var solarizedDarkInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsSolarizedDark, settings),
+      styles: [...solarizedDarkStyle, ...styles]
+    });
+  };
+  var solarizedDark = solarizedDarkInit();
+
+  // node_modules/@uiw/codemirror-theme-solarized/esm/light-color.js
+  var config11 = {
+    background: "#FDF6E3",
+    foreground: "#657B83",
+    selection: "#EEE8D5",
+    selectionMatch: "#EEE8D5",
+    cursor: "#657B83",
+    dropdownBackground: "#EEE8D5",
+    dropdownBorder: "#D3AF86",
+    activeLine: "#3d392d11",
+    matchingBracket: "#EEE8D5",
+    keyword: "#859900",
+    storage: "#586E75",
+    variable: "#268BD2",
+    parameter: "#268BD2",
+    function: "#268BD2",
+    string: "#2AA198",
+    constant: "#CB4B16",
+    type: "#859900",
+    class: "#268BD2",
+    number: "#D33682",
+    comment: "#93A1A1",
+    heading: "#268BD2",
+    invalid: "#DC322F",
+    regexp: "#DC322F",
+    tag: "#268BD2"
+  };
+
+  // node_modules/@uiw/codemirror-theme-solarized/esm/light.js
+  var defaultSettingsSolarizedLight = {
+    background: config11.background,
+    foreground: config11.foreground,
+    caret: config11.cursor,
+    selection: config11.selection,
+    selectionMatch: config11.selectionMatch,
+    gutterBackground: config11.background,
+    gutterForeground: config11.foreground,
+    gutterBorder: "transparent",
+    lineHighlight: config11.activeLine
+  };
+  var solarizedLightStyle = [{
+    tag: tags.keyword,
+    color: config11.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config11.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config11.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config11.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config11.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config11.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config11.variable
+  }, {
+    tag: [tags.className],
+    color: config11.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config11.number
+  }, {
+    tag: [tags.typeName],
+    color: config11.type,
+    fontStyle: config11.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config11.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config11.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config11.comment
+  }, {
+    tag: tags.tagName,
+    color: config11.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config11.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config11.variable
+  }, {
+    tag: tags.invalid,
+    color: config11.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var solarizedLightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsSolarizedLight, settings),
+      styles: [...solarizedLightStyle, ...styles]
+    });
+  };
+  var solarizedLight = solarizedLightInit();
+
+  // node_modules/@uiw/codemirror-theme-sublime/esm/index.js
+  var defaultSettingsSublime = {
+    background: "#303841",
+    foreground: "#FFFFFF",
+    caret: "#FBAC52",
+    selection: "#4C5964",
+    selectionMatch: "#3A546E",
+    gutterBackground: "#303841",
+    gutterForeground: "#FFFFFF70",
+    lineHighlight: "#00000059"
+  };
+  var sublimeDarkStyle = [
+    {
+      tag: [tags.meta, tags.comment],
+      color: "#A2A9B5"
+    },
+    {
+      tag: [tags.attributeName, tags.keyword],
+      color: "#B78FBA"
+    },
+    {
+      tag: tags.function(tags.variableName),
+      color: "#5AB0B0"
+    },
+    {
+      tag: [tags.string, tags.regexp, tags.attributeValue],
+      color: "#99C592"
+    },
+    {
+      tag: tags.operator,
+      color: "#f47954"
+    },
+    // { tag: t.moduleKeyword, color: 'red' },
+    {
+      tag: [tags.tagName, tags.modifier],
+      color: "#E35F63"
+    },
+    {
+      tag: [tags.number, tags.definition(tags.tagName), tags.className, tags.definition(tags.variableName)],
+      color: "#fbac52"
+    },
+    {
+      tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+      color: "#E35F63"
+    },
+    {
+      tag: tags.variableName,
+      color: "#539ac4"
+    },
+    {
+      tag: [tags.propertyName, tags.typeName],
+      color: "#629ccd"
+    },
+    {
+      tag: tags.propertyName,
+      color: "#36b7b5"
+    }
+  ];
+  function sublimeInit(options) {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsSublime, settings),
+      styles: [...sublimeDarkStyle, ...styles]
+    });
+  }
+  var sublime = sublimeInit();
+
+  // node_modules/@uiw/codemirror-theme-tokyo-night/esm/index.js
+  var defaultSettingsTokyoNight = {
+    background: "#1a1b26",
+    foreground: "#787c99",
+    caret: "#c0caf5",
+    selection: "#515c7e40",
+    selectionMatch: "#16161e",
+    gutterBackground: "#1a1b26",
+    gutterForeground: "#787c99",
+    gutterBorder: "transparent",
+    lineHighlight: "#474b6611"
+  };
+  var tokyoNightStyle = [{
+    tag: tags.keyword,
+    color: "#bb9af7"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: "#c0caf5"
+  }, {
+    tag: [tags.propertyName],
+    color: "#7aa2f7"
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: "#9ece6a"
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: "#7aa2f7"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#bb9af7"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#c0caf5"
+  }, {
+    tag: [tags.className],
+    color: "#c0caf5"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#ff9e64"
+  }, {
+    tag: [tags.typeName],
+    color: "#0db9d7"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#bb9af7"
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: "#b4f9f8"
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: "#444b6a"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#89ddff"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#c0caf5"
+  }, {
+    tag: tags.invalid,
+    color: "#ff5370"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var tokyoNightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsTokyoNight, settings),
+      styles: [...tokyoNightStyle, ...styles]
+    });
+  };
+  var tokyoNight = tokyoNightInit();
+
+  // node_modules/@uiw/codemirror-theme-tokyo-night-storm/esm/index.js
+  var defaultSettingsTokyoNightStorm = {
+    background: "#24283b",
+    foreground: "#7982a9",
+    caret: "#c0caf5",
+    selection: "#6f7bb630",
+    selectionMatch: "#343b5f",
+    gutterBackground: "#24283b",
+    gutterForeground: "#7982a9",
+    gutterBorder: "transparent",
+    lineHighlight: "#292e427a"
+  };
+  var tokyoNightStormStyle = [{
+    tag: tags.keyword,
+    color: "#bb9af7"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: "#c0caf5"
+  }, {
+    tag: [tags.propertyName],
+    color: "#7aa2f7"
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: "#9ece6a"
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: "#7aa2f7"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#bb9af7"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#c0caf5"
+  }, {
+    tag: [tags.className],
+    color: "#c0caf5"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#ff9e64"
+  }, {
+    tag: [tags.typeName],
+    color: "#2ac3de",
+    fontStyle: "#2ac3de"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#bb9af7"
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: "#b4f9f8"
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: "#565f89"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#89ddff"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#c0caf5"
+  }, {
+    tag: tags.invalid,
+    color: "#ff5370"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var tokyoNightStormInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsTokyoNightStorm, settings),
+      styles: [...tokyoNightStormStyle, ...styles]
+    });
+  };
+  var tokyoNightStorm = tokyoNightStormInit();
+
+  // node_modules/@uiw/codemirror-theme-tokyo-night-day/esm/index.js
+  var defaultSettingsTokyoNightDay = {
+    background: "#e1e2e7",
+    foreground: "#3760bf",
+    caret: "#3760bf",
+    selection: "#99a7df",
+    selectionMatch: "#99a7df",
+    gutterBackground: "#e1e2e7",
+    gutterForeground: "#3760bf",
+    gutterBorder: "transparent",
+    lineHighlight: "#5f5faf11"
+  };
+  var tokyoNightDayStyle = [{
+    tag: tags.keyword,
+    color: "#007197"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: "#3760bf"
+  }, {
+    tag: [tags.propertyName],
+    color: "#3760bf"
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: "#587539"
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: "#3760bf"
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: "#3760bf"
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: "#3760bf"
+  }, {
+    tag: [tags.className],
+    color: "#3760bf"
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: "#b15c00"
+  }, {
+    tag: [tags.typeName],
+    color: "#007197",
+    fontStyle: "#007197"
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: "#007197"
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: "#587539"
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: "#848cb5"
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: "#b15c00"
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: "#3760bf"
+  }, {
+    tag: tags.invalid,
+    color: "#f52a65"
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var tokyoNightDayInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsTokyoNightDay, settings),
+      styles: [...tokyoNightDayStyle, ...styles]
+    });
+  };
+  var tokyoNightDay = tokyoNightDayInit();
+
+  // node_modules/@uiw/codemirror-theme-tomorrow-night-blue/esm/color.js
+  var config12 = {
+    background: "#002451",
+    foreground: "#ffffff",
+    selection: "#003f8e",
+    selectionMatch: "#003f8e",
+    cursor: "#ffffff",
+    dropdownBackground: "#001733",
+    activeLine: "#00346e7a",
+    matchingBracket: "#00346e",
+    keyword: "#EBBBFF",
+    storage: "#EBBBFF",
+    variable: "#FFC58F",
+    parameter: "#FFC58F",
+    function: "#BBDAFF",
+    string: "#D1F1A9",
+    constant: "#FFC58F",
+    type: "#FFEEAD",
+    class: "#BBDAFF",
+    number: "#FFC58F",
+    comment: "#7285B7",
+    heading: "#D1F1A9",
+    invalid: "#a92049",
+    regexp: "#D1F1A9",
+    tag: "#FF9DA4"
+  };
+
+  // node_modules/@uiw/codemirror-theme-tomorrow-night-blue/esm/index.js
+  var defaultSettingsTomorrowNightBlue = {
+    background: config12.background,
+    foreground: config12.foreground,
+    caret: config12.cursor,
+    selection: config12.selection,
+    selectionMatch: config12.selection,
+    gutterBackground: config12.background,
+    gutterForeground: config12.foreground,
+    lineHighlight: config12.activeLine
+  };
+  var tomorrowNightBlueStyle = [{
+    tag: tags.keyword,
+    color: config12.keyword
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config12.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config12.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config12.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config12.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config12.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config12.variable
+  }, {
+    tag: [tags.className],
+    color: config12.class
+  }, {
+    tag: [tags.number, tags.changed, tags.annotation, tags.modifier, tags.self, tags.namespace],
+    color: config12.number
+  }, {
+    tag: [tags.typeName],
+    color: config12.type,
+    fontStyle: config12.type
+  }, {
+    tag: [tags.operator, tags.operatorKeyword],
+    color: config12.keyword
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config12.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config12.comment
+  }, {
+    tag: tags.tagName,
+    color: config12.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config12.heading
+  }, {
+    tag: [tags.atom, tags.bool, tags.special(tags.variableName)],
+    color: config12.variable
+  }, {
+    tag: tags.invalid,
+    color: config12.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }];
+  var tomorrowNightBlueInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsTomorrowNightBlue, settings),
+      styles: [...tomorrowNightBlueStyle, ...styles]
+    });
+  };
+  var tomorrowNightBlue = tomorrowNightBlueInit();
+
   // node_modules/@uiw/codemirror-theme-vscode/esm/light.js
   var defaultSettingsVscodeLight = {
     background: "#ffffff",
@@ -25437,19 +28936,354 @@
   }
   var vscodeDark = vscodeDarkInit();
 
+  // node_modules/@uiw/codemirror-theme-white/esm/dark-color.js
+  var config13 = {
+    background: "#000",
+    foreground: "#fff",
+    selection: "#7d46fc3f",
+    selectionMatch: "#7d46fc7f",
+    cursor: "#7d46fc",
+    dropdownBackground: "#0a0b0f",
+    dropdownBorder: "#1e1d27",
+    activeLine: "#00346eb0",
+    matchingBracket: "#7d46fc7f",
+    keyword: null,
+    storage: null,
+    variable: null,
+    parameter: null,
+    function: null,
+    string: "#a8a8b1",
+    constant: null,
+    type: null,
+    class: null,
+    number: null,
+    comment: "#2e2e37",
+    heading: null,
+    invalid: null,
+    regexp: "#a8a8b1",
+    tag: null
+  };
+
+  // node_modules/@uiw/codemirror-theme-white/esm/dark.js
+  var defaultSettingsWhiteDark = {
+    background: config13.background,
+    foreground: config13.foreground,
+    caret: config13.cursor,
+    selection: config13.selection,
+    selectionMatch: config13.selectionMatch,
+    gutterBackground: config13.background,
+    gutterForeground: config13.foreground,
+    lineHighlight: config13.activeLine
+  };
+  var whiteDarkStyle = [{
+    tag: tags.keyword,
+    color: config13.keyword,
+    fontWeight: "bold"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config13.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config13.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config13.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config13.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config13.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config13.variable
+  }, {
+    tag: [tags.className],
+    color: config13.class
+  }, {
+    tag: [tags.typeName],
+    color: config13.type,
+    fontStyle: config13.type
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config13.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config13.comment
+  }, {
+    tag: tags.tagName,
+    color: config13.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config13.heading
+  }, {
+    tag: [tags.atom, tags.special(tags.variableName)],
+    color: config13.variable
+  }, {
+    tag: tags.invalid,
+    color: config13.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: [tags.operatorKeyword, tags.bool, tags.null, tags.variableName],
+    color: config13.constant
+  }, {
+    tag: [tags.operator],
+    color: "#bb9af7"
+  }, {
+    tag: [tags.number],
+    color: "#a8a8b1"
+  }, {
+    tag: [tags.bracket],
+    color: "#bb9af7"
+  }];
+  var whiteDarkInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "dark" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsWhiteDark, settings),
+      styles: [...whiteDarkStyle, ...styles]
+    });
+  };
+  var whiteDark = whiteDarkInit();
+
+  // node_modules/@uiw/codemirror-theme-white/esm/light-color.js
+  var config14 = {
+    background: "#fff",
+    foreground: "#000",
+    selection: "#0064ff26",
+    selectionMatch: "#0064ff4c",
+    cursor: "#004bff",
+    dropdownBackground: "#f4f6fc",
+    dropdownBorder: "#e7ecf2",
+    activeLine: "#0064ff0c",
+    matchingBracket: "#0064ff4c",
+    keyword: null,
+    storage: null,
+    variable: null,
+    parameter: null,
+    function: null,
+    string: "#6b7a88",
+    constant: null,
+    type: null,
+    class: null,
+    number: null,
+    comment: "#bec9d3",
+    heading: null,
+    invalid: null,
+    regexp: "#6b7a88",
+    tag: null
+  };
+
+  // node_modules/@uiw/codemirror-theme-white/esm/light.js
+  var defaultSettingsWhiteLight = {
+    background: config14.background,
+    foreground: config14.foreground,
+    caret: config14.cursor,
+    selection: config14.selection,
+    selectionMatch: config14.selectionMatch,
+    gutterBackground: config14.background,
+    gutterForeground: config14.foreground,
+    lineHighlight: config14.activeLine
+  };
+  var whiteLightStyle = [{
+    tag: tags.keyword,
+    color: config14.keyword,
+    fontWeight: "bold"
+  }, {
+    tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+    color: config14.variable
+  }, {
+    tag: [tags.propertyName],
+    color: config14.function
+  }, {
+    tag: [tags.processingInstruction, tags.string, tags.inserted, tags.special(tags.string)],
+    color: config14.string
+  }, {
+    tag: [tags.function(tags.variableName), tags.labelName],
+    color: config14.function
+  }, {
+    tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+    color: config14.constant
+  }, {
+    tag: [tags.definition(tags.name), tags.separator],
+    color: config14.variable
+  }, {
+    tag: [tags.className],
+    color: config14.class
+  }, {
+    tag: [tags.typeName],
+    color: config14.type,
+    fontStyle: config14.type
+  }, {
+    tag: [tags.url, tags.escape, tags.regexp, tags.link],
+    color: config14.regexp
+  }, {
+    tag: [tags.meta, tags.comment],
+    color: config14.comment
+  }, {
+    tag: tags.tagName,
+    color: config14.tag
+  }, {
+    tag: tags.strong,
+    fontWeight: "bold"
+  }, {
+    tag: tags.emphasis,
+    fontStyle: "italic"
+  }, {
+    tag: tags.link,
+    textDecoration: "underline"
+  }, {
+    tag: tags.heading,
+    fontWeight: "bold",
+    color: config14.heading
+  }, {
+    tag: [tags.atom, tags.special(tags.variableName)],
+    color: config14.variable
+  }, {
+    tag: tags.invalid,
+    color: config14.invalid
+  }, {
+    tag: tags.strikethrough,
+    textDecoration: "line-through"
+  }, {
+    tag: [tags.operatorKeyword, tags.bool, tags.null, tags.variableName],
+    color: config14.constant
+  }, {
+    tag: [tags.operator],
+    color: "#0431fa"
+  }, {
+    tag: [tags.number],
+    color: "#a8a8b1"
+  }, {
+    tag: [tags.bracket],
+    color: "#0431fa"
+  }];
+  var whiteLightInit = (options) => {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsWhiteLight, settings),
+      styles: [...whiteLightStyle, ...styles]
+    });
+  };
+  var whiteLight = whiteLightInit();
+
+  // node_modules/@uiw/codemirror-theme-xcode/esm/index.js
+  var defaultSettingsXcodeLight = {
+    background: "#fff",
+    foreground: "#3D3D3D",
+    selection: "#BBDFFF",
+    selectionMatch: "#BBDFFF",
+    gutterBackground: "#fff",
+    gutterForeground: "#AFAFAF",
+    lineHighlight: "#d5e6ff69"
+  };
+  var xcodeLightStyle = [{
+    tag: [tags.comment, tags.quote],
+    color: "#707F8D"
+  }, {
+    tag: [tags.typeName, tags.typeOperator],
+    color: "#aa0d91"
+  }, {
+    tag: [tags.keyword],
+    color: "#aa0d91",
+    fontWeight: "bold"
+  }, {
+    tag: [tags.string, tags.meta],
+    color: "#D23423"
+  }, {
+    tag: [tags.name],
+    color: "#032f62"
+  }, {
+    tag: [tags.typeName],
+    color: "#522BB2"
+  }, {
+    tag: [tags.variableName],
+    color: "#23575C"
+  }, {
+    tag: [tags.definition(tags.variableName)],
+    color: "#327A9E"
+  }, {
+    tag: [tags.regexp, tags.link],
+    color: "#0e0eff"
+  }];
+  function xcodeLightInit(options) {
+    var _ref = options || {}, _ref$theme = _ref.theme, theme2 = _ref$theme === void 0 ? "light" : _ref$theme, _ref$settings = _ref.settings, settings = _ref$settings === void 0 ? {} : _ref$settings, _ref$styles = _ref.styles, styles = _ref$styles === void 0 ? [] : _ref$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsXcodeLight, settings),
+      styles: [...xcodeLightStyle, ...styles]
+    });
+  }
+  var xcodeLight = xcodeLightInit();
+  var defaultSettingsXcodeDark = {
+    background: "#292A30",
+    foreground: "#CECFD0",
+    caret: "#fff",
+    selection: "#727377",
+    selectionMatch: "#727377",
+    lineHighlight: "#ffffff0f"
+  };
+  var xcodeDarkStyle = [{
+    tag: [tags.comment, tags.quote],
+    color: "#7F8C98"
+  }, {
+    tag: [tags.keyword],
+    color: "#FF7AB2",
+    fontWeight: "bold"
+  }, {
+    tag: [tags.string, tags.meta],
+    color: "#FF8170"
+  }, {
+    tag: [tags.typeName],
+    color: "#DABAFF"
+  }, {
+    tag: [tags.definition(tags.variableName)],
+    color: "#6BDFFF"
+  }, {
+    tag: [tags.name],
+    color: "#6BAA9F"
+  }, {
+    tag: [tags.variableName],
+    color: "#ACF2E4"
+  }, {
+    tag: [tags.regexp, tags.link],
+    color: "#FF8170"
+  }];
+  var xcodeDarkInit = (options) => {
+    var _ref2 = options || {}, _ref2$theme = _ref2.theme, theme2 = _ref2$theme === void 0 ? "dark" : _ref2$theme, _ref2$settings = _ref2.settings, settings = _ref2$settings === void 0 ? {} : _ref2$settings, _ref2$styles = _ref2.styles, styles = _ref2$styles === void 0 ? [] : _ref2$styles;
+    return createTheme({
+      theme: theme2,
+      settings: _extends({}, defaultSettingsXcodeDark, settings),
+      styles: [...xcodeDarkStyle, ...styles]
+    });
+  };
+  var xcodeDark = xcodeDarkInit();
+
   // schema_man/static/js/codeEditor.js
   var STORAGE_KEY = "schema.sql";
   var container = document.querySelector("#sql-editor");
   if (container) {
     const savedSql = sessionStorage.getItem(STORAGE_KEY);
     window.sqlEditor = new EditorView({
-      doc: savedSql ?? "-- PASTE, CREATE OR LOAD YOUR SQL SCHEMA",
+      doc: savedSql ?? "-- YOUR SCHEMA GOES HERE",
       parent: container,
       extensions: [
         basicSetup,
-        sql(),
-        vscodeDark,
-        //customBackground,
+        tokyoNight,
+        sql({ upperCaseKeywords: true }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());

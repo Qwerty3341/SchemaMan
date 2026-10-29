@@ -9,6 +9,7 @@
 	--button-report-color: #d65d0e;
 	--button-font-color: #1A0F0A;
 	--control-height: 46px;
+	--report-terminal-color: #0F0A0A;
 }
 
 .normalizator-container {
@@ -142,31 +143,6 @@
 	white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-	.normalizator-container {
-		grid-template-columns: minmax(0, 1fr);
-	}
-}
-
-@media (max-width: 650px) {
-	.sql-selects {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	#file-chooser-container {
-		grid-column: 1 / -1;
-	}
-}
-
-@media (max-width: 450px) {
-	.sql-selects {
-		grid-template-columns: minmax(0, 1fr);
-	}
-
-	#file-chooser-container {
-		grid-column: auto;
-	}
-}
 
 /* ==========
  * Report div
@@ -176,7 +152,7 @@
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	background-color: #232323;
+	background-color: var(--report-terminal-color);
 	padding: 1rem;
 	font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
 	/*border: 1px white solid;*/
@@ -202,4 +178,32 @@
 
 #sql-editor .cm-scroller {
 	overflow: auto;
+}
+
+/* Media querys*/
+
+@media (max-width: 900px) {
+	.normalizator-container {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 650px) {
+	.sql-selects {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	#file-chooser-container {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (max-width: 450px) {
+	.sql-selects {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	#file-chooser-container {
+		grid-column: auto;
+	}
 }
