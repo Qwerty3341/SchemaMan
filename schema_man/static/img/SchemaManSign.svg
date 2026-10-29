@@ -40,7 +40,7 @@
      id="layer1">
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#d06920;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1;stroke-dasharray:none"
+       style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#87b776;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1;stroke-dasharray:none"
        x="36.118366"
        y="92.964447"
        id="text1"><tspan
@@ -48,6 +48,6 @@
          id="tspan1"
          x="36.118366"
          y="92.964447"
-         style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#d06920;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none">Schema Man</tspan></text>
+         style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#87b776;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none">Schema Man</tspan></text>
   </g>
 </svg>
