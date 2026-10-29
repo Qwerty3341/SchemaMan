@@ -20,7 +20,7 @@
 .logo-frame {
 	padding: 1rem 2.5rem;
 	background-color: transparent;
-	border: 1px solid #FABD2F;
+	border: 1px solid var(--yellow);
 	border-radius: 1.5rem;
 	box-shadow: 0 0.75rem 2rem rgba(25, 10, 4, 0.18);
 }
@@ -71,7 +71,7 @@
 	justify-content: space-between;
 	gap: 1rem;
 	padding: 0.85rem 1rem;
-	color: var(--body-font-color);
+	color: var(--font-color);
 	background-color: rgba(232, 213, 192, 0.1);
 	border: 1px solid rgba(232, 184, 120, 0.35);
 	border-radius: 0.6rem;

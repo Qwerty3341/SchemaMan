@@ -29282,7 +29282,7 @@
       parent: container,
       extensions: [
         basicSetup,
-        tokyoNight,
+        gruvboxDark,
         sql({ upperCaseKeywords: true }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {

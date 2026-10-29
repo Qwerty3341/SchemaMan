@@ -1,14 +1,25 @@
 :root {
-	--header-color: #030202;
+	/*Sizes*/
 	--header-height: 5rem;
-	--header-font: "Space Grotesk", sans-serif;
-	--header-font-color: #F5E6D3;
-	--body-color: black;
-	--body-font: "Gabarito", sans-serif;
-	--body-font-color: #F5E6D3;
-	--accent-color: #27A1B9;
-	--card-bg: #FABD2F;
 	--footer-height: 3rem;
+	/*Fonts*/
+	--body-font: "Gabarito", sans-serif;
+	--header-font: "Space Grotesk", sans-serif;
+	--text-editor-font: 'Source Code Pro', monospace;
+	/*Color*/
+	--header-color: #030202;
+	--font-color: #F5E6D3;
+	--body-color: #1c1c1c;
+	--accent-color: #458588;
+	--selector-bg: #282828;
+	--selector-fg: #ebdbb2;
+	--green: #88b877;
+	--orange: #d1691a;
+	--yellow: #FABD2F;
+	--red: #c44536;
+	--gray: #8a847c;
+	--button-font-color: #1A0F0A;
+	--report-terminal-color: #0F0A0A;
 	--secondary-accent: whitesmoke;
 }
 
@@ -25,7 +36,7 @@ body {
 header {
 	background-color: var(--header-color);
 	height: var(--header-height);
-	color: var(--header-font-color);
+	color: var(--font-color);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -78,7 +89,7 @@ body {
 	font-family: var(--body-font);
 	font-weight: 500;
 	font-size: 1rem;
-	color: var(--body-font-color);
+	color: var(--font-color);
 }
 
 /* main config */
@@ -110,7 +121,7 @@ main.content::-webkit-scrollbar-thumb {
 }
 
 main.content::-webkit-scrollbar-thumb:hover {
-	background-color: var(--header-font-color);
+	background-color: var(--font-color);
 }
 
 /* footer config */
@@ -119,7 +130,7 @@ footer {
 	background-color: var(--header-color);
 	height: var(--footer-height);
 	margin-top: auto;
-	color: var(--header-font-color);
+	color: var(--font-color);
 	display: flex;
 	justify-content: center;
 	align-items: center;

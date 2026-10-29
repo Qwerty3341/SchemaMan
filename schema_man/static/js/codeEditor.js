@@ -1,7 +1,7 @@
 import {basicSetup} from "codemirror";
 import {EditorView} from "@codemirror/view";
 import {sql} from "@codemirror/lang-sql";
-import { tokyoNight } from '@uiw/codemirror-themes-all';
+import { gruvboxDark } from '@uiw/codemirror-themes-all';
 
 const STORAGE_KEY = "schema.sql";
 const container = document.querySelector("#sql-editor");
@@ -14,7 +14,7 @@ if (container) {
     parent: container,
     extensions: [
       basicSetup,
-      tokyoNight,
+      gruvboxDark,
       sql({upperCaseKeywords: true}),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {

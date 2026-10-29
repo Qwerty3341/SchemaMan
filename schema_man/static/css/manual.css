@@ -32,7 +32,7 @@
 #alert-table {
 	width: 100%;
 	border-collapse: collapse;
-	color: var(--body-font-color);
+	color: var(--font-color);
 	text-align: left;
 }
 
@@ -44,7 +44,7 @@
 
 #alert-table thead th {
 	background-color: var(--header-color);
-	color: var(--header-font-color);
+	color: var(--font-color);
 	font-family: var(--header-font);
 	font-weight: 700;
 	border-bottom: 2px solid var(--accent-color);
@@ -83,19 +83,19 @@
 }
 
 #green-row .alert-color-cube {
-	background-color: #47844B;
+	background-color: var(--green);
 }
 
 #yellow-row .alert-color-cube {
-	background-color: var(--card-bg);
+	background-color: var(--yellow);
 }
 
 #red-row .alert-color-cube {
-	background-color: #c44536;
+	background-color: var(--red);
 }
 
 #gray-row .alert-color-cube {
-	background-color: #8a847c;
+	background-color: var(--gray);
 }
 
 /* =======
@@ -113,12 +113,12 @@ pre {
 	border: 2px var(--secondary-accent) solid;
 	border-radius: 10px;
 	padding: 2rem;
-	color: greenyellow;
+	color: var(--green);
 }
 
 #dependencies-notes {
 	width: 100%;
-	border-left: 2px yellow solid;
+	border-left: 2px solid var(--orange);
 	padding-left: 10px;
 	margin-left: 1rem;
 }
