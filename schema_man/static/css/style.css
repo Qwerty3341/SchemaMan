@@ -9,7 +9,7 @@
 	/*Color*/
 	--header-color: #030202;
 	--font-color: #F5E6D3;
-	--body-color: #1c1c1c;
+	--body-color: #060606;
 	--accent-color: #458588;
 	--selector-bg: #282828;
 	--selector-fg: #ebdbb2;
@@ -19,8 +19,8 @@
 	--red: #c44536;
 	--gray: #8a847c;
 	--button-font-color: #1A0F0A;
-	--report-terminal-color: #0F0A0A;
-	--secondary-accent: whitesmoke;
+	--report-terminal-color: #272626;
+	--secondary-accent: #C9C9C9;
 }
 
 /* html and body config */
@@ -42,7 +42,7 @@ header {
 	align-items: center;
 	padding: 0 2rem;
 	font-family: var(--header-font);
-	border-bottom: 2px var(--accent-color) solid;
+	border-bottom: 2px var(--green) solid;
 }
 
 header a {
@@ -116,7 +116,7 @@ main.content::-webkit-scrollbar-track {
 }
 
 main.content::-webkit-scrollbar-thumb {
-	background-color: var(--accent-color);
+	background-color: var(--green);
 	border: 3px solid var(--header-color);
 }
 
@@ -135,7 +135,7 @@ footer {
 	justify-content: center;
 	align-items: center;
 	font-size: larger;
-	border-top: 2px var(--accent-color) solid;
+	border-top: 2px var(--green) solid;
 }
 
 footer a {

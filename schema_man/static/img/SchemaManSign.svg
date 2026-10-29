@@ -3,8 +3,8 @@
 
 <svg
    width="512"
-   height="512"
-   viewBox="0 0 512 512"
+   height="128"
+   viewBox="0 0 512 128"
    version="1.1"
    id="svg1"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
@@ -23,11 +23,11 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="1.0566406"
-     inkscape:cx="255.52681"
-     inkscape:cy="255.52681"
-     inkscape:window-width="1920"
-     inkscape:window-height="1043"
+     inkscape:zoom="0.74715773"
+     inkscape:cx="173.32351"
+     inkscape:cy="257.64305"
+     inkscape:window-width="1536"
+     inkscape:window-height="786"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -40,14 +40,14 @@
      id="layer1">
     <text
        xml:space="preserve"
-       style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#c87137;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1;stroke-dasharray:none"
+       style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#d06920;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1;stroke-dasharray:none"
        x="36.118366"
-       y="284.96445"
+       y="92.964447"
        id="text1"><tspan
          sodipodi:role="line"
          id="tspan1"
          x="36.118366"
-         y="284.96445"
-         style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#c87137;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none">Schema Man</tspan></text>
+         y="92.964447"
+         style="font-style:italic;font-variant:normal;font-weight:500;font-stretch:normal;font-size:95.4347px;font-family:Z003;-inkscape-font-specification:'Z003, Medium Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#d06920;fill-opacity:1;stroke:none;stroke-width:2;stroke-dasharray:none">Schema Man</tspan></text>
   </g>
 </svg>
