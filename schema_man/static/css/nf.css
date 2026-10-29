@@ -1,6 +1,5 @@
 :root {
-	--border-color: #CD9F77;
-	--back-color: rgba(39.6, 21.6, 6.3, 0.5);
+	--back-color: rgba(0, 0, 0, 0.5);
 	--font-size: 1.2rem;
 }
 
@@ -8,7 +7,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	border: 2px var(--border-color) solid;
+	border: 2px var(--secondary-accent) solid;
 	border-radius: 10px;
 	padding: 2rem;
 	margin: 2rem;
