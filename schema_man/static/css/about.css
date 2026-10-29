@@ -20,7 +20,7 @@
 .logo-frame {
 	padding: 1rem 2.5rem;
 	background-color: transparent;
-	border: 1px solid var(--yellow);
+	border: 1px solid var(--green);
 	border-radius: 1.5rem;
 	box-shadow: 0 0.75rem 2rem rgba(25, 10, 4, 0.18);
 	display: flex;
@@ -94,4 +94,25 @@
 .source-list a:hover {
 	color: var(--header-color);
 	background-color: var(--accent-color);
+}
+
+/* ================
+ * Responsive
+ * ================ */
+
+@media (max-width: 650px) {
+	.source-list {
+		flex-direction: column;
+	}
+
+	.logo-frame {
+		padding: 1rem 1.5rem;
+	}
+}
+
+@media (max-width: 450px) {
+	.logo,
+	.sign {
+		width: min(15rem, 75vw);
+	}
 }

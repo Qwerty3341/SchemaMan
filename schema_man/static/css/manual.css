@@ -114,6 +114,7 @@ pre {
 	border-radius: 10px;
 	padding: 2rem;
 	color: var(--green);
+	overflow-x: auto;
 }
 
 #dependencies-notes {
@@ -121,5 +122,32 @@ pre {
 	border-left: 2px solid var(--orange);
 	padding-left: 10px;
 	margin-left: 1rem;
+}
+
+/* ================
+ * Responsive
+ * ================ */
+
+@media (max-width: 650px) {
+	#manual-container {
+		font-size: 1.05rem;
+	}
+
+	pre {
+		padding: 1.25rem;
+		font-size: 0.95rem;
+	}
+
+	#alert-table th,
+	#alert-table td {
+		padding: 0.6rem 0.75rem;
+	}
+}
+
+@media (max-width: 450px) {
+	pre {
+		padding: 1rem;
+		font-size: 0.85rem;
+	}
 }
 

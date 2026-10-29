@@ -7,13 +7,14 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	border: 2px var(--secondary-accent) solid;
+	border: 2px var(--selector-fg) solid;
 	border-radius: 10px;
 	padding: 2rem;
 	margin: 2rem;
 	text-align: justify;
 	font-size: var(--font-size);
-
+	overflow-y: auto;
+	overflow-x: hidden;
 	background-color: var(--back-color);
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
@@ -29,4 +30,57 @@
 
 #compliance-requirements {
 	width: 50%;
+}
+
+/*=========
+ * Buttons
+ * =======*/
+
+#buttons-container {
+	margin-top: auto;
+	padding-top: 1rem;
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	width: 100%;
+}
+
+.next-nf-btn {
+	border: 2px var(--selector-fg) solid;
+	background-color: transparent;
+	color: var(--selector-fg);
+	border-radius: 10px;
+	padding: 1rem;
+	font-weight: 600;
+	font-family: var(--body-font);
+	font-size: 1rem;
+	width: 100%;
+	cursor: pointer;
+}
+
+/* ================
+ * Responsive
+ * ================ */
+
+@media (max-width: 900px) {
+	#nf-description,
+	#compliance-requirements,
+	#nf-subcontainer {
+		width: 100%;
+	}
+}
+
+@media (max-width: 650px) {
+	.nf-container {
+		margin: 1rem;
+		padding: 1.25rem;
+	}
+}
+
+@media (max-width: 450px) {
+	.nf-container {
+		margin: 0.5rem;
+		padding: 1rem;
+		font-size: 1.05rem;
+	}
 }

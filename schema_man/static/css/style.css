@@ -146,3 +146,53 @@ footer a {
 footer a:hover {
 	color: var(--accent-color);
 }
+
+/* ================= *
+ * Responsive global *
+ * ================= */
+
+@media (max-width: 900px) {
+	header {
+		height: auto;
+		min-height: var(--header-height);
+		flex-wrap: wrap;
+		justify-content: center;
+		row-gap: 0.5rem;
+		padding: 0.75rem 1rem;
+	}
+
+	.logo-container h1 {
+		font-size: 1.5rem;
+	}
+
+	header nav {
+		width: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.75rem 1.25rem;
+	}
+
+	.nav-list a {
+		font-size: 1.05rem;
+	}
+
+	footer {
+		font-size: 1rem;
+	}
+}
+
+@media (max-width: 650px) {
+	main.content {
+		padding: 0.5rem;
+	}
+}
+
+@media (max-width: 450px) {
+	.nav-list a {
+		font-size: 0.95rem;
+	}
+
+	header nav {
+		gap: 0.5rem 0.9rem;
+	}
+}
