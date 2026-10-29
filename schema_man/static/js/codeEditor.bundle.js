@@ -25440,14 +25440,6 @@
   // schema_man/static/js/codeEditor.js
   var STORAGE_KEY = "schema.sql";
   var container = document.querySelector("#sql-editor");
-  var customBackground = EditorView.theme(
-    {
-      "&": { backgroundColor: "#0B0B0B", color: "#F5E6D3" },
-      ".cm-scroller": { backgroundColor: "#0B0B0B" },
-      ".cm-gutters": { backgroundColor: "#0B0B0B", color: "#F5E6D3" }
-    },
-    { dark: true }
-  );
   if (container) {
     const savedSql = sessionStorage.getItem(STORAGE_KEY);
     window.sqlEditor = new EditorView({
@@ -25457,7 +25449,7 @@
         basicSetup,
         sql(),
         vscodeDark,
-        customBackground,
+        //customBackground,
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());

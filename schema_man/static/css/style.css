@@ -1,18 +1,15 @@
 :root {
-	/* header conf */
 	--header-color: #030202;
 	--header-height: 5rem;
 	--header-font: "Space Grotesk", sans-serif;
 	--header-font-color: #F5E6D3;
-	/* body conf */
-	--body-color: #151414;
-
+	--body-color: black;
 	--body-font: "Gabarito", sans-serif;
 	--body-font-color: #F5E6D3;
 	--accent-color: #27A1B9;
 	--card-bg: #FABD2F;
-	/* footer conf */
 	--footer-height: 3rem;
+	--border-accent: #CD9F77;
 }
 
 /* html and body config */
@@ -34,7 +31,7 @@ header {
 	align-items: center;
 	padding: 0 2rem;
 	font-family: var(--header-font);
-	border-bottom: 2px white solid;
+	border-bottom: 2px var(--border-accent) solid;
 }
 
 header a {
@@ -57,11 +54,11 @@ header a:hover {
 }
 
 /* .logo-container .logo { */
-	/* display: block; */
-	/* width: 2.5rem; */
-	/* height: 2.5rem; */
-	/* object-fit: contain; */
-	/* flex-shrink: 0; */
+/* display: block; */
+/* width: 2.5rem; */
+/* height: 2.5rem; */
+/* object-fit: contain; */
+/* flex-shrink: 0; */
 /* } */
 
 header nav {
@@ -127,7 +124,7 @@ footer {
 	justify-content: center;
 	align-items: center;
 	font-size: larger;
-	border-top: 2px white solid;
+	border-top: 2px var(--border-accent) solid;
 }
 
 footer a {

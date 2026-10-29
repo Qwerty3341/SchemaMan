@@ -1,1 +1,33 @@
-/* holamundo */
+:root {
+	--border-color: #CD9F77;
+	--back-color: rgba(39.6, 21.6, 6.3, 0.5);
+	--font-size: 1.2rem;
+}
+
+.nf-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	border: 2px var(--border-color) solid;
+	border-radius: 10px;
+	padding: 2rem;
+	margin: 2rem;
+	text-align: justify;
+	font-size: var(--font-size);
+
+	background-color: var(--back-color);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+}
+
+#nf-description {
+	width: 50%;
+}
+
+#nf-subcontainer {
+	width: 75%;
+}
+
+#compliance-requirements {
+	width: 50%;
+}

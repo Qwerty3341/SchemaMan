@@ -5,7 +5,7 @@
 	--text-editor-font-size: 1.5rem;
 	--selector-bg: #282828;
 	--selector-fg: #ebdbb2;
-	--button-sql-color: #47844B;
+	--button-sql-color: #009e45;
 	--button-report-color: #d65d0e;
 	--button-font-color: #1A0F0A;
 	--control-height: 46px;
@@ -21,39 +21,47 @@
 
 .selector-container {
 	display: flex;
-	align-items: center;
-	flex: 0 0 auto;
+	align-items: stretch;
 	min-width: 0;
+}
+
+.select-label,
+.select-for-sql,
+#load-sql-label,
+#file-name-container {
+	flex: 1 1 0;
+	width: auto;
+	min-width: 0;
+	max-width: none;
+	height: var(--control-height);
+	box-sizing: border-box;
 }
 
 .select-label {
 	background-color: var(--button-sql-color);
 	color: var(--button-font-color);
-	padding: 0.5rem 1rem;
-	height: var(--control-height);
+	padding: 0 0.75rem;
 	cursor: pointer;
 	border: none;
 	font-size: 1.05rem;
 	font-weight: 500;
 	white-space: nowrap;
-	flex: 0 0 auto;
-	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
 }
 
 .select-for-sql {
 	background-color: var(--selector-bg);
 	color: var(--selector-fg);
-	padding: 0.5rem 1rem;
-	height: var(--control-height);
+	padding: 0 0.75rem;
 	cursor: pointer;
 	border: none;
 	font-size: 1.05rem;
 	font-weight: 500;
-	flex: 1 1 10rem;
-	width: 10rem;
-	min-width: 0;
-	max-width: 10rem;
-	box-sizing: border-box;
+	text-align: center;
+	text-align-last: center;
 }
 
 .button-for-report {
@@ -85,11 +93,15 @@
 
 /* file chooser */
 #load-sql-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0 0.75rem;
 	text-align: center;
 }
 
 #file-chooser-container {
-	gap: 10px;
 	min-width: 0;
 }
 
@@ -105,35 +117,28 @@
 	font-weight: 500;
 	cursor: pointer;
 	border: none;
-	flex: 0 0 8rem;
-	width: 8rem;
-	height: var(--control-height);
-	box-sizing: border-box;
 	white-space: nowrap;
 }
 
 #file-name-container {
-	flex: 1 1 10rem;
-	width: 10rem;
-	min-width: 0;
-	max-width: 10rem;
-	height: var(--control-height);
-	box-sizing: border-box;
-	padding: 0.5rem;
+	padding: 0 0.75rem;
 	background-color: var(--selector-bg);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	align-items: flex-start;
+	align-items: center;
+	overflow: hidden;
 }
 
 #file-name-span {
 	color: var(--selector-fg);
 	font-family: var(--body-font);
 	font-size: 1.05rem;
-	max-width: 100%;
+	width: 100%;
+	min-width: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	text-align: center;
 	white-space: nowrap;
 }
 
@@ -171,7 +176,7 @@
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	background-color: black;
+	background-color: #232323;
 	padding: 1rem;
 	font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
 	/*border: 1px white solid;*/
