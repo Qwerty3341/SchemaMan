@@ -158,9 +158,11 @@
 	background-color: var(--report-terminal-color);
 	padding: 1rem;
 	font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+	font-size: larger;
 	white-space: pre-wrap;
 	overflow-y: auto;
-	/*border: 1px white solid;*/
+	overflow-x: auto;
+	border: 2px var(--selector-fg) solid;
 }
 
 /* ********** *
@@ -171,8 +173,7 @@
 	flex: 1;
 	min-height: 0;
 	overflow: hidden;
-	/*border: 1px white solid;*/
-	/*var(--accent-color)*/
+	border: 2px var(--selector-fg) solid;
 }
 
 #sql-editor .cm-editor {

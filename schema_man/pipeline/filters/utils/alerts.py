@@ -10,10 +10,10 @@ class AlertColor(StrEnum):
     gray stops the pipe flow
     """
 
-    GREEN = 'green'
-    YELLOW = 'yellow'
-    RED = 'red'
-    GRAY = 'gray'
+    GREEN = 'GREEN'
+    YELLOW = 'YELLOW'
+    RED = 'RED'
+    GRAY = 'GRAY'
 
     @property
     def blocks_pipeline(self) -> bool:

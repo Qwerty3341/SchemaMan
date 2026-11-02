@@ -14,11 +14,13 @@ class ReportFilter(Filter):
     @override
     def apply(self, context: PipeLineContext) -> PipeLineContext:
         if context.schema is None:
-            raise ValueError("Schema must be modeled before creating the report")
+            raise ValueError(
+                "Schema must be modeled before creating the report")
 
         alerts_by_table: dict[str, list[Alert]] = {}
         for alert in context.violations:
-            alerts_by_table.setdefault(alert.associated_table, []).append(alert)
+            alerts_by_table.setdefault(
+                alert.associated_table, []).append(alert)
 
         report_lines: list[str] = []
         separator = "-------------------------------------------------------------------"
@@ -39,7 +41,7 @@ class ReportFilter(Filter):
 
             for alert in table_alerts:
                 report_lines.append(
-                    f"*\t{context.target_normal_form}\t{alert.message}"
+                    f"*\t{context.target_normal_form}\t{alert.message}\t{alert.color}"
                 )
 
         context.report = "\n".join(report_lines)
