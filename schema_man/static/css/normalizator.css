@@ -158,6 +158,7 @@
 	background-color: var(--report-terminal-color);
 	padding: 1rem;
 	font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+	white-space: pre-wrap;
 	overflow-y: auto;
 	/*border: 1px white solid;*/
 }
