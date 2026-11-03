@@ -58,6 +58,49 @@ def test_sql_without_tables_returns_empty_report(client):
     data = response.get_json()
     assert data["valid"] is True
     assert data["report"] == ""
+    assert data["tables"] == []
+
+
+def test_report_tables_carry_the_alert_colors(client):
+    response = get_report(
+        client,
+        sql=SQL_WITHOUT_PK,
+        dialect="sqlite",
+        normalization_level="NF1",
+    )
+
+    assert response.status_code == 200
+    tables = response.get_json()["tables"]
+    assert len(tables) == 1
+
+    table = tables[0]
+    assert table["name"] == "SIN_PK"
+    assert table["evaluated_level"] == "NF1"
+    assert table["status"] == "fails"
+    assert {
+        "color": "RED",
+        "message": "THIS TABLE DOES NOT HAVE A PRIMARY KEY",
+    } in table["alerts"]
+    assert all(
+        alert["color"] in {"GREEN", "YELLOW", "RED", "GRAY"}
+        for alert in table["alerts"]
+    )
+
+
+def test_report_tables_passing_table(client):
+    response = get_report(
+        client,
+        sql=VALID_SQL,
+        dialect="sqlite",
+        normalization_level="NF1",
+    )
+
+    assert response.status_code == 200
+    tables = response.get_json()["tables"]
+    assert len(tables) == 1
+    assert tables[0]["name"] == "MATERIA"
+    assert tables[0]["status"] == "passes"
+    assert tables[0]["alerts"]
 
 
 def test_missing_sql_is_rejected(client):

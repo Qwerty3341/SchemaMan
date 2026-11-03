@@ -21,3 +21,4 @@ class PipeLineContext:
     schema: list[Table] | None = None
     violations: list[Any] = field(default_factory=list)
     report: Any | None = None
+    report_tables: list[Any] | None = None

@@ -23,6 +23,7 @@ class ReportFilter(Filter):
                 alert.associated_table, []).append(alert)
 
         report_lines: list[str] = []
+        report_tables: list[dict] = []
         separator = "-------------------------------------------------------------------"
 
         for table in context.schema:
@@ -44,5 +45,17 @@ class ReportFilter(Filter):
                     f"*\t{context.target_normal_form}\t{alert.message}\t{alert.color}"
                 )
 
+            # Structured copy for the front-end (same data, with colors)
+            report_tables.append({
+                "name": table.name,
+                "evaluated_level": context.target_normal_form,
+                "status": "fails" if has_red_alert else "passes",
+                "alerts": [
+                    {"color": alert.color, "message": alert.message}
+                    for alert in table_alerts
+                ],
+            })
+
         context.report = "\n".join(report_lines)
+        context.report_tables = report_tables
         return context

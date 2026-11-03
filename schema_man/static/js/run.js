@@ -12,10 +12,10 @@ async function loadReport(payload) {
 			return;
 		}
 
-		addAlerts(result.report);
+		addAlerts(result.tables);
 	} catch (error) {
-		console.error("Error al obtener el reporte:", error);
-		alert(`Error del servidor: ${error}`);
+		console.error("ERORR TO OBTAIN THE REPORT:", error);
+		alert(`SERVER ERROR: ${error}`);
 	}
 }
 
@@ -53,8 +53,8 @@ async function postSqlSchema() {
 
 		await loadReport(payload);
 	} catch (error) {
-		console.error("Error al enviar el SQL:", error);
-		alert(`Error del servidor: ${error}`);
+		console.error("ERROR SENDIND THE SQL:", error);
+		alert(`SERVER ERROR: ${error}`);
 	}
 }
 

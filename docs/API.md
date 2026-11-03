@@ -41,7 +41,25 @@ and returns either the `(sql, dialect, normalization_level)` tuple or
 - Creates a `PipeLineContext` and runs the whole pipeline:
   `ParseSqlFilter` → `ModelSchemaFilter` → `NFDetectionFilter` → `ReportFilter`
 - responses:
-  - `200` => `{"valid": true, "report": "..."}` (`report` is the plain text
-    built by `ReportFilter`, `""` when the SQL has no `CREATE TABLE`)
+  - `200` => `{"valid": true, "report": "...", "tables": [...]}`
+    - `report`: plain text built by `ReportFilter` (`""` when the SQL has
+      no `CREATE TABLE`)
+    - `tables`: the same report as data, for the front-end to render with
+      colors:
+
+      ```json
+      [{
+        "name": "SIN_PK",
+        "evaluated_level": "NF1",
+        "status": "fails",
+        "alerts": [
+          {"color": "RED", "message": "THIS TABLE DOES NOT HAVE A PRIMARY KEY"},
+          {"color": "GREEN", "message": "NO REPEATING GROUPS FOUND"}
+        ]
+      }]
+      ```
+
+      - `status`: `passes` | `fails` (red alert in the table)
+      - `alerts[].color`: `GREEN` | `YELLOW` | `RED` | `GRAY`
   - `400` => `{"valid": false, "error": "..."}` (validation error or `ValueError` from the pipeline)
 

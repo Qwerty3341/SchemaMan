@@ -120,4 +120,4 @@ def get_report():
     except ValueError as pipeline_error:
         return jsonify(valid=False, error=str(pipeline_error)), 400
 
-    return jsonify(valid=True, report=context.report)
+    return jsonify(valid=True, report=context.report, tables=context.report_tables)
