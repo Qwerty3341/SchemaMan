@@ -1,7 +1,7 @@
 const reportDiv = document.getElementById("report-terminal");
 
 async function highlightAlerts() {
-  if(reportDiv.textContent === '-') {
+  if (reportDiv.textContent === '-') {
     text
   }
 }

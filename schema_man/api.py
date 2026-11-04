@@ -63,7 +63,7 @@ def _validate_payload(data: dict):
     return (sql, dialect, normalization_level), None
 
 
-@api_bp.post("/parse-sql") # Web interface to ParseSqlFilter
+@api_bp.post("/parse-sql")  # Web interface to ParseSqlFilter
 def parse_sql():
     data = request.get_json(silent=True)
 
