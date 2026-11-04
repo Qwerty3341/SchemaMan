@@ -12,6 +12,7 @@ from itertools import combinations
 import re
 
 from .alerts import Alert, AlertColor
+from .data_types import GenericType
 from .table_classes import Table
 
 
@@ -91,14 +92,36 @@ class FirstNormalFormDetecter:
         ))
         return list_of_alerts
 
-    # @staticmethod
-    # def detect_matrix_fields(table: Table) -> list[Alert]:
-        # """Type of alert: yellow"""
-        # pass
+    @staticmethod
+    def detect_matrix_fields(table: Table) -> list[Alert]:
+        """Type of alert: yellow"""
+        list_of_alerts = []
+
+        for colum in table.columns:
+            colum_lenght = max(colum.size, default=0)
+            if colum.type == GenericType.STRING and colum_lenght >= 100:
+                list_of_alerts.append(Alert(
+                    AlertColor.YELLOW,
+                    f"POSSIBLE MATRIX FIELD: {colum.name}: {colum_lenght} chars",
+                    table.name
+                ))
+
+                # At this point the alerts will be Yellow
+        if list_of_alerts:
+            return list_of_alerts
+
+        # If no alerts it means a GREEN Alert
+        list_of_alerts.append(Alert(
+            AlertColor.GREEN,
+            "NO MATRIX FIELDS FOUND",
+            table.name,
+        ))
+
+        return list_of_alerts
 
     @staticmethod
     def detect_first_nf(table: Table) -> list[Alert]:
         alerts = [FirstNormalFormDetecter.detect_primary_key(table)]
         alerts.extend(FirstNormalFormDetecter.detect_repeating_groups(table))
-        # alerts.extend(FirstNormalFormDetecter.detect_matrix_fields(table))
+        alerts.extend(FirstNormalFormDetecter.detect_matrix_fields(table))
         return alerts

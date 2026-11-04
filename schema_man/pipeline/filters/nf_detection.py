@@ -9,7 +9,7 @@ class NFDetectionFilter(Filter):
     @override
     def apply(self, context: PipeLineContext) -> PipeLineContext:
         if context.schema is None:
-            raise ValueError("Schema must be modeled before NF detection")
+            raise ValueError("SCHEMA MUST BE MODELED BEFORE NF DETECTION")
 
         for table in context.schema:
             context.violations.extend(
