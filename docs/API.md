@@ -59,7 +59,9 @@ and returns either the `(sql, dialect, normalization_level)` tuple or
       }]
       ```
 
-      - `status`: `passes` | `fails` (red alert in the table)
+      - `status`: `passes` | `fails` | `indeterminate`
+        (`fails` when the table has a red alert, `indeterminate` when it has
+        a gray alert, `passes` otherwise)
       - `alerts[].color`: `GREEN` | `YELLOW` | `RED` | `GRAY`
   - `400` => `{"valid": false, "error": "..."}` (validation error or `ValueError` from the pipeline)
 

@@ -204,6 +204,11 @@
 	color: var(--font-color);
 }
 
+.status-indeterminate {
+	background-color: var(--gray);
+	color: var(--button-font-color);
+}
+
 .alert-red {
 	color: var(--red);
 }

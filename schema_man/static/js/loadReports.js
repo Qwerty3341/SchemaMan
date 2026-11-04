@@ -1,5 +1,11 @@
 const divTerminal = document.getElementById("report-terminal");
 
+const STATUS_LABELS = {
+  passes: "[ PASSES ]",
+  fails: "[ FAILS ]",
+  indeterminate: "[ INDETERMINATE ]",
+};
+
 function addAlerts(tables) {
   if (!divTerminal) {
     console.error("Report terminal is missing from the page");
@@ -35,7 +41,9 @@ function buildTable(table) {
 
   const status = document.createElement("span");
   status.className = `status-label status-${table.status}`;
-  status.textContent = table.status === "fails" ? "[ FAILS ]" : "[ PASSES ]";
+  status.textContent =
+    STATUS_LABELS[table.status] ??
+    `[ ${String(table.status).toUpperCase()} ]`;
 
   header.append(name, level, status);
   block.append(header);

@@ -28,15 +28,19 @@ class ReportFilter(Filter):
 
         for table in context.schema:
             table_alerts = alerts_by_table.get(table.name, [])
-            has_red_alert = any(
-                alert.color == AlertColor.RED for alert in table_alerts
-            )
-            status = "[ FAILS ]" if has_red_alert else "[ PASSES ]"
+            # A red alert fails the level. A gray alert stops the evaluation
+            # without a verdict, so the level cannot be decided.
+            if any(alert.color == AlertColor.RED for alert in table_alerts):
+                header_status, status = "[ FAILS ]", "fails"
+            elif any(alert.color == AlertColor.GRAY for alert in table_alerts):
+                header_status, status = "[ INDETERMINATE ]", "indeterminate"
+            else:
+                header_status, status = "[ PASSES ]", "passes"
 
             report_lines.extend([
                 separator,
                 f"Table: {table.name}\tEvaluated level: "
-                f"{context.target_normal_form}\t{status}",
+                f"{context.target_normal_form}\t{header_status}",
                 separator,
             ])
 
@@ -49,7 +53,7 @@ class ReportFilter(Filter):
             report_tables.append({
                 "name": table.name,
                 "evaluated_level": context.target_normal_form,
-                "status": "fails" if has_red_alert else "passes",
+                "status": status,
                 "alerts": [
                     {"color": alert.color, "message": alert.message}
                     for alert in table_alerts

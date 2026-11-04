@@ -4,6 +4,14 @@ from schema_man import create_app
 
 VALID_SQL = "CREATE TABLE materia (id INTEGER PRIMARY KEY, nombre TEXT);"
 SQL_WITHOUT_PK = "CREATE TABLE sin_pk (nombre TEXT);"
+SQL_COMPOSITE_PK_WITHOUT_FDS = """
+CREATE TABLE inscripcion (
+    alumno_id INTEGER NOT NULL,
+    curso_id INTEGER NOT NULL,
+    creditos INTEGER NOT NULL,
+    PRIMARY KEY (alumno_id, curso_id)
+);
+"""
 
 
 @pytest.fixture()
@@ -101,6 +109,28 @@ def test_report_tables_passing_table(client):
     assert tables[0]["name"] == "MATERIA"
     assert tables[0]["status"] == "passes"
     assert tables[0]["alerts"]
+
+
+def test_report_tables_indeterminate_table(client):
+    response = get_report(
+        client,
+        sql=SQL_COMPOSITE_PK_WITHOUT_FDS,
+        dialect="sqlite",
+        normalization_level="NF2",
+    )
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert "[ INDETERMINATE ]" in data["report"]
+
+    tables = data["tables"]
+    assert len(tables) == 1
+    assert tables[0]["name"] == "INSCRIPCION"
+    assert tables[0]["status"] == "indeterminate"
+    assert {
+        "color": "GRAY",
+        "message": "TABLE DOES NOT HAVE FUNCTIONAL DEPENDENCIES",
+    } in tables[0]["alerts"]
 
 
 def test_missing_sql_is_rejected(client):

@@ -18,7 +18,7 @@
 						<th>Alert Color</th>
 						<th>Compliant?</th>
 						<th>When is it used?</th>
-						<th>Value</th>
+						<th>Passes?</th>
 					</tr>
 				</thead>
 
@@ -28,26 +28,26 @@
 						<td id="green-row"><span class="alert-color-cube" aria-hidden="true"></span>Green</td>
 						<td>Pass</td>
 						<td>It's completely verifiable the compliant of the normal form</td>
-						<td>0</td>
+						<td>Yes</td>
 					</tr>
 					<tr>
 						<td id="yellow-row"><span class="alert-color-cube" aria-hidden="true"></span>Yellow</td>
 						<td>Possible violation</td>
 						<td>Used when is not possible to determine with certainty a particular aspect of the normal form
 						</td>
-						<td>0</td>
+						<td>Yes</td>
 					</tr>
 					<tr>
 						<td id="red-row"><span class="alert-color-cube" aria-hidden="true"></span>Red</td>
 						<td>Do not pass</td>
 						<td>It is fully verifiable that a table does not satisfy a normal form</td>
-						<td>1</td>
+						<td>No</td>
 					</tr>
 					<tr>
 						<td id="gray-row"><span class="alert-color-cube" aria-hidden="true"></span>Gray</td>
 						<td>Indeterminable</td>
 						<td>The algorithm does not have sufficient information to evaluate the normal form</td>
-						<td>1</td>
+						<td>No</td>
 					</tr>
 				</tbody>
 			</table>

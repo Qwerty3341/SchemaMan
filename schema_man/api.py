@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 
 from .pipeline.context import PipeLineContext
 from .pipeline.filters.model_schema import ModelSchemaFilter
-from .pipeline.filters.nf_detection import NFDetectionFilter
+from .pipeline.filters.nf_detection import NORMALIZATION_ORDER, NFDetectionFilter
 from .pipeline.filters.parse_sql import ParseSqlFilter
 from .pipeline.filters.report import ReportFilter
 from .pipeline.pipe import Pipe
@@ -10,7 +10,8 @@ from .pipeline.pipe import Pipe
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 SUPPORTED_DIALECTS = {"sqlite", "mysql"}
-SUPPORTED_NORMAL_FORMS = {"NF1", "NF2", "NF3", "BCNF", "NF4", "NF5"}
+# Kept in sync with the order used by NFDetectionFilter to run the detectors.
+SUPPORTED_NORMAL_FORMS = set(NORMALIZATION_ORDER)
 
 
 def _validate_payload(data: dict):

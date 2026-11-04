@@ -1,5 +1,14 @@
 # Report
 
+## Table status
+
+The header of every table carries one of three statuses:
+
+- `[ PASSES ]`: no red or gray alert in the table.
+- `[ FAILS ]`: the table has a red alert.
+- `[ INDETERMINATE ]`: the table has a gray alert, so the evaluation stopped
+  before reaching a verdict (gray blocks the pipeline flow).
+
 ## Example
 
 ```txt
