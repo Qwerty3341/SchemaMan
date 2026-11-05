@@ -60,10 +60,83 @@ def test_second_nf_emits_green_for_simple_pk():
     context = run_nf_detection(SIMPLE_PK_SQL, "NF2")
     alerts = collected(context)
 
-    assert (AlertColor.GREEN, "TABLE WITH SIMPLE PK") in alerts
+    assert (AlertColor.GREEN, "TABLE WITH SIMPLE PK (PASS 2NF)") in alerts
     # A simple PK satisfies 2NF on its own, so the missing functional
     # dependencies are not a reason to stop the evaluation.
     assert not any(color == AlertColor.GRAY for color, _ in alerts)
+
+
+def test_second_nf_reports_the_partial_dependency_of_inscripcion():
+    context = run_nf_detection(load_school_sql(), "NF2")
+
+    # CURSO_ID alone determines NOMBRE_CURSO and CREDITOS, so only part of
+    # the composite key is used. The FD on the whole key is not reported.
+    assert [
+        (alert.color, alert.associated_table, alert.message)
+        for alert in context.violations
+        if "PARTIAL DEPENDENCY" in alert.message
+    ] == [(
+        AlertColor.RED,
+        "INSCRIPCION",
+        "PARTIAL DEPENDENCY: (CURSO_ID) -> (NOMBRE_CURSO, CREDITOS)",
+    )]
+
+
+def test_second_nf_passes_when_the_only_fd_uses_the_whole_key():
+    sql = """
+    CREATE TABLE ejemplo (
+        a INTEGER,
+        b INTEGER,
+        c TEXT,
+        PRIMARY KEY (a, b)
+        -- FD: (a, b) -> (c)
+    );
+    """
+    context = run_nf_detection(sql, "NF2")
+    alerts = collected(context)
+
+    assert (AlertColor.GREEN, "NO PARTIAL DEPENDENCIES (PASS 2NF)") in alerts
+    assert not any(color == AlertColor.RED for color, _ in alerts)
+
+
+def test_second_nf_ignores_fds_whose_determinant_is_not_part_of_the_pk():
+    sql = """
+    CREATE TABLE detalle (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        d TEXT,
+        PRIMARY KEY (a, b)
+        -- FD: (a, b) -> (c)
+        -- FD: (c) -> (d)
+    );
+    """
+    context = run_nf_detection(sql, "NF2")
+    alerts = collected(context)
+
+    # (C) -> (D) is a transitive dependency (third normal form business),
+    # not a partial one, so it must not fail here.
+    assert (AlertColor.GREEN, "NO PARTIAL DEPENDENCIES (PASS 2NF)") in alerts
+    assert not any(color == AlertColor.RED for color, _ in alerts)
+
+
+def test_second_nf_ignores_fds_between_prime_attributes():
+    sql = """
+    CREATE TABLE claves (
+        a INTEGER,
+        b INTEGER,
+        c TEXT,
+        PRIMARY KEY (a, b)
+        -- FD: (a, b) -> (c)
+        -- FD: (b) -> (a)
+    );
+    """
+    context = run_nf_detection(sql, "NF2")
+    alerts = collected(context)
+
+    # A depends on part of the key but A is prime, so 2NF is not violated.
+    assert (AlertColor.GREEN, "NO PARTIAL DEPENDENCIES (PASS 2NF)") in alerts
+    assert not any(color == AlertColor.RED for color, _ in alerts)
 
 
 def test_second_nf_emits_gray_without_declared_functional_dependencies():

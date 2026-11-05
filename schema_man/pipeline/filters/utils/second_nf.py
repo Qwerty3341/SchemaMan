@@ -25,9 +25,39 @@ class SecondNormalFormDetecter:
             return True
         return False
 
-    #  @staticmethod
-    #  def look_atributes_depending_on_a_part_of_pk() -> bool:
-    #      pass
+    @staticmethod
+    def look_atributes_depending_on_a_part_of_pk(table: Table) -> list[Alert]:
+        """Type of alert: green or red"""
+        alerts: list[Alert] = []
+        pk_columns = set(table.primary_key.columns)
+
+        for fd in table.functional_dependencies:
+            determinant = set(fd.determinant)
+
+            # A partial dependency needs a proper non-empty subset of the PK
+            # as determinant, plus at least one dependent column outside the
+            # key (a non-prime attribute). Dependencies on the whole key or
+            # between prime attributes are not partial dependencies.
+            depends_on_part_of_key = determinant and determinant < pk_columns
+            has_non_prime_column = set(fd.dependent) - pk_columns
+
+            if depends_on_part_of_key and has_non_prime_column:
+                alerts.append(Alert(
+                    AlertColor.RED,
+                    "PARTIAL DEPENDENCY: "
+                    f"({', '.join(fd.determinant)}) -> "
+                    f"({', '.join(fd.dependent)})",
+                    table.name,
+                ))
+
+        # Without a partial dependency the table satisfies second normal form.
+        if not alerts:
+            alerts.append(Alert(
+                AlertColor.GREEN,
+                "NO PARTIAL DEPENDENCIES (PASS 2NF)",
+                table.name,
+            ))
+        return alerts
 
     @staticmethod
     def detect_second_nf(table: Table) -> list[Alert]:
@@ -43,7 +73,7 @@ class SecondNormalFormDetecter:
         if len(table.primary_key.columns) < 2:
             alerts.append(Alert(
                 AlertColor.GREEN,
-                "TABLE WITH SIMPLE PK",
+                "TABLE WITH SIMPLE PK (PASS 2NF)",
                 table.name,
             ))
             return alerts
@@ -59,7 +89,11 @@ class SecondNormalFormDetecter:
             ))
             return alerts
 
-        # Requirement 3 (partial dependencies) is deferred: with a composite
-        # PK and declared FDs the table reports nothing at this level yet.
-        # TODO: look_atributes_depending_on_a_part_of_pk()
+        # Requirement 3: with a composite PK and declared FDs, every
+        # attribute must depend on the whole key.
+        alerts.extend(
+            SecondNormalFormDetecter.look_atributes_depending_on_a_part_of_pk(
+                table
+            )
+        )
         return alerts
