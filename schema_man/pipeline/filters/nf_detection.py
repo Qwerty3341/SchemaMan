@@ -28,6 +28,7 @@ class NFDetectionFilter(Filter):
             raise ValueError("SCHEMA MUST BE MODELED BEFORE NF DETECTION")
 
         evaluate_second_nf = reaches_level(context.target_normal_form, "NF2")
+        evaluate_third_nf = reaches_level(context.target_normal_form, "NF3")
 
         for table in context.schema:
             first_nf_alerts = FirstNormalFormDetecter.detect_first_nf(table)
@@ -43,8 +44,15 @@ class NFDetectionFilter(Filter):
                 continue
 
             second_nf_alerts = SecondNormalFormDetecter.detect_second_nf(table)
+            context.violations.extend(second_nf_alerts)
 
-            # Third Normal form
+            # The third normal form is only part of the target when the
+            # requested level reaches NF3.
+            if not evaluate_third_nf:
+                continue
+
+            # Requirement 1 of the third normal form: the table must be in
+            # second normal form.
             if not ThirdNormalFormDetecter.is_in_second_normal_form(second_nf_alerts):
                 continue
 
