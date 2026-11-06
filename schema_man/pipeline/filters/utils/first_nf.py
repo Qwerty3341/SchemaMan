@@ -99,7 +99,7 @@ class FirstNormalFormDetecter:
 
         for colum in table.columns:
             colum_lenght = max(colum.size, default=0)
-            if colum.type == GenericType.STRING and colum_lenght >= 100:
+            if colum.type == GenericType.STRING and colum_lenght >= 150:
                 list_of_alerts.append(Alert(
                     AlertColor.YELLOW,
                     f"POSSIBLE MATRIX FIELD: {colum.name}: {colum_lenght} chars",

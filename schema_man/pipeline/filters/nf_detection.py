@@ -1,6 +1,7 @@
 from typing import override
 
 from schema_man.pipeline.context import PipeLineContext
+from schema_man.pipeline.filters.utils.third_nf import ThirdNormalFormDetecter
 from ..filter import Filter
 from .utils.first_nf import FirstNormalFormDetecter
 from .utils.second_nf import SecondNormalFormDetecter
@@ -41,10 +42,13 @@ class NFDetectionFilter(Filter):
             if not SecondNormalFormDetecter.is_in_first_normal_form(first_nf_alerts):
                 continue
 
-            # TODO: evaluate the third normal form and beyond when their
-            # detectors exist, gated the same way on the alerts collected
-            # for this table.
+            second_nf_alerts = SecondNormalFormDetecter.detect_second_nf(table)
+
+            # Third Normal form
+            if not ThirdNormalFormDetecter.is_in_second_normal_form(second_nf_alerts):
+                continue
+
             context.violations.extend(
-                SecondNormalFormDetecter.detect_second_nf(table)
+                ThirdNormalFormDetecter.detect_third_nf(table)
             )
         return context
