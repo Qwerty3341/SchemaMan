@@ -1,6 +1,7 @@
 from typing import override
 
 from schema_man.pipeline.context import PipeLineContext
+from schema_man.pipeline.filters.utils.bcnf import BoyceCoddNormalFormDetecter
 from schema_man.pipeline.filters.utils.third_nf import ThirdNormalFormDetecter
 from ..filter import Filter
 from .utils.first_nf import FirstNormalFormDetecter
@@ -12,7 +13,7 @@ NORMALIZATION_ORDER = ("NF1", "NF2", "NF3", "BCNF", "NF4", "NF5")
 
 
 def reaches_level(target: str, level: str) -> bool:
-    """Tell whether normalizing up to `target` includes `level`."""
+    """Tell whether normalizing up to target includes level."""
     if target not in NORMALIZATION_ORDER:
         raise ValueError(
             f"Unsupported normalization level {target!r}; expected one of: "
@@ -29,6 +30,7 @@ class NFDetectionFilter(Filter):
 
         evaluate_second_nf = reaches_level(context.target_normal_form, "NF2")
         evaluate_third_nf = reaches_level(context.target_normal_form, "NF3")
+        evaluate_bc_nf = reaches_level(context.target_normal_form, "BCNF")
 
         for table in context.schema:
             first_nf_alerts = FirstNormalFormDetecter.detect_first_nf(table)
@@ -59,4 +61,16 @@ class NFDetectionFilter(Filter):
             context.violations.extend(
                 ThirdNormalFormDetecter.detect_third_nf(table)
             )
+
+            # BCNF
+            if not evaluate_bc_nf:
+                continue
+
+            if not BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table):
+                continue
+
+            context.violations.extend(
+                BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table)
+            )
+
         return context

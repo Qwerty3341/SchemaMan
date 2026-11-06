@@ -8,7 +8,6 @@ Requirements:
 
 from .alerts import Alert, AlertColor
 from .table_classes import Table
-from schema_man.pipeline.filters.utils import alerts
 
 
 class ThirdNormalFormDetecter:
@@ -35,7 +34,7 @@ class ThirdNormalFormDetecter:
                 coincidence in fd.determinant for coincidence in pk_columns
             )
 
-            # Verify if the FD is a transitive dependencies
+            # Verify if the FD is candidate key
             is_candidate_key = False
             fd_columns = set(fd.determinant) | set(fd.dependent)
             if fd_columns >= columns:
