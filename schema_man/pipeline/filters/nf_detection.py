@@ -2,6 +2,7 @@ from typing import override
 
 from schema_man.pipeline.context import PipeLineContext
 from schema_man.pipeline.filters.utils.bcnf import BoyceCoddNormalFormDetecter
+from schema_man.pipeline.filters.utils.fourth_nf import FourthNormalFormDetecter
 from schema_man.pipeline.filters.utils.third_nf import ThirdNormalFormDetecter
 from ..filter import Filter
 from .utils.first_nf import FirstNormalFormDetecter
@@ -31,6 +32,7 @@ class NFDetectionFilter(Filter):
         evaluate_second_nf = reaches_level(context.target_normal_form, "NF2")
         evaluate_third_nf = reaches_level(context.target_normal_form, "NF3")
         evaluate_bc_nf = reaches_level(context.target_normal_form, "BCNF")
+        evaluate_fourth_nf = reaches_level(context.target_normal_form, "NF4")
 
         for table in context.schema:
             first_nf_alerts = FirstNormalFormDetecter.detect_first_nf(table)
@@ -58,9 +60,8 @@ class NFDetectionFilter(Filter):
             if not ThirdNormalFormDetecter.is_in_second_normal_form(second_nf_alerts):
                 continue
 
-            context.violations.extend(
-                ThirdNormalFormDetecter.detect_third_nf(table)
-            )
+            third_nf_alerts = ThirdNormalFormDetecter.detect_third_nf(table)
+            context.violations.extend(third_nf_alerts)
 
             # BCNF
             if not evaluate_bc_nf:
@@ -69,9 +70,17 @@ class NFDetectionFilter(Filter):
             if not BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table):
                 continue
 
-            context.violations.extend(
-                BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(
-                    table)
-            )
+            bcnf_alerts = BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table)
+            context.violations.extend(bcnf_alerts)
+
+            # 4 NF
+            if not evaluate_fourth_nf:
+                continue
+            
+            if not FourthNormalFormDetecter.is_in_bcnf(bcnf_alerts):
+                continue
+
+            fourth_nf_alerts = FourthNormalFormDetecter.detect_fourth_nf(table)
+            context.violations.extend(fourth_nf_alerts)
 
         return context

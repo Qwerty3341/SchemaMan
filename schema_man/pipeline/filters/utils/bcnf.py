@@ -8,7 +8,6 @@ Requirements:
 
 from .alerts import Alert, AlertColor
 from .table_classes import Table
-from schema_man.pipeline.filters.utils import alerts
 
 class BoyceCoddNormalFormDetecter:
     @staticmethod
