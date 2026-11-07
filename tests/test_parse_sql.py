@@ -16,6 +16,7 @@ def load_schema(filename: str) -> str:
     schema_file = Path(__file__).parent / "schemas" / filename
     return schema_file.read_text(encoding="utf-8")
 
+    #  hola
 
 def parse_context(sql: str, dialect: str) -> PipeLineContext:
     context = PipeLineContext(

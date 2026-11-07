@@ -78,6 +78,15 @@
 	font-size: 1.05rem;
 	font-weight: 500;
 	box-sizing: border-box;
+	transition: 0.6s ease;
+}
+
+.button-for-report:hover {
+	color: var(--font-color);
+}
+
+.button-for-report:active {
+	background-color: #E48949;
 }
 
 .sql-selects {
@@ -103,6 +112,11 @@
 	gap: 0.4rem;
 	padding: 0 0.75rem;
 	text-align: center;
+	transition: ease-in;
+}
+
+#load-sql-label:hover {
+	background-color: #B6D9A9;
 }
 
 #file-chooser-container {

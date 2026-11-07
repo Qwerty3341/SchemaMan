@@ -70,7 +70,8 @@ class NFDetectionFilter(Filter):
                 continue
 
             context.violations.extend(
-                BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table)
+                BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(
+                    table)
             )
 
         return context
