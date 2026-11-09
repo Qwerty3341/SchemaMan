@@ -1,9 +1,34 @@
-"""
-Fourth normal form
+"""Fourth normal form
 
 Requirements:
     1. The table must be in Boyce-Codd normal form.
-    2. The table must not contain more than one independent multivalued dependency.
+    2. For every non-trivial multivalued dependency X ->> Y, X must be a superkey.
+
+    An MVD X ->> Y is trivial if Y is a subset of X, or X v Y = R.
+
+Complementation Rule:
+    We have and schema R and two sets of its columns (X, Y),
+    with Z = R - X - Y:
+        If X ->> Y then X ->> Z
+    MVDs come in pairs: for X the values of Y are independent of the values of Z and vice versa
+
+Example:
+    R = {course_id, teacher_id, book}
+    X = {course_id}, Y = {teacher_id}
+    MVD: course_id ->> teacher_id
+    Z = R - X - Y = {book}
+    MVD course_id ->> book (by complementation)
+
+    |-----------|------------|--------|
+    | course_id | teacher_id | book   |
+    |-----------|------------|--------|
+    |     1     |   Tux      |  Linux |
+    |     1     |   Tux      |  Java  |
+    |     1     |   Duke     |  Linux |
+    |     1     |   Duke     |  Java  |
+    |-----------|------------|--------|
+
+    Every teacher of a course appears with every book of that course (2 teachers x 2 books = 4 rows).
 """
 
 from .alerts import Alert, AlertColor
@@ -26,7 +51,7 @@ class FourthNormalFormDetecter:
             return False
 
     @staticmethod
-    def check_the_mvd(table: Table):
+    def need_complementation_rule(table: Table) -> bool:
         pass
 
     @staticmethod

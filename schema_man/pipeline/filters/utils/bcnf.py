@@ -9,6 +9,7 @@ Requirements:
 from .alerts import Alert, AlertColor
 from .table_classes import Table
 
+
 class BoyceCoddNormalFormDetecter:
     @staticmethod
     def is_in_third_normal_form(alerts: list[Alert]):
@@ -45,5 +46,4 @@ class BoyceCoddNormalFormDetecter:
                         table.name
                     )
                 )
-
         return alerts
