@@ -67,16 +67,15 @@ class NFDetectionFilter(Filter):
             if not evaluate_bc_nf:
                 continue
 
-            if not BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table):
-                continue
-
             bcnf_alerts = BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table)
             context.violations.extend(bcnf_alerts)
 
             # 4 NF
             if not evaluate_fourth_nf:
                 continue
-            
+
+            # Requirement 1 of the fourth normal form: the table must be in
+            # Boyce-Codd normal form.
             if not FourthNormalFormDetecter.is_in_bcnf(bcnf_alerts):
                 continue
 

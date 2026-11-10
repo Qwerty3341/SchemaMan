@@ -13,14 +13,14 @@ Complementation Rule:
     MVDs come in pairs: for X the values of Y are independent of the values of Z and vice versa
 
 Example:
-    R = {course_id, teacher_id, book}
-    X = {course_id}, Y = {teacher_id}
-    MVD: course_id ->> teacher_id
+    R = {course_id, teacher, book}
+    X = {course_id}, Y = {teacher}
+    MVD: course_id ->> teacher
     Z = R - X - Y = {book}
     MVD course_id ->> book (by complementation)
 
     |-----------|------------|--------|
-    | course_id | teacher_id | book   |
+    | course_id | teacher    | book   |
     |-----------|------------|--------|
     |     1     |   Tux      |  Linux |
     |     1     |   Tux      |  Java  |
@@ -29,6 +29,17 @@ Example:
     |-----------|------------|--------|
 
     Every teacher of a course appears with every book of that course (2 teachers x 2 books = 4 rows).
+
+Solve:
+    R1 = X u Y = {course_id, teacher}
+    R2 = X u Z = {course_id, book}
+
+    |-----------|------------|    |-----------|------------|
+    | course_id | teacher    |    | course_id | book       |
+    |-----------|------------|    |-----------|------------|
+    |     1     |   Tux      |    |     1     |   Linux    |
+    |     1     |   Duke     |    |     1     |   Java     |
+    |-----------|------------|    |-----------|------------|
 """
 
 from .alerts import Alert, AlertColor
@@ -44,7 +55,7 @@ class FourthNormalFormDetecter:
         return True
 
     @staticmethod
-    def there_is_mvd(table: Table):
+    def are_there_any_mvd(table: Table):
         if table.get_multivalued_dependencies():
             return True
         else:
@@ -52,12 +63,30 @@ class FourthNormalFormDetecter:
 
     @staticmethod
     def need_complementation_rule(table: Table) -> bool:
-        pass
+        have_pair = False
+        # Current mvd
+        for mvd in table.get_multivalued_dependencies():
+            for tmp_mvd in table.get_multivalued_dependencies():
+                pass
+
 
     @staticmethod
     def detect_fourth_nf(table: Table):
         alerts: list[Alert] = []
-        if not FourthNormalFormDetecter.there_is_mvd(table):
+
+        # Simple key
+        if table.primary_key is not None and len(table.primary_key.columns) == 1:
+            alerts.append(
+                Alert(
+                    AlertColor.GREEN,
+                    "SIMPLE PRIMARY KEY (PASSES 4NF)",
+                    table.name
+                )
+            )
+            return alerts
+
+        # No mvd declared
+        if not FourthNormalFormDetecter.are_there_any_mvd(table):
             alerts.append(
                 Alert(
                     AlertColor.GRAY,
@@ -66,4 +95,8 @@ class FourthNormalFormDetecter:
                 )
             )
             return alerts
+
+
+        # Check if the mvd needs complementation rule
+
         return alerts
