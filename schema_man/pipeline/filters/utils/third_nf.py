@@ -39,7 +39,7 @@ class ThirdNormalFormDetecter:
             fd_columns = set(fd.determinant) | set(fd.dependent)
             if fd_columns >= columns:
                 is_candidate_key = True
-                
+
             # Detect transitive dependencies
             if pk_in_fd_determinant or is_candidate_key == True:
                 pass
@@ -51,4 +51,14 @@ class ThirdNormalFormDetecter:
                         table.name
                     )
                 )
+
+        if len(alerts) == 0:
+            alerts.append(
+                Alert(
+                    AlertColor.GREEN,
+                    "NO TRANSITIVE DEPENDENCIES FOUND",
+                    table.name
+                )
+            )
+
         return alerts
