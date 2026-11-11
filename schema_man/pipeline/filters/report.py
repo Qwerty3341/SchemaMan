@@ -28,12 +28,11 @@ class ReportFilter(Filter):
 
         for table in context.schema:
             table_alerts = alerts_by_table.get(table.name, [])
-            # A red alert fails the level. A gray alert stops the evaluation
-            # without a verdict, so the level cannot be decided.
+            # A red alert fails the level. Gray alerts only report missing
+            # information and no longer stop the evaluation, so they do not
+            # change the verdict.
             if any(alert.color == AlertColor.RED for alert in table_alerts):
                 header_status, status = "[ FAILS ]", "fails"
-            elif any(alert.color == AlertColor.GRAY for alert in table_alerts):
-                header_status, status = "[ INDETERMINATE ]", "indeterminate"
             else:
                 header_status, status = "[ PASSES ]", "passes"
 

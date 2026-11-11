@@ -111,7 +111,7 @@ def test_report_tables_passing_table(client):
     assert tables[0]["alerts"]
 
 
-def test_report_tables_indeterminate_table(client):
+def test_report_tables_with_gray_alert_pass(client):
     response = get_report(
         client,
         sql=SQL_COMPOSITE_PK_WITHOUT_FDS,
@@ -121,12 +121,13 @@ def test_report_tables_indeterminate_table(client):
 
     assert response.status_code == 200
     data = response.get_json()
-    assert "[ INDETERMINATE ]" in data["report"]
+    assert "[ PASSES ]" in data["report"]
+    assert "[ INDETERMINATE ]" not in data["report"]
 
     tables = data["tables"]
     assert len(tables) == 1
     assert tables[0]["name"] == "INSCRIPCION"
-    assert tables[0]["status"] == "indeterminate"
+    assert tables[0]["status"] == "passes"
     assert {
         "color": "GRAY",
         "message": "TABLE DOES NOT HAVE FUNCTIONAL DEPENDENCIES",

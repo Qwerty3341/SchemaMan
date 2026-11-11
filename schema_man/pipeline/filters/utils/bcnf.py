@@ -20,6 +20,18 @@ class BoyceCoddNormalFormDetecter:
 
     @staticmethod
     def look_if_every_determinant_is_candidate_key(table: Table):
+        # Without declared functional dependencies there is nothing to check:
+        # report the missing information and keep the flow going.
+        if not table.get_functional_dependencies():
+            return [
+                Alert(
+                    AlertColor.GRAY,
+                    "CANNOT CHECK CANDIDATE KEYS WITHOUT FUNCTIONAL "
+                    "DEPENDENCIES",
+                    table.name,
+                )
+            ]
+
         alerts: list[Alert] = []
         pk_columns = set(table.primary_key.columns)
         columns = {c.name for c in table.columns}

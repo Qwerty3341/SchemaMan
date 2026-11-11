@@ -42,8 +42,8 @@ class NFDetectionFilter(Filter):
                 continue
 
             # Requirement 1 of the second normal form: the table must be in
-            # first normal form. A blocking alert (RED/GRAY) stops the
-            # evaluation of this table in the higher normal forms.
+            # first normal form. Only a red alert blocks the evaluation of
+            # this table in the higher normal forms; gray keeps going.
             if not SecondNormalFormDetecter.is_in_first_normal_form(first_nf_alerts):
                 continue
 

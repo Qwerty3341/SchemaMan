@@ -7,20 +7,24 @@ Requirements:
     An MVD X ->> Y is trivial if Y is a subset of X, or X v Y = R.
 
 Complementation Rule:
+    X = determinant
+    Y = dependent
+    Z = rest of the table
+
     We have and schema R and two sets of its columns (X, Y),
     with Z = R - X - Y:
         If X ->> Y then X ->> Z
     MVDs come in pairs: for X the values of Y are independent of the values of Z and vice versa
 
 Example:
-    R = {course_id, teacher, book}
-    X = {course_id}, Y = {teacher}
-    MVD: course_id ->> teacher
+    R = {course, teacher, book}
+    X = {course}, Y = {teacher}
+    MVD: course ->> teacher
     Z = R - X - Y = {book}
-    MVD course_id ->> book (by complementation)
+    MVD course ->> book (by complementation)
 
     |-----------|------------|--------|
-    | course_id | teacher    | book   |
+    | course    | teacher    | book   |
     |-----------|------------|--------|
     |     1     |   Tux      |  Linux |
     |     1     |   Tux      |  Java  |
@@ -31,11 +35,11 @@ Example:
     Every teacher of a course appears with every book of that course (2 teachers x 2 books = 4 rows).
 
 Solve:
-    R1 = X u Y = {course_id, teacher}
-    R2 = X u Z = {course_id, book}
+    R1 = X u Y = {course, teacher}
+    R2 = X u Z = {course, book}
 
     |-----------|------------|    |-----------|------------|
-    | course_id | teacher    |    | course_id | book       |
+    | course    | teacher    |    | course    | book       |
     |-----------|------------|    |-----------|------------|
     |     1     |   Tux      |    |     1     |   Linux    |
     |     1     |   Duke     |    |     1     |   Java     |
@@ -43,7 +47,7 @@ Solve:
 """
 
 from .alerts import Alert, AlertColor
-from .table_classes import Table
+from .table_classes import MultivaluedDependency, Table
 
 
 class FourthNormalFormDetecter:
@@ -62,13 +66,32 @@ class FourthNormalFormDetecter:
             return False
 
     @staticmethod
-    def need_complementation_rule(table: Table) -> bool:
-        have_pair = False
-        # Current mvd
-        for mvd in table.get_multivalued_dependencies():
-            for tmp_mvd in table.get_multivalued_dependencies():
-                pass
+    def mvd_need_complementation_rule(table: Table, mvd: MultivaluedDependency):
+        """Return the missing complement MVD X ->> Z (Z = R - X - Y).
 
+        Returns False when the complement is already declared or the MVD is
+        trivial (no complementation needed).
+        """
+        # 1. Extract X and Y from mvd
+        X = set(mvd.determinant)
+        Y = set(mvd.dependent)
+        # 2. Calculate Z (Z = R - X - Y), R is every column of the table
+        R = {column.name for column in table.columns}
+        Z = R - X - Y
+        # 3. X u Y = R: trivial MVD, there is no complement to declare
+        if not Z:
+            return False
+        # 4. Use the complementation rule to obtain C (C = X ->> Z)
+        C = MultivaluedDependency(tuple(sorted(X)), tuple(sorted(Z)))
+        # 5. Cycle to iterate in all the declared mvd
+        for declared in table.get_multivalued_dependencies():
+            # 5.1 Compare each declared mvd with C (as column sets,
+            # the order inside determinant/dependent does not matter)
+            if set(declared.determinant) == X and set(declared.dependent) == Z:
+                # 5.2 The complementation is already in the table
+                return False
+        # 5.3 The cycle ended and there is no coincidence, return C
+        return C
 
     @staticmethod
     def detect_fourth_nf(table: Table):
@@ -95,7 +118,6 @@ class FourthNormalFormDetecter:
                 )
             )
             return alerts
-
 
         # Check if the mvd needs complementation rule
 

@@ -171,3 +171,58 @@ def test_second_nf_only_greys_tables_without_declared_functional_dependencies():
     # CURSO_PROFESOR_LIBRO only declares an MVD, so there is no FD to check
     # the partial dependencies against.
     assert gray_tables == {"CURSO_PROFESOR_LIBRO"}
+
+
+def test_only_red_blocks_the_pipeline():
+    assert AlertColor.RED.blocks_pipeline is True
+    assert AlertColor.GREEN.blocks_pipeline is False
+    assert AlertColor.YELLOW.blocks_pipeline is False
+    assert AlertColor.GRAY.blocks_pipeline is False
+
+
+def test_third_nf_emits_gray_without_declared_functional_dependencies():
+    context = run_nf_detection(COMPOSITE_PK_SQL, "NF3")
+    alerts = collected(context)
+
+    assert (
+        AlertColor.GRAY,
+        "CANNOT CHECK TRANSITIVE DEPENDENCIES WITHOUT FUNCTIONAL "
+        "DEPENDENCIES",
+    ) in alerts
+    # Gray no longer stops the flow, but it must not turn into a fake pass.
+    assert not any(
+        color == AlertColor.GREEN and "TRANSITIVE DEPENDENCIES" in message
+        for color, message in alerts
+    )
+
+
+def test_bcnf_emits_gray_without_declared_functional_dependencies():
+    context = run_nf_detection(COMPOSITE_PK_SQL, "BCNF")
+
+    assert (
+        AlertColor.GRAY,
+        "CANNOT CHECK CANDIDATE KEYS WITHOUT FUNCTIONAL DEPENDENCIES",
+    ) in collected(context)
+
+
+def test_gray_does_not_stop_the_pipeline():
+    context = run_nf_detection(COMPOSITE_PK_SQL, "NF4")
+    alerts = collected(context)
+
+    # 2NF, 3NF, BCNF and 4NF report the missing information and the
+    # evaluation keeps going.
+    assert (
+        AlertColor.GRAY,
+        "TABLE DOES NOT HAVE FUNCTIONAL DEPENDENCIES",
+    ) in alerts
+    assert (
+        AlertColor.GRAY,
+        "CANNOT CHECK TRANSITIVE DEPENDENCIES WITHOUT FUNCTIONAL "
+        "DEPENDENCIES",
+    ) in alerts
+    assert (
+        AlertColor.GRAY,
+        "CANNOT CHECK CANDIDATE KEYS WITHOUT FUNCTIONAL DEPENDENCIES",
+    ) in alerts
+    assert (AlertColor.GRAY, "NO MVD IN THE TABLE") in alerts
+    assert not any(color == AlertColor.RED for color, _ in alerts)

@@ -79,8 +79,8 @@ class SecondNormalFormDetecter:
             return alerts
 
         # Requirement 3: partial dependencies can only be checked when the
-        # functional dependencies are declared. Without them the evaluation
-        # stops here (GRAY halts the pipeline flow).
+        # functional dependencies are declared. Without them a gray alert is
+        # reported and the evaluation continues with the next normal form.
         if not SecondNormalFormDetecter.have_functional_dependencies(table):
             alerts.append(Alert(
                 AlertColor.GRAY,

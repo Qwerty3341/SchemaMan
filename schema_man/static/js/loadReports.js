@@ -3,7 +3,6 @@ const divTerminal = document.getElementById("report-terminal");
 const STATUS_LABELS = {
   passes: "[ PASSES ]",
   fails: "[ FAILS ]",
-  indeterminate: "[ INDETERMINATE ]",
 };
 
 function addAlerts(tables) {

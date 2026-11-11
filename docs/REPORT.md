@@ -2,12 +2,12 @@
 
 ## Table status
 
-The header of every table carries one of three statuses:
+The header of every table carries one of two statuses:
 
-- `[ PASSES ]`: no red or gray alert in the table.
+- `[ PASSES ]`: no red alert in the table. Gray alerts only report missing
+  information and do not change the verdict (gray does not block the pipeline
+  flow, so the evaluation continues with the next normal form).
 - `[ FAILS ]`: the table has a red alert.
-- `[ INDETERMINATE ]`: the table has a gray alert, so the evaluation stopped
-  before reaching a verdict (gray blocks the pipeline flow).
 
 ## Example
 
