@@ -16,6 +16,11 @@ class PrimaryKey:
 
 
 @dataclass(frozen=True)
+class UniqueKey:
+    columns: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class ForeignKey:
     columns: tuple[str, ...]
     referenced_table: str
@@ -43,6 +48,7 @@ class Table:
     name: str
     columns: list[Column] = field(default_factory=list)
     primary_key: PrimaryKey | None = None
+    unique_keys: list[UniqueKey] = field(default_factory=list)
     foreign_keys: list[ForeignKey] = field(default_factory=list)
     functional_dependencies: list[FunctionalDependency] = field(
         default_factory=list)
@@ -57,6 +63,9 @@ class Table:
 
     def get_primary_key(self) -> PrimaryKey | None:
         return self.primary_key
+
+    def get_unique_keys(self) -> tuple[UniqueKey, ...]:
+        return tuple(self.unique_keys)
 
     def get_foreign_keys(self) -> tuple[ForeignKey, ...]:
         return tuple(self.foreign_keys)
@@ -78,6 +87,10 @@ class Table:
         if self.primary_key is not None:
             columns = ", ".join(self.primary_key.columns)
             lines.append(f"    PRIMARY KEY: ({columns})")
+
+        for unique_key in self.unique_keys:
+            columns = ", ".join(unique_key.columns)
+            lines.append(f"    UNIQUE: ({columns})")
 
         for foreign_key in self.foreign_keys:
             columns = ", ".join(foreign_key.columns)

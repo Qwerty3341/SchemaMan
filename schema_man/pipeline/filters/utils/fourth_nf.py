@@ -52,64 +52,87 @@ from .table_classes import MultivaluedDependency, Table
 
 class FourthNormalFormDetecter:
     @staticmethod
-    def is_in_bcnf(alerts: list[Alert]):
+    def is_in_bcnf(alerts: list[Alert]) -> bool:
         for a in alerts:
             if a.blocks_pipeline:
                 return False
         return True
 
     @staticmethod
-    def are_there_any_mvd(table: Table):
+    def __are_there_any_mvd(table: Table) -> bool:
         if table.get_multivalued_dependencies():
             return True
         else:
             return False
 
     @staticmethod
-    def mvd_need_complementation_rule(table: Table, mvd: MultivaluedDependency):
-        """Return the missing complement MVD X ->> Z (Z = R - X - Y).
+    def __attribute_closure(determinant: tuple[str, ...],
+                            table: Table) -> set[str]:
+        """Return the closure X+ of determinant under the declared FDs.
 
-        Returns False when the complement is already declared or the MVD is
-        trivial (no complementation needed).
+        A determinant is a superkey when its closure contains every column
+        of the table.
         """
-        # 1. Extract X and Y from mvd
-        X = set(mvd.determinant)
-        Y = set(mvd.dependent)
-        # 2. Calculate Z (Z = R - X - Y), R is every column of the table
-        R = {column.name for column in table.columns}
-        Z = R - X - Y
-        # 3. X u Y = R: trivial MVD, there is no complement to declare
-        if not Z:
-            return False
-        # 4. Use the complementation rule to obtain C (C = X ->> Z)
-        C = MultivaluedDependency(tuple(sorted(X)), tuple(sorted(Z)))
-        # 5. Cycle to iterate in all the declared mvd
-        for declared in table.get_multivalued_dependencies():
-            # 5.1 Compare each declared mvd with C (as column sets,
-            # the order inside determinant/dependent does not matter)
-            if set(declared.determinant) == X and set(declared.dependent) == Z:
-                # 5.2 The complementation is already in the table
-                return False
-        # 5.3 The cycle ended and there is no coincidence, return C
-        return C
+        columns = {column.name for column in table.columns}
+        closure = set(determinant)
+        # The primary key determines every column by definition, even when
+        # the user did not declare its FDs.
+        if table.primary_key is not None and set(
+            table.primary_key.columns
+        ) <= closure:
+            return columns
+        # Apply every FD whose determinant is already inside the closure
+        # until no new attribute can be added.
+        changed = True
+        while changed:
+            changed = False
+            for fd in table.get_functional_dependencies():
+                if set(fd.determinant) <= closure:
+                    new_attributes = set(fd.dependent) - closure
+                    if new_attributes:
+                        closure |= new_attributes
+                        changed = True
+        return closure
+
+    @staticmethod
+    def determinant_is_superkey(determinant: tuple[str, ...],
+                                table: Table) -> bool:
+        """Tell whether determinant is a superkey of the table."""
+        columns = {column.name for column in table.columns}
+        return FourthNormalFormDetecter.__attribute_closure(
+            determinant, table
+        ) == columns
+
+    @staticmethod
+    def __mvd_is_trivial(mvd: MultivaluedDependency,
+                         columns: set[str]) -> bool:
+        """An MVD X ->> Y is trivial if Y is a subset of X or X u Y = R."""
+        determinant = set(mvd.determinant)
+        dependent = set(mvd.dependent)
+        return dependent <= determinant or determinant | dependent == columns
+
+    @staticmethod
+    def __decomposition_hint(mvd: MultivaluedDependency,
+                             columns: set[str]) -> str:
+        """Return the two relations proposed by the complementation rule.
+
+        For a non-trivial MVD X ->> Y, with Z = R - X - Y:
+            R1 = X u Y
+            R2 = X u Z
+        """
+        determinant = set(mvd.determinant)
+        dependent = set(mvd.dependent)
+        rest = columns - determinant - dependent
+        first = tuple(sorted(determinant | dependent))
+        second = tuple(sorted(determinant | rest))
+        return f"decompose into {first} and {second}"
 
     @staticmethod
     def detect_fourth_nf(table: Table):
         alerts: list[Alert] = []
 
-        # Simple key
-        if table.primary_key is not None and len(table.primary_key.columns) == 1:
-            alerts.append(
-                Alert(
-                    AlertColor.GREEN,
-                    "SIMPLE PRIMARY KEY (PASSES 4NF)",
-                    table.name
-                )
-            )
-            return alerts
-
-        # No mvd declared
-        if not FourthNormalFormDetecter.are_there_any_mvd(table):
+        # No mvd declared (Gray alerts, can not detect)
+        if not FourthNormalFormDetecter.__are_there_any_mvd(table):
             alerts.append(
                 Alert(
                     AlertColor.GRAY,
@@ -119,6 +142,53 @@ class FourthNormalFormDetecter:
             )
             return alerts
 
-        # Check if the mvd needs complementation rule
+        columns = {column.name for column in table.columns}
+
+        """---------------
+        Now the algorithm
+        ---------------"""
+        # 1. Extract the MVDs
+        for mvd in table.get_multivalued_dependencies():
+            # 2. A trivial MVD imposes no restriction, so it is not a
+            # fourth normal form violation.
+            if FourthNormalFormDetecter.__mvd_is_trivial(mvd, columns):
+                continue
+            # 3. For every non-trivial MVD X ->> Y, X must be a superkey.
+            if FourthNormalFormDetecter.determinant_is_superkey(
+                mvd.determinant, table
+            ):
+                alerts.append(
+                    Alert(
+                        AlertColor.GREEN,
+                        f"{mvd.determinant} ->> {mvd.dependent} is implied "
+                        "by a superkey",
+                        table.name
+                    )
+                )
+            # 4. Otherwise the table violates the fourth normal form; the
+            # complementation rule suggests how to decompose it.
+            else:
+                hint = FourthNormalFormDetecter.__decomposition_hint(
+                    mvd, columns
+                )
+                alerts.append(
+                    Alert(
+                        AlertColor.RED,
+                        f"NON-TRIVIAL MVD {mvd.determinant} ->> "
+                        f"{mvd.dependent} WITH NON-SUPERKEY DETERMINANT; "
+                        f"{hint}",
+                        table.name
+                    )
+                )
+
+        # 5. Every MVD was trivial: the table satisfies the fourth normal form.
+        if not alerts:
+            alerts.append(
+                Alert(
+                    AlertColor.GREEN,
+                    "NO NON-TRIVIAL MVD WITH A NON-SUPERKEY DETERMINANT",
+                    table.name
+                )
+            )
 
         return alerts

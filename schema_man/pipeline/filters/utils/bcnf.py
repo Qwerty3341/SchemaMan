@@ -12,7 +12,7 @@ from .table_classes import Table
 
 class BoyceCoddNormalFormDetecter:
     @staticmethod
-    def is_in_third_normal_form(alerts: list[Alert]):
+    def is_in_third_normal_form(alerts: list[Alert]) -> bool:
         for a in alerts:
             if a.blocks_pipeline:
                 return False

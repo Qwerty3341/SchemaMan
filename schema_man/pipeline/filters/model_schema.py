@@ -13,6 +13,7 @@ from .utils.table_classes import (
     MultivaluedDependency,
     PrimaryKey,
     Table,
+    UniqueKey,
 )
 
 """
@@ -43,9 +44,7 @@ class ModelSchemaFilter(Filter):
         context.schema = self.model_schema(context.sql_ast, context.dialect)
         return context
 
-    def model_schema(
-        self, statements: list[exp.Expression], dialect: str
-    ) -> list[Table]:
+    def model_schema(self, statements: list[exp.Expression], dialect: str) -> list[Table]:
         """
         Build one Table per CREATE TABLE
         skipping other statements (INSERTS, INDEX, ALTERS, ETC.)
@@ -70,6 +69,11 @@ class ModelSchemaFilter(Filter):
                 table.columns.append(column)
                 if inline_primary_key:
                     primary_key_columns = [column.name]
+                if self.has_column_constraint(
+                        node, exp.UniqueColumnConstraint):
+                    table.unique_keys.append(
+                        UniqueKey(columns=(column.name,))
+                    )
             elif isinstance(node, exp.Constraint):  # Simple PK
                 # Named constraints wrap the real node
                 # CONSTRAINT fk_x FOREIGN KEY
@@ -89,25 +93,39 @@ class ModelSchemaFilter(Filter):
 
     def detect_constraints(self, nodes: list, table: Table, primary_key_columns: list[str] | None) -> list[str] | None:
         """
-        Read PK/FK constraints into the table, keeping any PK found
+        Read PK/FK/UNIQUE constraints into the table, keeping any PK found
         """
         for node in nodes:
             if isinstance(node, exp.PrimaryKey):
                 primary_key_columns = [
                     column.name.upper() for column in node.expressions
                 ]
+            elif isinstance(node, exp.UniqueColumnConstraint):
+                table.unique_keys.append(self.detect_unique_key(node))
             elif isinstance(node, exp.ForeignKey):
                 table.foreign_keys.append(self.detect_foreign_key(node))
         return primary_key_columns
+
+    @staticmethod
+    def has_column_constraint(
+        column_def: exp.ColumnDef,
+        constraint_type: type[exp.Expression],
+    ) -> bool:
+        """
+        Report whether a column declares a constraint of the given type
+        """
+        return any(
+            isinstance(constraint.kind, constraint_type)
+            for constraint in column_def.constraints
+        )
 
     def detect_column(self, column_def: exp.ColumnDef, dialect: str) -> tuple[Column, bool]:
         """
         Build a Column and report whether it declares an inline PK
         """
 
-        inline_primary_key = any(
-            isinstance(constraint.kind, exp.PrimaryKeyColumnConstraint)
-            for constraint in column_def.constraints
+        inline_primary_key = self.has_column_constraint(
+            column_def, exp.PrimaryKeyColumnConstraint
         )
         column = Column(
             name=column_def.name.upper(),
@@ -129,6 +147,20 @@ class ModelSchemaFilter(Filter):
                 return ()
             size.append(int(parameter.name))
         return tuple(size)
+
+    @staticmethod
+    def detect_unique_key(unique: exp.UniqueColumnConstraint) -> UniqueKey:
+        """
+        Build a UniqueKey from a table-level UNIQUE constraint.
+
+        SQLGlot stores the constrained columns in ``this`` (an exp.Schema);
+        the optional index name is ignored, like PK/FK names are.
+        """
+        schema = unique.this
+        columns = schema.expressions if isinstance(schema, exp.Schema) else []
+        return UniqueKey(
+            columns=tuple(column.name.upper() for column in columns)
+        )
 
     @staticmethod
     def detect_foreign_key(foreign_key: exp.ForeignKey) -> ForeignKey:

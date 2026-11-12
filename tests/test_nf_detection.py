@@ -226,3 +226,125 @@ def test_gray_does_not_stop_the_pipeline():
     ) in alerts
     assert (AlertColor.GRAY, "NO MVD IN THE TABLE") in alerts
     assert not any(color == AlertColor.RED for color, _ in alerts)
+
+
+def test_bcnf_is_not_evaluated_when_third_nf_fails():
+    sql = """
+    CREATE TABLE ejemplo (
+        a INTEGER PRIMARY KEY,
+        b INTEGER,
+        c TEXT
+        -- FD: (a) -> (b)
+        -- FD: (b) -> (c)
+    );
+    """
+    context = run_nf_detection(sql, "BCNF")
+    alerts = collected(context)
+
+    # (b) -> (c) is a transitive dependency: third normal form fails.
+    assert any(
+        color == AlertColor.RED and "TRANSITIVE DEPENDENCY" in message
+        for color, message in alerts
+    )
+    # BCNF would flag the same dependency again, but the third normal form
+    # gate stops it.
+    assert not any("candidat key" in message for _, message in alerts)
+
+
+def test_bcnf_runs_when_third_nf_passes():
+    sql = """
+    CREATE TABLE ejemplo (
+        a INTEGER,
+        b INTEGER,
+        c TEXT,
+        PRIMARY KEY (a, b)
+        -- FD: (a, b) -> (c)
+    );
+    """
+    context = run_nf_detection(sql, "BCNF")
+    alerts = collected(context)
+
+    assert (AlertColor.GREEN, "NO TRANSITIVE DEPENDENCIES FOUND") in alerts
+    assert any(
+        color == AlertColor.GREEN and "is candidate key" in message
+        for color, message in alerts
+    )
+
+
+def test_fourth_nf_flags_nontrivial_mvd_without_superkey():
+    context = run_nf_detection(load_school_sql(), "NF4")
+
+    assert any(
+        alert.color == AlertColor.RED
+        and alert.associated_table == "CURSO_PROFESOR_LIBRO"
+        and "CURSO_ID" in alert.message
+        and "PROFESOR_ID" in alert.message
+        for alert in context.violations
+    )
+
+
+def test_fourth_nf_flags_nontrivial_mvd_with_simple_primary_key():
+    sql = """
+    CREATE TABLE ejemplo (
+        id INTEGER PRIMARY KEY,
+        a INTEGER,
+        b INTEGER
+        -- MVD: (a) ->> (b)
+    );
+    """
+    context = run_nf_detection(sql, "NF4")
+
+    # A simple primary key does not make a non-trivial MVD with a
+    # non-superkey determinant valid.
+    assert any(
+        alert.color == AlertColor.RED
+        and "NON-TRIVIAL MVD" in alert.message
+        for alert in context.violations
+    )
+
+
+def test_fourth_nf_passes_mvd_whose_determinant_is_a_superkey():
+    sql = """
+    CREATE TABLE ejemplo (
+        id INTEGER PRIMARY KEY,
+        a INTEGER,
+        b INTEGER
+        -- MVD: (id) ->> (a)
+    );
+    """
+    context = run_nf_detection(sql, "NF4")
+    alerts = collected(context)
+
+    assert any(
+        color == AlertColor.GREEN and "is implied by a superkey" in message
+        for color, message in alerts
+    )
+    assert not any(color == AlertColor.RED for color, _ in alerts)
+
+
+def test_fourth_nf_ignores_trivial_mvds():
+    sql = """
+    CREATE TABLE union_trivial (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        PRIMARY KEY (a, b)
+        -- MVD: (a, b) ->> (c)
+    );
+    CREATE TABLE subset_trivial (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        PRIMARY KEY (a, b)
+        -- MVD: (a, b) ->> (a)
+    );
+    """
+    context = run_nf_detection(sql, "NF4")
+    alerts = collected(context)
+
+    # X u Y = R and Y subset of X: both MVDs are trivial, no violation.
+    assert not any(color == AlertColor.RED for color, _ in alerts)
+    assert (
+        AlertColor.GREEN,
+        "NO NON-TRIVIAL MVD WITH A NON-SUPERKEY DETERMINANT",
+    ) in alerts

@@ -67,6 +67,13 @@ class NFDetectionFilter(Filter):
             if not evaluate_bc_nf:
                 continue
 
+            # Requirement 1 of the Boyce-Codd normal form: the table must be
+            # in third normal form.
+            if not BoyceCoddNormalFormDetecter.is_in_third_normal_form(
+                third_nf_alerts
+            ):
+                continue
+
             bcnf_alerts = BoyceCoddNormalFormDetecter.look_if_every_determinant_is_candidate_key(table)
             context.violations.extend(bcnf_alerts)
 
