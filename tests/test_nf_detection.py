@@ -348,3 +348,90 @@ def test_fourth_nf_ignores_trivial_mvds():
         AlertColor.GREEN,
         "NO NON-TRIVIAL MVD WITH A NON-SUPERKEY DETERMINANT",
     ) in alerts
+
+
+def test_fifth_nf_does_not_crash_with_composite_primary_key():
+    sql = """
+    CREATE TABLE inscripcion (
+        alumno_id INTEGER NOT NULL,
+        curso_id INTEGER NOT NULL,
+        calificacion REAL,
+        fecha TEXT,
+        PRIMARY KEY (alumno_id, curso_id)
+        -- FD: (alumno_id, curso_id) -> (calificacion, fecha)
+        -- MVD: (alumno_id, curso_id) ->> (calificacion)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    # detect_fifth_nf must always return a list, never a bare Alert.
+    assert any(
+        alert.associated_table == "INSCRIPCION" and "5NF" in alert.message
+        for alert in context.violations
+    )
+
+
+def test_fifth_nf_is_not_evaluated_when_target_is_nf4():
+    sql = """
+    CREATE TABLE inscripcion (
+        alumno_id INTEGER NOT NULL,
+        curso_id INTEGER NOT NULL,
+        calificacion REAL,
+        fecha TEXT,
+        PRIMARY KEY (alumno_id, curso_id)
+        -- FD: (alumno_id, curso_id) -> (calificacion, fecha)
+        -- MVD: (alumno_id, curso_id) ->> (calificacion)
+    );
+    """
+    context = run_nf_detection(sql, "NF4")
+
+    # Fifth normal form is out of the requested target.
+    assert not any("5NF" in alert.message for alert in context.violations)
+
+
+def test_fifth_nf_passes_without_unique_keys():
+    sql = """
+    CREATE TABLE ejemplo (
+        id INTEGER PRIMARY KEY,
+        nombre TEXT
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GREEN,
+        "ALL KEYS ARE SIMPLE (PASSES 5NF)",
+    ) in collected(context)
+
+
+def test_fifth_nf_passes_with_multiple_simple_unique_keys():
+    sql = """
+    CREATE TABLE ejemplo (
+        id INTEGER PRIMARY KEY,
+        correo TEXT UNIQUE,
+        documento TEXT UNIQUE
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GREEN,
+        "ALL KEYS ARE SIMPLE (PASSES 5NF)",
+    ) in collected(context)
+
+
+def test_fifth_nf_fails_with_composite_unique_key():
+    sql = """
+    CREATE TABLE ejemplo (
+        id INTEGER PRIMARY KEY,
+        a INTEGER,
+        b INTEGER,
+        UNIQUE (a, b)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.RED,
+        "THERE ARE COMPOSITE KEYS (NOT PASS 5NF)",
+    ) in collected(context)

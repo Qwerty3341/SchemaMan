@@ -2,6 +2,7 @@ from typing import override
 
 from schema_man.pipeline.context import PipeLineContext
 from schema_man.pipeline.filters.utils.bcnf import BoyceCoddNormalFormDetecter
+from schema_man.pipeline.filters.utils.fifth import FifthNormalFormDetecter
 from schema_man.pipeline.filters.utils.fourth_nf import FourthNormalFormDetecter
 from schema_man.pipeline.filters.utils.third_nf import ThirdNormalFormDetecter
 from ..filter import Filter
@@ -33,6 +34,7 @@ class NFDetectionFilter(Filter):
         evaluate_third_nf = reaches_level(context.target_normal_form, "NF3")
         evaluate_bc_nf = reaches_level(context.target_normal_form, "BCNF")
         evaluate_fourth_nf = reaches_level(context.target_normal_form, "NF4")
+        evaluate_fifth_nf = reaches_level(context.target_normal_form, "NF5")
 
         for table in context.schema:
             first_nf_alerts = FirstNormalFormDetecter.detect_first_nf(table)
@@ -88,5 +90,14 @@ class NFDetectionFilter(Filter):
 
             fourth_nf_alerts = FourthNormalFormDetecter.detect_fourth_nf(table)
             context.violations.extend(fourth_nf_alerts)
+
+            # 5 NF
+            if not evaluate_fifth_nf:
+                continue
+
+            if not FifthNormalFormDetecter.is_in_fourth_nf(fourth_nf_alerts):
+                continue
+            fifth_nf_alerts = FifthNormalFormDetecter.detect_fifth_nf(table)
+            context.violations.extend(fifth_nf_alerts)
 
         return context
