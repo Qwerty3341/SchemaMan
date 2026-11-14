@@ -10,6 +10,7 @@ from .utils.table_classes import (
     Column,
     ForeignKey,
     FunctionalDependency,
+    JoinDependency,
     MultivaluedDependency,
     PrimaryKey,
     Table,
@@ -17,9 +18,12 @@ from .utils.table_classes import (
 )
 
 """
-Regular expression for detect the FD and MVD
+Regular expressions for detect the FD, MVD and JD
 
-# Dependencies are declared as SQL comments: "-- FD: (a, b) -> (c)".
+# Dependencies are declared as SQL comments:
+# "-- FD: (a, b) -> (c)"
+# "-- MVD: (a, b) ->> (c)"
+# "-- JD: (a, b), (b, c), (a, c)"
 # "->>" is listed before "->" so the arrow of an MVD is not read as an FD.
 """
 DEPENDENCY_PATTERN = re.compile(
@@ -34,8 +38,10 @@ DEPENDENCY_CLASSES = {
 }
 
 JOIN_DEPENDENCY_PATTERN = re.compile(
-    r""
+    r"^\s*JD:\s*(?P<components>\([^)]*\)(?:\s*,\s*\([^)]*\))*)\s*$"
 )
+JOIN_COMPONENT_PATTERN = re.compile(r"\(([^)]*)\)")
+
 
 class ModelSchemaFilter(Filter):
     @override
@@ -185,10 +191,15 @@ class ModelSchemaFilter(Filter):
 
     def model_dependencies(self, table: Table, comments: list[str] | None) -> None:
         """
-        Read FD/MVD declarations from the tables SQL comments
+        Read FD/MVD/JD declarations from the tables SQL comments
         """
 
         for comment in comments or []:
+            join_dependency = self.detect_join_dependency(comment)
+            if join_dependency is not None:
+                table.join_dependencies.append(join_dependency)
+                continue
+
             match = DEPENDENCY_PATTERN.match(comment)
             if match is None:
                 continue
@@ -200,6 +211,30 @@ class ModelSchemaFilter(Filter):
                 table.functional_dependencies.append(dependency)
             else:
                 table.multivalued_dependencies.append(dependency)
+
+    @staticmethod
+    def detect_join_dependency(comment: str) -> JoinDependency | None:
+        """
+        Build a JoinDependency from a "-- JD: (a, b), (b, c), (a, c)" comment.
+        """
+        match = JOIN_DEPENDENCY_PATTERN.match(comment)
+        if match is None:
+            return None
+
+        components = tuple(
+            ModelSchemaFilter._attributes(component)
+            for component in JOIN_COMPONENT_PATTERN.findall(
+                match["components"]
+            )
+        )
+
+        # A join dependency needs at least two non-empty components.
+        if len(components) < 2:
+            return None
+        if any(not name for component in components for name in component):
+            return None
+
+        return JoinDependency(components=components)
 
     @staticmethod
     def _attributes(attribute_list: str) -> tuple[str, ...]:

@@ -44,8 +44,8 @@ class MultivaluedDependency(Dependency):
 
 
 @dataclass(frozen=True)
-class JoinDependency(Dependency):
-    pass
+class JoinDependency:
+    components: tuple[tuple[str, ...], ...]
 
 
 @dataclass
@@ -59,6 +59,7 @@ class Table:
         default_factory=list)
     multivalued_dependencies: list[MultivaluedDependency] = field(
         default_factory=list)
+    join_dependencies: list[JoinDependency] = field(default_factory=list)
 
     def get_name(self) -> str:
         return self.name
@@ -80,6 +81,9 @@ class Table:
 
     def get_multivalued_dependencies(self) -> tuple[MultivaluedDependency, ...]:
         return tuple(self.multivalued_dependencies)
+
+    def get_join_dependencies(self) -> tuple[JoinDependency, ...]:
+        return tuple(self.join_dependencies)
 
     def to_generic(self) -> str:
         """Render this table using the generic schema syntax."""
@@ -113,5 +117,12 @@ class Table:
             determinant = ", ".join(dependency.determinant)
             dependent = ", ".join(dependency.dependent)
             lines.append(f"    MVD: ({determinant}) ->> ({dependent})")
+
+        for join_dependency in self.join_dependencies:
+            components = ", ".join(
+                f"({', '.join(component)})"
+                for component in join_dependency.components
+            )
+            lines.append(f"    JD: {components}")
 
         return "\n".join(lines)

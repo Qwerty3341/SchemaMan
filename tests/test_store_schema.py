@@ -113,3 +113,53 @@ def test_unique_constraints_inline_and_composite():
     ]
     assert "UNIQUE: (CORREO)" in table.to_generic()
     assert "UNIQUE: (DOCUMENTO, PAIS)" in table.to_generic()
+
+
+def test_join_dependency_comment_is_parsed():
+    context = PipeLineContext(
+        sql="""
+            CREATE TABLE r (
+                a INTEGER,
+                b INTEGER,
+                c INTEGER,
+                PRIMARY KEY (a)
+                -- FD: (a) -> (b, c)
+                -- JD: (a, b), (b, c), (a, c)
+            );
+        """,
+        dialect="sqlite",
+        target_normal_form="NF5",
+    )
+    pipeline = Pipe(filters=[ParseSqlFilter(), ModelSchemaFilter()])
+    context = pipeline.run(context)
+    table = context.schema[0]
+
+    assert [jd.components for jd in table.join_dependencies] == [
+        (("A", "B"), ("B", "C"), ("A", "C")),
+    ]
+    assert [
+        (fd.determinant, fd.dependent)
+        for fd in table.functional_dependencies
+    ] == [(("A",), ("B", "C"))]
+    assert "JD: (A, B), (B, C), (A, C)" in table.to_generic()
+
+
+def test_invalid_join_dependency_is_ignored():
+    context = PipeLineContext(
+        sql="""
+            CREATE TABLE r (
+                a INTEGER,
+                b INTEGER,
+                PRIMARY KEY (a)
+                -- JD: (A, B)
+            );
+        """,
+        dialect="sqlite",
+        target_normal_form="NF5",
+    )
+    pipeline = Pipe(filters=[ParseSqlFilter(), ModelSchemaFilter()])
+    context = pipeline.run(context)
+    table = context.schema[0]
+
+    # A JD needs at least two components.
+    assert table.join_dependencies == []

@@ -3,6 +3,7 @@ from schema_man.pipeline.filters.utils.table_classes import (
     Column,
     ForeignKey,
     FunctionalDependency,
+    JoinDependency,
     MultivaluedDependency,
     PrimaryKey,
     Table,
@@ -25,6 +26,9 @@ def test_table_getters_return_attributes_and_read_only_collections():
     multivalued_dependency = MultivaluedDependency(
         determinant=("ID",), dependent=("TAG",)
     )
+    join_dependency = JoinDependency(
+        components=(("ID", "NAME"), ("NAME", "TAG"), ("ID", "TAG"))
+    )
     table = Table(
         name="EXAMPLE",
         columns=[column],
@@ -33,6 +37,7 @@ def test_table_getters_return_attributes_and_read_only_collections():
         foreign_keys=[foreign_key],
         functional_dependencies=[functional_dependency],
         multivalued_dependencies=[multivalued_dependency],
+        join_dependencies=[join_dependency],
     )
 
     assert table.get_name() == "EXAMPLE"
@@ -42,3 +47,5 @@ def test_table_getters_return_attributes_and_read_only_collections():
     assert table.get_foreign_keys() == (foreign_key,)
     assert table.get_functional_dependencies() == (functional_dependency,)
     assert table.get_multivalued_dependencies() == (multivalued_dependency,)
+    assert table.get_join_dependencies() == (join_dependency,)
+    assert "JD: (ID, NAME), (NAME, TAG), (ID, TAG)" in table.to_generic()

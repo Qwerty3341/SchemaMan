@@ -364,9 +364,13 @@ def test_fifth_nf_does_not_crash_with_composite_primary_key():
     """
     context = run_nf_detection(sql, "NF5")
 
-    # detect_fifth_nf must always return a list, never a bare Alert.
+    # detect_fifth_nf must always return a list, never a bare Alert. Without
+    # a declared join dependency the compliance cannot be proven, so the
+    # composite key alone is not reported as a violation.
     assert any(
-        alert.associated_table == "INSCRIPCION" and "5NF" in alert.message
+        alert.associated_table == "INSCRIPCION"
+        and alert.color == AlertColor.GRAY
+        and alert.message == "NO JOIN DEPENDENCIES DECLARED"
         for alert in context.violations
     )
 
@@ -420,7 +424,7 @@ def test_fifth_nf_passes_with_multiple_simple_unique_keys():
     ) in collected(context)
 
 
-def test_fifth_nf_fails_with_composite_unique_key():
+def test_fifth_nf_cannot_be_proven_with_composite_unique_key():
     sql = """
     CREATE TABLE ejemplo (
         id INTEGER PRIMARY KEY,
@@ -431,7 +435,110 @@ def test_fifth_nf_fails_with_composite_unique_key():
     """
     context = run_nf_detection(sql, "NF5")
 
+    # A composite key only disables the "all keys are simple" shortcut. It
+    # is not a violation by itself: without a declared JD there is nothing
+    # to check, so the result is gray.
+    assert (
+        AlertColor.GRAY,
+        "NO JOIN DEPENDENCIES DECLARED",
+    ) in collected(context)
+
+
+def test_fifth_nf_flags_join_dependency_not_implied_by_keys():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        d INTEGER,
+        PRIMARY KEY (a, b)
+        -- JD: (a, c), (b, d), (a, b)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
     assert (
         AlertColor.RED,
-        "THERE ARE COMPOSITE KEYS (NOT PASS 5NF)",
+        "JOIN DEPENDENCY (A, C), (B, D), (A, B) IS NOT IMPLIED BY THE KEYS",
     ) in collected(context)
+
+
+def test_fifth_nf_passes_join_dependency_implied_by_keys():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        d INTEGER,
+        PRIMARY KEY (a, b)
+        -- JD: (a, b, c), (a, b, d)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GREEN,
+        "JOIN DEPENDENCY (A, B, C), (A, B, D) IS IMPLIED BY THE KEYS",
+    ) in collected(context)
+
+
+def test_fifth_nf_passes_trivial_join_dependency():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        PRIMARY KEY (a, b)
+        -- JD: (a, b, c), (a)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GREEN,
+        "TRIVIAL JOIN DEPENDENCY (A, B, C), (A)",
+    ) in collected(context)
+
+
+def test_fifth_nf_reports_join_dependency_that_does_not_cover_the_table():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        d INTEGER,
+        PRIMARY KEY (a, b)
+        -- JD: (a, c), (b, c)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GRAY,
+        "JOIN DEPENDENCY (A, C), (B, C) DOES NOT COVER EVERY COLUMN",
+    ) in collected(context)
+
+
+def test_fifth_nf_evaluates_every_join_dependency():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        d INTEGER,
+        PRIMARY KEY (a, b)
+        -- JD: (a, b, c), (a, b, d)
+        -- JD: (a, c), (b, d), (a, b)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+    alerts = collected(context)
+
+    assert (
+        AlertColor.GREEN,
+        "JOIN DEPENDENCY (A, B, C), (A, B, D) IS IMPLIED BY THE KEYS",
+    ) in alerts
+    assert (
+        AlertColor.RED,
+        "JOIN DEPENDENCY (A, C), (B, D), (A, B) IS NOT IMPLIED BY THE KEYS",
+    ) in alerts

@@ -7,20 +7,20 @@ const STORAGE_KEY = "schema.sql";
 const container = document.querySelector("#sql-editor");
 
 if (container) {
-  const savedSql = sessionStorage.getItem(STORAGE_KEY);
-  // Here window create sqlEditor, the instance of Code Mirror now is global
-  window.sqlEditor = new EditorView({
-    doc: savedSql ?? "-- YOUR SCHEMA GOES HERE",
-    parent: container,
-    extensions: [
-      basicSetup,
-      gruvboxDark,
-      sql({upperCaseKeywords: true}),
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());
-        }
-      }),
-    ],
-  });
+	const savedSql = sessionStorage.getItem(STORAGE_KEY);
+	// Here window create sqlEditor, the instance of Code Mirror now is global
+	window.sqlEditor = new EditorView({
+		doc: savedSql ?? "-- YOUR SCHEMA GOES HERE",
+		parent: container,
+		extensions: [
+			basicSetup,
+			gruvboxDark,
+			sql({upperCaseKeywords: true}),
+			EditorView.updateListener.of((update) => {
+				if (update.docChanged) {
+					sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());
+				}
+			}),
+		],
+	});
 }
