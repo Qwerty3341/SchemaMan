@@ -46,7 +46,8 @@
 					<tr>
 						<td id="gray-row"><span class="alert-color-cube" aria-hidden="true"></span>Gray</td>
 						<td>Indeterminable</td>
-						<td>The algorithm does not have sufficient information to evaluate the normal form, but the evaluation continues</td>
+						<td>The algorithm does not have sufficient information to evaluate the normal form, but the
+							evaluation continues</td>
 						<td>Yes (with warning)</td>
 					</tr>
 				</tbody>
@@ -76,11 +77,18 @@
 			<pre class="dependency-example"><code>--MVD: (determinants, ...) ->> (dependents)</code></pre>
 		</div>
 
+		<div id="multivalued-dependency-div">
+			<h3>Join Dependency</h3>
+			<pre class="dependency-example"><code>--JD: (x, y), (y, z), (z, x)</code></pre>
+		</div>
+
 		<div id="dependencies-notes">
-			<strong>NOTE:</strong>
+			<strong>NOTES:</strong>
 			<ul>
-				<li>Dependencies are very important to detect from second to fourth normal forms</li>
 				<li>The dependencies must be declared inside the corresponding table</li>
+				<li>Functional dependencies are very important to detect from second to fifth normal forms</li>
+				<li>Multivalued dependencies must be declare to detect the fourth normal form</li>
+				<li>Join dependencies are exclusive for fifth normal form</li>
 			</ul>
 		</div>
 

@@ -43,6 +43,11 @@ class MultivaluedDependency(Dependency):
     pass
 
 
+@dataclass(frozen=True)
+class JoinDependency(Dependency):
+    pass
+
+
 @dataclass
 class Table:
     name: str

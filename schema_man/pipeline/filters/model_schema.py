@@ -33,6 +33,9 @@ DEPENDENCY_CLASSES = {
     "->>": MultivaluedDependency,
 }
 
+JOIN_DEPENDENCY_PATTERN = re.compile(
+    r""
+)
 
 class ModelSchemaFilter(Filter):
     @override
@@ -44,7 +47,9 @@ class ModelSchemaFilter(Filter):
         context.schema = self.model_schema(context.sql_ast, context.dialect)
         return context
 
-    def model_schema(self, statements: list[exp.Expression], dialect: str) -> list[Table]:
+    # autopep8: off
+    def model_schema(self, statements: list[exp.Expression], dialect: str) -> list[Table]: # pyright: ignore
+    # autopep8: on
         """
         Build one Table per CREATE TABLE
         skipping other statements (INSERTS, INDEX, ALTERS, ETC.)
@@ -109,7 +114,7 @@ class ModelSchemaFilter(Filter):
     @staticmethod
     def has_column_constraint(
         column_def: exp.ColumnDef,
-        constraint_type: type[exp.Expression],
+        constraint_type: type[exp.Expression],  # pyright: ignore
     ) -> bool:
         """
         Report whether a column declares a constraint of the given type
@@ -129,8 +134,8 @@ class ModelSchemaFilter(Filter):
         )
         column = Column(
             name=column_def.name.upper(),
-            type=generic_type_of(column_def.kind, dialect),
-            size=self.detect_size(column_def.kind),
+            type=generic_type_of(column_def.kind, dialect), # pyright: ignore
+            size=self.detect_size(column_def.kind), # pyright: ignore
         )
         return column, inline_primary_key
 

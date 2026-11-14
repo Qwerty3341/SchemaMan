@@ -15,7 +15,17 @@ Solution:
         1.3 Group the determinant of each FD that reach all the columns (BCNF)
     2. If all the keys are simple put green alert
     3. Each join dependency must be implied by the keys
-        ...
+        3.1. Extract the JD
+        3.2. If not a JD declared
+            3.2.1 If the PK reaches all the columns put Yellow
+            3.2.2 Otherwise put gray (NO JD DECLARED)
+        3.3 For each JD
+            3.3.1. Check if the union of the components results in the original table (Green or Gray)
+            3.3.2. If one component contains all the columns drop the green
+            3.3.3. Else, merge the components: if two components share columns and those columns are both
+                    superkey, can put together in one component. Repeat untill there is nothing to join.
+            3.3.4. If that component reaches all the columns drop green alert (JD is deduced by the keys)
+            3.3.5. Else, drop a red alert (JOIN DEPENDENCY NOT IMPLIED BY THE KEYS)
 """
 
 from .alerts import Alert, AlertColor
