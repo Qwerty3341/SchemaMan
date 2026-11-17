@@ -24,7 +24,7 @@
 .alert-table-frame {
 	width: 100%;
 	overflow-x: auto;
-	border: 2px solid var(--secondary-accent);
+	border: 2px solid var(--accent-color);
 	border-radius: 0.75rem;
 	background-color: rgba(232, 213, 192, 0.06);
 }
@@ -110,7 +110,7 @@ h2 {
 
 /* code blocks */
 pre {
-	border: 2px var(--secondary-accent) solid;
+	border: 2px var(--accent-color) solid;
 	border-radius: 10px;
 	padding: 2rem;
 	color: var(--green);
