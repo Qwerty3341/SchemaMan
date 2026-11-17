@@ -25,6 +25,7 @@ JS, CSS and IMG
 - /js/codeEditor.js
 - /js/codeEditor.bundle.js
 - /js/loadFile.js
+- /js/loadReports.js
 - /js/run.js
 - /img/MrDB.svg
 

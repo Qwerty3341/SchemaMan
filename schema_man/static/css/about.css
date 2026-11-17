@@ -7,10 +7,6 @@
 	text-align: center;
 }
 
-.box > h1 {
-	margin: 0.25rem 0 0;
-}
-
 .block {
 	display: flex;
 	flex-direction: column;
@@ -20,15 +16,24 @@
 .logo-frame {
 	padding: 1rem 2.5rem;
 	background-color: transparent;
-	border: 1px solid #FABD2F;
+	border: 1px solid var(--green);
 	border-radius: 1.5rem;
-	box-shadow: 0 0.75rem 2rem rgba(25, 10, 4, 0.18);
+	display: flex;
+	flex-direction: column;
+	justify-items: center;
+	align-items: center;
 }
 
 .logo {
 	display: block;
 	height: auto;
-	width: 15rem;
+	width: 12rem;
+}
+
+.sign {
+	display: block;
+	height: auto;
+	width: 14rem;
 }
 
 .info-panel {
@@ -49,13 +54,14 @@
 }
 
 #about p {
-	font-size: 1.15rem;
+	font-size: 1rem;
 	font-weight: 600;
 }
 
 #sources {
 	width: min(100%, 42rem);
 	gap: 0.5rem;
+	padding-bottom: 1rem;
 }
 
 .source-list {
@@ -71,17 +77,39 @@
 	justify-content: space-between;
 	gap: 1rem;
 	padding: 0.85rem 1rem;
-	color: var(--body-font-color);
-	background-color: rgba(232, 213, 192, 0.1);
-	border: 1px solid rgba(232, 184, 120, 0.35);
-	border-radius: 0.6rem;
+	color: var(--font-color);
+	background-color: transparent;
+	border: 2px solid var(--green);
+	border-radius: 1rem;
 	font-size: 1rem;
 	text-align: left;
 	text-decoration: none;
-	transition: background-color 0.2s ease, color 0.2s ease;
+	transition: background-color 0.2s ease, color 0.2s ease, border 0.2 ease;
 }
 
 .source-list a:hover {
 	color: var(--header-color);
-	background-color: var(--accent-color);
+	background-color: var(--selector-fg);
+	border: 2px solid var(--selector-fg);
+}
+
+/* ================
+ * Responsive
+ * ================ */
+
+@media (max-width: 650px) {
+	.source-list {
+		flex-direction: column;
+	}
+
+	.logo-frame {
+		padding: 1rem 1.5rem;
+	}
+}
+
+@media (max-width: 450px) {
+	.logo,
+	.sign {
+		width: min(15rem, 75vw);
+	}
 }

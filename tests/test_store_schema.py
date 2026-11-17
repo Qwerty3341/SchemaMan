@@ -43,6 +43,8 @@ def test_store_schema_tables_and_generic_syntax(capsys):
         ("CORREO", GenericType.STRING, (120,)),
     ]
     assert cliente.primary_key.columns == ("CLIENTE_ID",)
+    assert [uk.columns for uk in cliente.unique_keys] == [("RFC",)]
+    assert "UNIQUE: (RFC)" in cliente.to_generic()
     assert [
         (fd.determinant, fd.dependent) for fd in cliente.functional_dependencies
     ] == [
@@ -66,6 +68,7 @@ def test_store_schema_tables_and_generic_syntax(capsys):
     # DECIMAL(10, 2) keeps both precision and scale
     assert detalle.columns[4].size == (10, 2)
     assert detalle.primary_key.columns == ("PEDIDO_ID", "PRODUCTO_ID")
+    assert detalle.unique_keys == []
     # FOREIGN KEY declared with CONSTRAINT must still be detected
     assert [
         (fk.columns, fk.referenced_table, fk.referenced_columns)
@@ -84,3 +87,82 @@ def test_store_schema_tables_and_generic_syntax(capsys):
         (("CATEGORIA_ID",), ("NOMBRE_CATEGORIA",)),
     ]
     assert detalle.multivalued_dependencies == []
+
+
+def test_unique_constraints_inline_and_composite():
+    context = PipeLineContext(
+        sql="""
+            CREATE TABLE usuario (
+                id INTEGER PRIMARY KEY,
+                correo VARCHAR(120) UNIQUE,
+                documento VARCHAR(20),
+                pais VARCHAR(2),
+                CONSTRAINT uq_documento_pais UNIQUE (documento, pais)
+            );
+        """,
+        dialect="sqlite",
+        target_normal_form="NF3",
+    )
+    pipeline = Pipe(filters=[ParseSqlFilter(), ModelSchemaFilter()])
+    context = pipeline.run(context)
+    table = context.schema[0]
+
+    assert [uk.columns for uk in table.unique_keys] == [
+        ("CORREO",),
+        ("DOCUMENTO", "PAIS"),
+    ]
+    assert "UNIQUE: (CORREO)" in table.to_generic()
+    assert "UNIQUE: (DOCUMENTO, PAIS)" in table.to_generic()
+
+
+def test_join_dependency_comment_is_parsed():
+    context = PipeLineContext(
+        sql="""
+            CREATE TABLE r (
+                a INTEGER,
+                b INTEGER,
+                c INTEGER,
+                PRIMARY KEY (a)
+                -- FD: (a) -> (b, c)
+                -- JD: (a, b), (b, c), (a, c)
+            );
+        """,
+        dialect="sqlite",
+        target_normal_form="NF5",
+    )
+    pipeline = Pipe(filters=[ParseSqlFilter(), ModelSchemaFilter()])
+    context = pipeline.run(context)
+    table = context.schema[0]
+
+    assert [jd.components for jd in table.join_dependencies] == [
+        (("A", "B"), ("B", "C"), ("A", "C")),
+    ]
+    assert [
+        (fd.determinant, fd.dependent)
+        for fd in table.functional_dependencies
+    ] == [(("A",), ("B", "C"))]
+    assert "JD: (A, B), (B, C), (A, C)" in table.to_generic()
+
+
+def test_single_component_join_dependency_is_modeled():
+    context = PipeLineContext(
+        sql="""
+            CREATE TABLE r (
+                a INTEGER,
+                b INTEGER,
+                PRIMARY KEY (a)
+                -- JD: (A, B)
+            );
+        """,
+        dialect="sqlite",
+        target_normal_form="NF5",
+    )
+    pipeline = Pipe(filters=[ParseSqlFilter(), ModelSchemaFilter()])
+    context = pipeline.run(context)
+    table = context.schema[0]
+
+    # A single component is a valid (trivial) join dependency.
+    assert [jd.components for jd in table.join_dependencies] == [
+        (("A", "B"),),
+    ]
+    assert context.violations == []

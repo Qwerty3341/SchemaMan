@@ -2,5 +2,117 @@
 
 {% block title %}Manual{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manual.css') }}">
+{% endblock %}
+
 {% block content %}
+<section id="manual-container">
+	<h1>Schema Man Manual</h1>
+	<div class="div-container" id="alert-table-div">
+		<h2>Alert System</h2>
+		<div class="alert-table-frame">
+			<table id="alert-table">
+				<thead>
+					<tr>
+						<th>Alert Color</th>
+						<th>Compliant?</th>
+						<th>When is it used?</th>
+						<th>Passes?</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<!--Alert colors | Compliant? | When is it used? | Value-->
+					<tr>
+						<td id="green-row"><span class="alert-color-cube" aria-hidden="true"></span>Green</td>
+						<td>Pass</td>
+						<td>It's completely verifiable the compliant of the normal form</td>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<td id="yellow-row"><span class="alert-color-cube" aria-hidden="true"></span>Yellow</td>
+						<td>Possible violation</td>
+						<td>Used when is not possible to determine with certainty a particular aspect of the normal form
+						</td>
+						<td>Yes</td>
+					</tr>
+					<tr>
+						<td id="red-row"><span class="alert-color-cube" aria-hidden="true"></span>Red</td>
+						<td>Do not pass</td>
+						<td>It is fully verifiable that a table does not satisfy a normal form</td>
+						<td>No</td>
+					</tr>
+					<tr>
+						<td id="gray-row"><span class="alert-color-cube" aria-hidden="true"></span>Gray</td>
+						<td>Indeterminable</td>
+						<td>The algorithm does not have sufficient information to evaluate the normal form, but the
+							evaluation continues</td>
+						<td>Yes (with warning)</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<p>
+			Only Red stops the flow of the system; Green, Yellow and Gray continue with the flow.
+		</p>
+	</div>
+
+	<div class="div-container" id="dependencies-div">
+		<h2 class="">Dependencies</h2>
+		<p>
+			Functional dependencies and multivalued dependencies by default is not possible to declare them
+			with SQL syntax, so for Schema Man will be declared by a special syntax.
+		</p>
+
+		<div id="functional-dependency-div">
+			<h3>Functional Dependency</h3>
+
+			<pre class="dependency-example"><code>--FD: (determinants, ...) -> (dependents)</code></pre>
+
+		</div>
+
+		<div id="multivalued-dependency-div">
+			<h3>Multivalued Dependency</h3>
+			<pre class="dependency-example"><code>--MVD: (determinants, ...) ->> (dependents)</code></pre>
+		</div>
+
+		<div id="multivalued-dependency-div">
+			<h3>Join Dependency</h3>
+			<pre class="dependency-example"><code>--JD: (x, y), (y, z), (z, x)</code></pre>
+		</div>
+
+		<div id="dependencies-notes">
+			<strong>NOTES:</strong>
+			<ul>
+				<li>The dependencies must be declared inside the corresponding table</li>
+				<li>Functional dependencies are very important to detect from second to fifth normal forms</li>
+				<li>Multivalued dependencies must be declare to detect the fourth normal form</li>
+				<li>Join dependencies are exclusive for fifth normal form</li>
+			</ul>
+		</div>
+
+	</div>
+
+	<div class=div-container id="normal-forms-div">
+		<h2>Normal forms detection</h2>
+		<p>
+			To detect the normal forms follow the next steps:
+		</p>
+		<ol>
+			<li>Select the engine</li>
+			<li>Select the level of normalization</li>
+			<li>Load the SQL
+				<ul>
+					<li>You can press the load SQL button to upload a SQL file</li>
+					<li>Can do a drag and drop</li>
+					<li>Or you can write directly the tables</li>
+				</ul>
+			</li>
+			<li>Write the functional and multivalued dependencies</li>
+			<li>Finally press the run button</li>
+		</ol>
+	</div>
+</section>
+
 {% endblock %}

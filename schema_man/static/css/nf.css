@@ -1,1 +1,105 @@
-/* holamundo */
+:root {
+	--back-color: rgba(0, 0, 0, 0.5);
+	--font-size: var(--fs-content);
+}
+
+.nf-container {
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	margin: 10px;
+}
+
+#info-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+	border: 2px var(--selector-fg) solid;
+	border-radius: 10px;
+	text-align: justify;
+	font-size: var(--font-size);
+	background-color: var(--back-color);
+	overflow-y: auto;
+	overflow-x: hidden;
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+}
+
+#nf-description {
+	width: 50%;
+}
+
+#nf-subcontainer {
+	width: 75%;
+}
+
+#compliance-requirements {
+	width: 50%;
+}
+
+#info-section h3 {
+	font-size: 1.1rem;
+}
+
+/*=========
+ * Buttons
+ * =======*/
+
+#buttons-container {
+	margin-top: auto;
+	padding-top: 1rem;
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	width: 100%;
+}
+
+.nf-btn {
+	border: 2px var(--selector-fg) solid;
+	background-color: transparent;
+	color: var(--selector-fg);
+	border-radius: 10px;
+	padding: 1rem;
+	font-weight: 600;
+	font-family: var(--body-font);
+	font-size: 0.95rem;
+	width: 100%;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	transition: all 0.4s ease-out;
+}
+
+.nf-btn:hover {
+	background-color: var(--selector-fg);
+	color: var(--selector-bg);
+}
+
+/* ================
+ * Responsive
+ * ================ */
+
+@media (max-width: 900px) {
+
+	#nf-description,
+	#compliance-requirements,
+	#nf-subcontainer {
+		width: 100%;
+	}
+}
+
+@media (max-width: 650px) {
+	.nf-container {
+		margin: 1rem;
+		padding: 1.25rem;
+	}
+}
+
+@media (max-width: 450px) {
+	.nf-container {
+		margin: 0.5rem;
+		padding: 1rem;
+		font-size: 0.95rem;
+	}
+}

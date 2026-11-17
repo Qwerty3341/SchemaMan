@@ -16,6 +16,7 @@ def load_schema(filename: str) -> str:
     schema_file = Path(__file__).parent / "schemas" / filename
     return schema_file.read_text(encoding="utf-8")
 
+    #  hola
 
 def parse_context(sql: str, dialect: str) -> PipeLineContext:
     context = PipeLineContext(
@@ -34,6 +35,7 @@ def test_valid_schema_passes_first_filter(filename, dialect):
 
     assert context.sql == sql
     assert context.dialect == dialect
+    assert context.sql_ast
 
 
 def test_empty_sql_is_rejected():
@@ -44,6 +46,13 @@ def test_empty_sql_is_rejected():
 def test_invalid_sql_reports_syntax_errors():
     with pytest.raises(ValueError, match="SQL with syntax errors"):
         parse_context("CREATE TABLE (", "sqlite")
+
+
+def test_invalid_later_statement_reports_syntax_errors():
+    sql = "CREATE TABLE valid_table (id INTEGER); CREATE TABLE ("
+
+    with pytest.raises(ValueError, match="SQL with syntax errors"):
+        parse_context(sql, "sqlite")
 
 
 def test_schema_rejected_with_wrong_dialect():

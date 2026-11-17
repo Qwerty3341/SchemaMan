@@ -1,25 +1,30 @@
 import re
 from typing import override
 
-import sqlglot
 from sqlglot import exp
 
 from ..context import PipeLineContext
 from ..filter import Filter
+from .utils.alerts import Alert, AlertColor
 from .utils.data_types import generic_type_of
 from .utils.table_classes import (
     Column,
     ForeignKey,
     FunctionalDependency,
+    JoinDependency,
     MultivaluedDependency,
     PrimaryKey,
     Table,
+    UniqueKey,
 )
 
 """
-Regular expression for detect the FD and MVD
+Regular expressions for detect the FD, MVD and JD
 
-# Dependencies are declared as SQL comments: "-- FD: (a, b) -> (c)".
+# Dependencies are declared as SQL comments:
+# "-- FD: (a, b) -> (c)"
+# "-- MVD: (a, b) ->> (c)"
+# "-- JD: (a, b), (b, c), (a, c)"
 # "->>" is listed before "->" so the arrow of an MVD is not read as an FD.
 """
 DEPENDENCY_PATTERN = re.compile(
@@ -33,28 +38,64 @@ DEPENDENCY_CLASSES = {
     "->>": MultivaluedDependency,
 }
 
+JOIN_DEPENDENCY_PATTERN = re.compile(
+    r"^\s*JD:\s*(?P<components>\([^)]*\)(?:\s*,\s*\([^)]*\))*)\s*$"
+)
+JOIN_COMPONENT_PATTERN = re.compile(r"\(([^)]*)\)")
+
+# A comment that starts with a dependency prefix but does not match its
+# pattern is reported as a malformed declaration instead of being ignored.
+DEPENDENCY_PREFIX_PATTERN = re.compile(
+    r"^\s*(?P<kind>JD|FD|MVD)\s*:\s*(?P<rest>.*)$"
+)
+
+DEPENDENCY_NAMES = {
+    "JD": "JOIN DEPENDENCY",
+    "FD": "FUNCTIONAL DEPENDENCY",
+    "MVD": "MULTIVALUED DEPENDENCY",
+}
+
 
 class ModelSchemaFilter(Filter):
     @override
     def apply(self, context: PipeLineContext) -> PipeLineContext:
         """Model the SQL schema into generic table"""
-        context.schema = self.model_schema(context.sql, context.dialect)
+        if context.sql_ast is None:
+            raise ValueError("SQL must be parsed before modeling the schema")
+
+        diagnostics: list[Alert] = []
+        context.schema = self.model_schema(
+            context.sql_ast, context.dialect, diagnostics
+        )
+        context.violations.extend(diagnostics)
         return context
 
-    def model_schema(self, sql: str, dialect: str) -> list[Table]:
+    # autopep8: off
+    def model_schema(self, statements: list[exp.Expression], dialect: str,
+                     diagnostics: list[Alert]) -> list[Table]: # pyright: ignore
+    # autopep8: on
         """
         Build one Table per CREATE TABLE
         skipping other statements (INSERTS, INDEX, ALTERS, ETC.)
         """
 
         tables = []
-        for statement in sqlglot.parse(sql, dialect=dialect):
+        for statement in statements:
             if (isinstance(statement, exp.Create)
                     and statement.args.get("kind") == "TABLE"):
-                tables.append(self.table_to_generic_syntax(statement, dialect))
+                tables.append(
+                    self.table_to_generic_syntax(
+                        statement, dialect, diagnostics
+                    )
+                )
         return tables
 
-    def table_to_generic_syntax(self, create: exp.Create, dialect: str) -> Table:
+    def table_to_generic_syntax(
+        self,
+        create: exp.Create,
+        dialect: str,
+        diagnostics: list[Alert],
+    ) -> Table:
         schema = create.this  # exp.Schema with the columns and constraints
         table = Table(name=schema.this.name.upper())
         primary_key_columns: list[str] | None = None
@@ -66,6 +107,11 @@ class ModelSchemaFilter(Filter):
                 table.columns.append(column)
                 if inline_primary_key:
                     primary_key_columns = [column.name]
+                if self.has_column_constraint(
+                        node, exp.UniqueColumnConstraint):
+                    table.unique_keys.append(
+                        UniqueKey(columns=(column.name,))
+                    )
             elif isinstance(node, exp.Constraint):  # Simple PK
                 # Named constraints wrap the real node
                 # CONSTRAINT fk_x FOREIGN KEY
@@ -80,35 +126,49 @@ class ModelSchemaFilter(Filter):
         if primary_key_columns is not None:
             table.primary_key = PrimaryKey(columns=tuple(primary_key_columns))
 
-        self.model_dependencies(table, schema.comments)
+        self.model_dependencies(table, schema.comments, diagnostics)
         return table
 
     def detect_constraints(self, nodes: list, table: Table, primary_key_columns: list[str] | None) -> list[str] | None:
         """
-        Read PK/FK constraints into the table, keeping any PK found
+        Read PK/FK/UNIQUE constraints into the table, keeping any PK found
         """
         for node in nodes:
             if isinstance(node, exp.PrimaryKey):
                 primary_key_columns = [
                     column.name.upper() for column in node.expressions
                 ]
+            elif isinstance(node, exp.UniqueColumnConstraint):
+                table.unique_keys.append(self.detect_unique_key(node))
             elif isinstance(node, exp.ForeignKey):
                 table.foreign_keys.append(self.detect_foreign_key(node))
         return primary_key_columns
+
+    @staticmethod
+    def has_column_constraint(
+        column_def: exp.ColumnDef,
+        constraint_type: type[exp.Expression],  # pyright: ignore
+    ) -> bool:
+        """
+        Report whether a column declares a constraint of the given type
+        """
+        return any(
+            isinstance(constraint.kind, constraint_type)
+            for constraint in column_def.constraints
+        )
 
     def detect_column(self, column_def: exp.ColumnDef, dialect: str) -> tuple[Column, bool]:
         """
         Build a Column and report whether it declares an inline PK
         """
 
-        inline_primary_key = any(
-            isinstance(constraint.kind, exp.PrimaryKeyColumnConstraint)
-            for constraint in column_def.constraints
+        inline_primary_key = self.has_column_constraint(
+            column_def, exp.PrimaryKeyColumnConstraint
         )
         column = Column(
             name=column_def.name.upper(),
-            type=generic_type_of(column_def.kind, dialect),
-            size=self.detect_size(column_def.kind),
+            type=generic_type_of(column_def.kind, dialect), # pyright: ignore
+            size=self.detect_size(column_def.kind), # pyright: ignore
         )
         return column, inline_primary_key
 
@@ -127,6 +187,20 @@ class ModelSchemaFilter(Filter):
         return tuple(size)
 
     @staticmethod
+    def detect_unique_key(unique: exp.UniqueColumnConstraint) -> UniqueKey:
+        """
+        Build a UniqueKey from a table-level UNIQUE constraint.
+
+        SQLGlot stores the constrained columns in ``this`` (an exp.Schema);
+        the optional index name is ignored, like PK/FK names are.
+        """
+        schema = unique.this
+        columns = schema.expressions if isinstance(schema, exp.Schema) else []
+        return UniqueKey(
+            columns=tuple(column.name.upper() for column in columns)
+        )
+
+    @staticmethod
     def detect_foreign_key(foreign_key: exp.ForeignKey) -> ForeignKey:
         """
         Make the ForeignKey class instance for the table
@@ -142,23 +216,70 @@ class ModelSchemaFilter(Filter):
             ),
         )
 
-    def model_dependencies(self, table: Table, comments: list[str] | None) -> None:
+    def model_dependencies(
+        self,
+        table: Table,
+        comments: list[str] | None,
+        diagnostics: list[Alert],
+    ) -> None:
         """
-        Read FD/MVD declarations from the tables SQL comments
+        Read FD/MVD/JD declarations from the tables SQL comments
         """
 
         for comment in comments or []:
-            match = DEPENDENCY_PATTERN.match(comment)
-            if match is None:
+            join_dependency = self.detect_join_dependency(comment)
+            if join_dependency is not None:
+                table.join_dependencies.append(join_dependency)
                 continue
-            dependency = DEPENDENCY_CLASSES[match["arrow"]](
-                determinant=self._attributes(match["determinant"]),
-                dependent=self._attributes(match["dependent"]),
+
+            match = DEPENDENCY_PATTERN.match(comment)
+            if match is not None:
+                dependency = DEPENDENCY_CLASSES[match["arrow"]](
+                    determinant=self._attributes(match["determinant"]),
+                    dependent=self._attributes(match["dependent"]),
+                )
+                if isinstance(dependency, FunctionalDependency):
+                    table.functional_dependencies.append(dependency)
+                else:
+                    table.multivalued_dependencies.append(dependency)
+                continue
+
+            # A dependency comment that does not parse is reported instead
+            # of being silently ignored.
+            prefix = DEPENDENCY_PREFIX_PATTERN.match(comment)
+            if prefix is not None:
+                kind = DEPENDENCY_NAMES[prefix["kind"]]
+                diagnostics.append(
+                    Alert(
+                        AlertColor.GRAY,
+                        f"MALFORMED {kind} DECLARATION: "
+                        f"{prefix['rest'].strip()}",
+                        table.name,
+                    )
+                )
+
+    @staticmethod
+    def detect_join_dependency(comment: str) -> JoinDependency | None:
+        """
+        Build a JoinDependency from a "-- JD: (a, b), (b, c), (a, c)" comment.
+        """
+        match = JOIN_DEPENDENCY_PATTERN.match(comment)
+        if match is None:
+            return None
+
+        components = tuple(
+            ModelSchemaFilter._attributes(component)
+            for component in JOIN_COMPONENT_PATTERN.findall(
+                match["components"]
             )
-            if isinstance(dependency, FunctionalDependency):
-                table.functional_dependencies.append(dependency)
-            else:
-                table.multivalued_dependencies.append(dependency)
+        )
+
+        # A single component is a valid (possibly trivial) join dependency,
+        # but an empty attribute is not.
+        if any(not name for component in components for name in component):
+            return None
+
+        return JoinDependency(components=components)
 
     @staticmethod
     def _attributes(attribute_list: str) -> tuple[str, ...]:

@@ -1,40 +1,81 @@
 from flask import Blueprint, jsonify, request
 
 from .pipeline.context import PipeLineContext
+from .pipeline.filters.model_schema import ModelSchemaFilter
+from .pipeline.filters.nf_detection import NORMALIZATION_ORDER, NFDetectionFilter
 from .pipeline.filters.parse_sql import ParseSqlFilter
+from .pipeline.filters.report import ReportFilter
 from .pipeline.pipe import Pipe
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 SUPPORTED_DIALECTS = {"sqlite", "mysql"}
-SUPPORTED_NORMAL_FORMS = {"NF1", "NF2", "NF3", "BCNF", "NF4", "NF5"}
+# Kept in sync with the order used by NFDetectionFilter to run the detectors.
+SUPPORTED_NORMAL_FORMS = set(NORMALIZATION_ORDER)
 
 
-@api_bp.post("/parse-sql") # Web interface to ParseSqlFilter
+def _validate_payload(data: dict):
+    """
+    Validate the request data shared by every endpoint.
+
+    Returns the (sql, dialect, normalization_level) tuple on success,
+    or (None, (response, status_code)) when some field is invalid.
+    """
+    sql = data.get("sql")
+    dialect = data.get("dialect")
+    normalization_level = data.get("normalization_level")
+
+    if not isinstance(sql, str) or not sql.strip():
+        return None, (
+            jsonify(valid=False, error="SQL must be a non-empty text"),
+            400,
+        )
+
+    if not isinstance(dialect, str) or not dialect.strip():
+        return None, (
+            jsonify(valid=False, error="Dialect is required and must be text"),
+            400,
+        )
+
+    if not isinstance(normalization_level, str) or not normalization_level.strip():
+        return None, (
+            jsonify(
+                valid=False,
+                error="Normalization level is required and must be text",
+            ),
+            400,
+        )
+
+    if dialect not in SUPPORTED_DIALECTS:
+        return None, (
+            jsonify(valid=False, error=f"Unsupported dialect: {dialect}"),
+            400,
+        )
+
+    if normalization_level not in SUPPORTED_NORMAL_FORMS:
+        return None, (
+            jsonify(
+                valid=False,
+                error=f"Unsupported normalization level: {normalization_level}",
+            ),
+            400,
+        )
+
+    return (sql, dialect, normalization_level), None
+
+
+@api_bp.post("/parse-sql")  # Web interface to ParseSqlFilter
 def parse_sql():
     data = request.get_json(silent=True)
 
     if not isinstance(data, dict):
         return jsonify(valid=False, error="Expect a JSON object"), 400
 
-    sql = data.get("sql")
-    dialect = data.get("dialect")
-    normalization_level = data.get("normalization_level")
+    values, error = _validate_payload(data)
+    if error is not None:
+        return error
 
-    if not isinstance(sql, str) or not sql.strip():
-        return jsonify(valid=False, error="SQL must be a non-empty text"), 400
-
-    if not isinstance(dialect, str) or not dialect.strip():
-        return jsonify(valid=False, error="Dialect is required and must be text"), 400
-
-    if not isinstance(normalization_level, str) or not normalization_level.strip():
-        return jsonify(valid=False, error="Normalization level is required and must be text"), 400
-
-    if dialect not in SUPPORTED_DIALECTS:
-        return jsonify(valid=False, error=f"Unsupported dialect: {dialect}"), 400
-
-    if normalization_level not in SUPPORTED_NORMAL_FORMS:
-        return jsonify(valid=False, error=f"Unsupported normalization level: {normalization_level}"), 400
+    sql, dialect, normalization_level = values
 
     context = PipeLineContext(
         sql=sql,
@@ -46,7 +87,38 @@ def parse_sql():
 
     try:
         context = pipeline.run(context)
-    except ValueError as error:
-        return jsonify(valid=False, error=str(error)), 400
+    except ValueError as pipeline_error:
+        return jsonify(valid=False, error=str(pipeline_error)), 400
 
     return jsonify(valid=True)
+
+
+@api_bp.get("/get_report")  # Web interface to the whole pipeline
+def get_report():
+    values, error = _validate_payload(request.args.to_dict())
+    if error is not None:
+        return error
+
+    sql, dialect, normalization_level = values
+
+    context = PipeLineContext(
+        sql=sql,
+        dialect=dialect,
+        target_normal_form=normalization_level,
+    )
+
+    pipeline = Pipe(
+        filters=[
+            ParseSqlFilter(),
+            ModelSchemaFilter(),
+            NFDetectionFilter(),
+            ReportFilter(),
+        ]
+    )
+
+    try:
+        context = pipeline.run(context)
+    except ValueError as pipeline_error:
+        return jsonify(valid=False, error=str(pipeline_error)), 400
+
+    return jsonify(valid=True, report=context.report, tables=context.report_tables)

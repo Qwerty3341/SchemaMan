@@ -1,18 +1,35 @@
 :root {
-	/* header conf */
-	--header-color: #030202;
-	--header-height: 5rem;
-	--header-font: "Space Grotesk", sans-serif;
-	--header-font-color: #F5E6D3;
-	/* body conf */
-	--body-color: #1C1C1C;
-
-	--body-font: "Gabarito", sans-serif;
-	--body-font-color: #F5E6D3;
-	--accent-color: #5D928E;
-	--card-bg: #FABD2F;
-	/* footer conf */
+	/*Sizes*/
+	--header-height: 4rem;
 	--footer-height: 3rem;
+	/*Fonts*/
+	--body-font: "Gabarito", sans-serif;
+	--header-font: "Space Grotesk", sans-serif;
+	--text-editor-font: 'Source Code Pro', monospace;
+	/* Typography scale */
+	--fs-base: 1rem;
+	--fs-heading: 1.5rem;
+	--fs-subheading: 1.4rem;
+	--fs-nav: 1.2rem;
+	--fs-footer: 1.2rem;
+	--fs-content: 1.05rem;
+	--fs-control: 0.95rem;
+	--fs-editor: 1.25rem;
+	/*Color*/
+	--header-color: #030202;
+	--font-color: #F5E6D3;
+	--body-color: #060606;
+	--accent-color: #458588;
+	--selector-bg: #282828;
+	--selector-fg: #ebdbb2;
+	--green: #88b877;
+	--orange: #d1691a;
+	--yellow: #FABD2F;
+	--red: #c44536;
+	--gray: #8a847c;
+	--button-font-color: #1A0F0A;
+	--report-terminal-color: #000000;
+	--secondary-accent: #C9C9C9;
 }
 
 /* html and body config */
@@ -28,12 +45,13 @@ body {
 header {
 	background-color: var(--header-color);
 	height: var(--header-height);
-	color: var(--header-font-color);
+	color: var(--font-color);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 0 2rem;
 	font-family: var(--header-font);
+	border-bottom: 2px var(--green) solid;
 }
 
 header a {
@@ -56,11 +74,11 @@ header a:hover {
 }
 
 /* .logo-container .logo { */
-	/* display: block; */
-	/* width: 2.5rem; */
-	/* height: 2.5rem; */
-	/* object-fit: contain; */
-	/* flex-shrink: 0; */
+/* display: block; */
+/* width: 2.5rem; */
+/* height: 2.5rem; */
+/* object-fit: contain; */
+/* flex-shrink: 0; */
 /* } */
 
 header nav {
@@ -69,7 +87,7 @@ header nav {
 }
 
 .nav-list a {
-	font-size: x-large;
+	font-size: var(--fs-nav);
 }
 
 /* body config */
@@ -79,8 +97,16 @@ body {
 	flex-direction: column;
 	font-family: var(--body-font);
 	font-weight: 500;
-	font-size: 1rem;
-	color: var(--body-font-color);
+	font-size: var(--fs-base);
+	color: var(--font-color);
+}
+
+h1 {
+	font-size: var(--fs-heading);
+}
+
+h2 {
+	font-size: var(--fs-subheading);
 }
 
 /* main config */
@@ -94,6 +120,7 @@ main.content {
 	overflow-y: auto;
 	scrollbar-color: var(--accent-color) var(--header-color);
 	scrollbar-width: thin;
+	scrollbar-gutter: stable both-edges;
 	/* flex-direction: column; */
 }
 
@@ -106,12 +133,12 @@ main.content::-webkit-scrollbar-track {
 }
 
 main.content::-webkit-scrollbar-thumb {
-	background-color: var(--accent-color);
+	background-color: var(--green);
 	border: 3px solid var(--header-color);
 }
 
 main.content::-webkit-scrollbar-thumb:hover {
-	background-color: var(--header-font-color);
+	background-color: var(--font-color);
 }
 
 /* footer config */
@@ -120,11 +147,12 @@ footer {
 	background-color: var(--header-color);
 	height: var(--footer-height);
 	margin-top: auto;
-	color: var(--header-font-color);
+	color: var(--font-color);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-size: larger;
+	font-size: var(--fs-footer);
+	border-top: 2px var(--green) solid;
 }
 
 footer a {
@@ -134,4 +162,58 @@ footer a {
 
 footer a:hover {
 	color: var(--accent-color);
+}
+
+/* ================= *
+ * Responsive global *
+ * ================= */
+
+@media (max-width: 900px) {
+	header {
+		height: auto;
+		min-height: var(--header-height);
+		flex-wrap: wrap;
+		justify-content: center;
+		row-gap: 0.5rem;
+		padding: 0.75rem 1rem;
+	}
+
+	.logo-container h1 {
+		font-size: 1.3rem;
+	}
+
+	header nav {
+		width: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.75rem 1.25rem;
+	}
+
+	.nav-list a {
+		font-size: 1rem;
+	}
+
+	footer {
+		font-size: 1rem;
+	}
+}
+
+@media (max-width: 650px) {
+	main.content {
+		padding: 0.5rem;
+	}
+
+	main h1 {
+		font-size: 1.5rem;
+	}
+}
+
+@media (max-width: 450px) {
+	.nav-list a {
+		font-size: 0.9rem;
+	}
+
+	header nav {
+		gap: 0.5rem 0.9rem;
+	}
 }

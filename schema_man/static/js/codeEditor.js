@@ -1,26 +1,26 @@
-import { basicSetup } from "codemirror";
-import { EditorView } from "@codemirror/view";
+import {basicSetup} from "codemirror";
+import {EditorView} from "@codemirror/view";
 import {sql} from "@codemirror/lang-sql";
-import { gruvboxDark } from "@uiw/codemirror-theme-gruvbox-dark";
+import {gruvboxDark} from '@uiw/codemirror-themes-all';
 
 const STORAGE_KEY = "schema.sql";
 const container = document.querySelector("#sql-editor");
 
 if (container) {
-  const savedSql = sessionStorage.getItem(STORAGE_KEY);
-  // Here window create sqlEditor, the instance of Code Mirror now is global
-  window.sqlEditor = new EditorView({
-    doc: savedSql ?? "-- PASTE, CREATE OR LOAD YOUR SQL SCHEMA",
-    parent: container,
-    extensions: [
-      basicSetup,
-      sql(),
-      gruvboxDark,
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());
-        }
-      }),
-    ],
-  });
+	const savedSql = sessionStorage.getItem(STORAGE_KEY);
+	// Here window create sqlEditor, the instance of Code Mirror now is global
+	window.sqlEditor = new EditorView({
+		doc: savedSql ?? "-- YOUR SCHEMA GOES HERE",
+		parent: container,
+		extensions: [
+			basicSetup,
+			gruvboxDark,
+			sql({upperCaseKeywords: true}),
+			EditorView.updateListener.of((update) => {
+				if (update.docChanged) {
+					sessionStorage.setItem(STORAGE_KEY, update.state.doc.toString());
+				}
+			}),
+		],
+	});
 }

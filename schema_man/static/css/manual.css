@@ -1,0 +1,153 @@
+/* =============
+ * Whole content
+ * ============= */
+
+#manual-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	font-size: var(--fs-content);
+}
+
+.div-container {
+	width: min(100%, 52rem);
+	box-sizing: border-box;
+	text-align: left;
+	text-justify: auto;
+}
+
+/* ==========
+ * Alert Table
+ * ========== */
+
+.alert-table-frame {
+	width: 100%;
+	overflow-x: auto;
+	border: 2px solid var(--secondary-accent);
+	border-radius: 0.75rem;
+	background-color: rgba(232, 213, 192, 0.06);
+}
+
+#alert-table {
+	width: 100%;
+	border-collapse: collapse;
+	color: var(--font-color);
+	text-align: left;
+}
+
+#alert-table th,
+#alert-table td {
+	padding: 0.75rem 1rem;
+	vertical-align: top;
+}
+
+#alert-table thead th {
+	background-color: var(--header-color);
+	color: var(--font-color);
+	font-family: var(--header-font);
+	font-weight: 700;
+	border-bottom: 2px solid var(--accent-color);
+	align-content: center;
+	text-align: center;
+}
+
+#alert-table tbody tr + tr td {
+	border-top: 1px solid rgba(245, 230, 211, 0.12);
+}
+
+#alert-table th:nth-child(2),
+#alert-table th:nth-child(4),
+#alert-table td:nth-child(2),
+#alert-table td:nth-child(4) {
+	text-align: center;
+	white-space: nowrap;
+}
+
+#alert-table td:first-child {
+	white-space: nowrap;
+}
+
+#alert-table td:last-child {
+	font-family: "Source Code Pro", monospace;
+	font-weight: 600;
+}
+
+.alert-color-cube {
+	display: inline-block;
+	width: 0.75rem;
+	height: 0.75rem;
+	margin-right: 0.5rem;
+	border-radius: 0.2rem;
+	vertical-align: middle;
+}
+
+#green-row .alert-color-cube {
+	background-color: var(--green);
+}
+
+#yellow-row .alert-color-cube {
+	background-color: var(--yellow);
+}
+
+#red-row .alert-color-cube {
+	background-color: var(--red);
+}
+
+#gray-row .alert-color-cube {
+	background-color: var(--gray);
+}
+
+/* =======
+ * Content
+ * =======*/
+
+h2 {
+	font-size: clamp(1.4rem, 2vh, 2.5rem);
+	font-weight: 700;
+	color: var(--accent-color);
+}
+
+/* code blocks */
+pre {
+	border: 2px var(--secondary-accent) solid;
+	border-radius: 10px;
+	padding: 2rem;
+	color: var(--green);
+	overflow-x: auto;
+}
+
+#dependencies-notes {
+	width: 100%;
+	border-left: 2px solid var(--orange);
+	padding-left: 10px;
+	margin-left: 1rem;
+}
+
+/* ================
+ * Responsive
+ * ================ */
+
+@media (max-width: 650px) {
+	#manual-container {
+		font-size: 1rem;
+	}
+
+	pre {
+		padding: 1.25rem;
+		font-size: 0.9rem;
+	}
+
+	#alert-table th,
+	#alert-table td {
+		padding: 0.6rem 0.75rem;
+	}
+}
+
+@media (max-width: 450px) {
+	pre {
+		padding: 1rem;
+		font-size: 0.8rem;
+	}
+}
+

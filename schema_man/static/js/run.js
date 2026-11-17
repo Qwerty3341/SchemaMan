@@ -1,5 +1,24 @@
 const runBtn = document.querySelector("#run-btn");
 
+async function loadReport(payload) {
+  const params = new URLSearchParams(payload);
+
+  try {
+    const response = await fetch(`/api/get_report?${params}`);
+    const result = await response.json();
+
+    if (!response.ok) {
+      alert(result.error);
+      return;
+    }
+
+    addAlerts(result.tables);
+  } catch (error) {
+    console.error("ERORR TO OBTAIN THE REPORT:", error);
+    alert(`SERVER ERROR: ${error}`);
+  }
+}
+
 async function postSqlSchema() {
   const sqlEditor = window.sqlEditor;
   const engineSelector = document.querySelector("#sql-engine-selector");
@@ -31,10 +50,11 @@ async function postSqlSchema() {
       alert(result.error);
       return;
     }
-    alert("SQL válido");
+
+    await loadReport(payload);
   } catch (error) {
-    console.error("Error al enviar el SQL:", error);
-    alert(`Error del servidor: ${error}`);
+    console.error("ERROR SENDIND THE SQL:", error);
+    alert(`SERVER ERROR: ${error}`);
   }
 }
 
