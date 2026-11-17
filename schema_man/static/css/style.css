@@ -1,11 +1,20 @@
 :root {
 	/*Sizes*/
-	--header-height: 5rem;
+	--header-height: 4rem;
 	--footer-height: 3rem;
 	/*Fonts*/
 	--body-font: "Gabarito", sans-serif;
 	--header-font: "Space Grotesk", sans-serif;
 	--text-editor-font: 'Source Code Pro', monospace;
+	/* Typography scale */
+	--fs-base: 1rem;
+	--fs-heading: 1.5rem;
+	--fs-subheading: 1.4rem;
+	--fs-nav: 1.2rem;
+	--fs-footer: 1.2rem;
+	--fs-content: 1.05rem;
+	--fs-control: 0.95rem;
+	--fs-editor: 1.25rem;
 	/*Color*/
 	--header-color: #030202;
 	--font-color: #F5E6D3;
@@ -78,7 +87,7 @@ header nav {
 }
 
 .nav-list a {
-	font-size: x-large;
+	font-size: var(--fs-nav);
 }
 
 /* body config */
@@ -88,8 +97,16 @@ body {
 	flex-direction: column;
 	font-family: var(--body-font);
 	font-weight: 500;
-	font-size: 1rem;
+	font-size: var(--fs-base);
 	color: var(--font-color);
+}
+
+h1 {
+	font-size: var(--fs-heading);
+}
+
+h2 {
+	font-size: var(--fs-subheading);
 }
 
 /* main config */
@@ -134,7 +151,7 @@ footer {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-size: larger;
+	font-size: var(--fs-footer);
 	border-top: 2px var(--green) solid;
 }
 
@@ -162,7 +179,7 @@ footer a:hover {
 	}
 
 	.logo-container h1 {
-		font-size: 1.5rem;
+		font-size: 1.3rem;
 	}
 
 	header nav {
@@ -173,7 +190,7 @@ footer a:hover {
 	}
 
 	.nav-list a {
-		font-size: 1.05rem;
+		font-size: 1rem;
 	}
 
 	footer {
@@ -185,11 +202,15 @@ footer a:hover {
 	main.content {
 		padding: 0.5rem;
 	}
+
+	main h1 {
+		font-size: 1.5rem;
+	}
 }
 
 @media (max-width: 450px) {
 	.nav-list a {
-		font-size: 0.95rem;
+		font-size: 0.9rem;
 	}
 
 	header nav {

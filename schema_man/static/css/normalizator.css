@@ -1,7 +1,6 @@
 /* General config */
 
 :root {
-	--text-editor-font-size: 1.5rem;
 	--control-height: 46px;
 }
 
@@ -37,7 +36,7 @@
 	padding: 0 0.75rem;
 	cursor: pointer;
 	border: none;
-	font-size: 1.05rem;
+	font-size: var(--fs-control);
 	font-weight: 500;
 	white-space: nowrap;
 	display: flex;
@@ -61,7 +60,7 @@
 	padding: 0 0.75rem;
 	cursor: pointer;
 	border: none;
-	font-size: 1.05rem;
+	font-size: var(--fs-control);
 	font-weight: 500;
 	text-align-last: center;
 	flex: 1 1 0;
@@ -75,7 +74,7 @@
 	height: var(--control-height);
 	cursor: pointer;
 	border: none;
-	font-size: 1.05rem;
+	font-size: var(--fs-control);
 	font-weight: 500;
 	box-sizing: border-box;
 	transition: 0.6s ease;
@@ -131,7 +130,7 @@
 	background-color: var(--green);
 	color: var(--button-font-color);
 	font-family: var(--body-font);
-	font-size: 1.05rem;
+	font-size: var(--fs-control);
 	font-weight: 500;
 	cursor: pointer;
 	border: none;
@@ -151,7 +150,7 @@
 #file-name-span {
 	color: var(--selector-fg);
 	font-family: var(--body-font);
-	font-size: 1.05rem;
+	font-size: var(--fs-control);
 	width: 100%;
 	min-width: 0;
 	overflow: hidden;
@@ -172,7 +171,7 @@
 	background-color: var(--report-terminal-color);
 	padding: 1rem;
 	font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-	font-size: larger;
+	font-size: var(--fs-content);
 	white-space: pre-wrap;
 	overflow-y: auto;
 	overflow-x: auto;
@@ -248,7 +247,7 @@
 #sql-editor .cm-editor {
 	height: 100%;
 	font-family: var(--text-editor-font);
-	font-size: var(--text-editor-font-size);
+	font-size: var(--fs-editor);
 }
 
 #sql-editor .cm-scroller {
@@ -285,20 +284,20 @@
 }
 
 @media (max-width: 650px) {
-	:root {
-		--text-editor-font-size: 1.15rem;
+	#sql-editor .cm-editor {
+		font-size: 1rem;
 	}
 }
 
 @media (max-width: 450px) {
-	:root {
-		--text-editor-font-size: 1rem;
+	#sql-editor .cm-editor {
+		font-size: 0.9rem;
 	}
 
 	.select-label,
 	.select-for-sql,
 	#load-sql-label,
 	#file-name-container {
-		font-size: 0.95rem;
+		font-size: 0.9rem;
 	}
 }

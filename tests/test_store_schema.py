@@ -144,7 +144,7 @@ def test_join_dependency_comment_is_parsed():
     assert "JD: (A, B), (B, C), (A, C)" in table.to_generic()
 
 
-def test_invalid_join_dependency_is_ignored():
+def test_single_component_join_dependency_is_modeled():
     context = PipeLineContext(
         sql="""
             CREATE TABLE r (
@@ -161,5 +161,8 @@ def test_invalid_join_dependency_is_ignored():
     context = pipeline.run(context)
     table = context.schema[0]
 
-    # A JD needs at least two components.
-    assert table.join_dependencies == []
+    # A single component is a valid (trivial) join dependency.
+    assert [jd.components for jd in table.join_dependencies] == [
+        (("A", "B"),),
+    ]
+    assert context.violations == []

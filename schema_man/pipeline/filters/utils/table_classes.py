@@ -46,6 +46,46 @@ class MultivaluedDependency(Dependency):
 @dataclass(frozen=True)
 class JoinDependency:
     components: tuple[tuple[str, ...], ...]
+    # Raw components as declared, kept only to report that the JD was
+    # normalized. It does not take part in equality or hashing.
+    original_components: tuple[tuple[str, ...], ...] | None = field(
+        default=None, compare=False, repr=False
+    )
+
+    def __post_init__(self):
+        original = (
+            self.components
+            if self.original_components is None
+            else self.original_components
+        )
+        object.__setattr__(self, "original_components", original)
+
+        # A join dependency is a set of sets: the order of the attributes
+        # inside a component and repeated components do not matter.
+        components: list[tuple[str, ...]] = []
+        for component in self.components:
+            attributes = tuple(sorted(set(component)))
+            if attributes and attributes not in components:
+                components.append(attributes)
+
+        # A component contained in another one adds nothing to the join.
+        minimal = tuple(
+            component
+            for component in components
+            if not any(
+                set(component) < set(other) for other in components
+            )
+        )
+        object.__setattr__(self, "components", minimal)
+
+    def label(self) -> str:
+        """Render the normalized JD, flagging it when it was rewritten."""
+        label = ", ".join(
+            f"({', '.join(component)})" for component in self.components
+        )
+        if self.original_components != self.components:
+            return f"{label} (NORMALIZED)"
+        return label
 
 
 @dataclass

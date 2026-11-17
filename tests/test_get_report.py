@@ -188,3 +188,32 @@ def test_invalid_sql_reports_syntax_errors(client):
 
     assert response.status_code == 400
     assert "SQL with syntax errors" in response.get_json()["error"]
+
+
+def test_malformed_dependency_declaration_is_reported_without_failing(client):
+    response = get_report(
+        client,
+        sql="""
+        CREATE TABLE r (
+            a INTEGER PRIMARY KEY,
+            b INTEGER,
+            c INTEGER,
+            d INTEGER
+            -- JD: (a, b) (c, d)
+        );
+        """,
+        dialect="sqlite",
+        normalization_level="NF1",
+    )
+
+    assert response.status_code == 200
+    data = response.get_json()
+    table = data["tables"][0]
+
+    # A malformed declaration is missing information, not a violation.
+    assert table["status"] == "passes"
+    assert {
+        "color": "GRAY",
+        "message": "MALFORMED JOIN DEPENDENCY DECLARATION: (a, b) (c, d)",
+    } in table["alerts"]
+    assert "MALFORMED JOIN DEPENDENCY DECLARATION" in data["report"]

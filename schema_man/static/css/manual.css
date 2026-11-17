@@ -7,7 +7,7 @@
 	flex-direction: column;
 	align-items: center;
 	width: 100%;
-	font-size: 1.2rem;
+	font-size: var(--fs-content);
 }
 
 .div-container {
@@ -103,7 +103,7 @@
  * =======*/
 
 h2 {
-	font-size: clamp(1.6rem, 2vh, 3rem);
+	font-size: clamp(1.4rem, 2vh, 2.5rem);
 	font-weight: 700;
 	color: var(--accent-color);
 }
@@ -130,12 +130,12 @@ pre {
 
 @media (max-width: 650px) {
 	#manual-container {
-		font-size: 1.05rem;
+		font-size: 1rem;
 	}
 
 	pre {
 		padding: 1.25rem;
-		font-size: 0.95rem;
+		font-size: 0.9rem;
 	}
 
 	#alert-table th,
@@ -147,7 +147,7 @@ pre {
 @media (max-width: 450px) {
 	pre {
 		padding: 1rem;
-		font-size: 0.85rem;
+		font-size: 0.8rem;
 	}
 }
 

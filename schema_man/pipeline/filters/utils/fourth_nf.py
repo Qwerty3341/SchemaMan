@@ -47,6 +47,7 @@ Solve:
 """
 
 from .alerts import Alert, AlertColor
+from .keys import is_superkey
 from .table_classes import MultivaluedDependency, Table
 
 
@@ -64,44 +65,6 @@ class FourthNormalFormDetecter:
             return True
         else:
             return False
-
-    @staticmethod
-    def __attribute_closure(determinant: tuple[str, ...],
-                            table: Table) -> set[str]:
-        """Return the closure X+ of determinant under the declared FDs.
-
-        A determinant is a superkey when its closure contains every column
-        of the table.
-        """
-        columns = {column.name for column in table.columns}
-        closure = set(determinant)
-        # The primary key determines every column by definition, even when
-        # the user did not declare its FDs.
-        if table.primary_key is not None and set(
-            table.primary_key.columns
-        ) <= closure:
-            return columns
-        # Apply every FD whose determinant is already inside the closure
-        # until no new attribute can be added.
-        changed = True
-        while changed:
-            changed = False
-            for fd in table.get_functional_dependencies():
-                if set(fd.determinant) <= closure:
-                    new_attributes = set(fd.dependent) - closure
-                    if new_attributes:
-                        closure |= new_attributes
-                        changed = True
-        return closure
-
-    @staticmethod
-    def determinant_is_superkey(determinant: tuple[str, ...],
-                                table: Table) -> bool:
-        """Tell whether determinant is a superkey of the table."""
-        columns = {column.name for column in table.columns}
-        return FourthNormalFormDetecter.__attribute_closure(
-            determinant, table
-        ) == columns
 
     @staticmethod
     def __mvd_is_trivial(mvd: MultivaluedDependency,
@@ -154,9 +117,7 @@ class FourthNormalFormDetecter:
             if FourthNormalFormDetecter.__mvd_is_trivial(mvd, columns):
                 continue
             # 3. For every non-trivial MVD X ->> Y, X must be a superkey.
-            if FourthNormalFormDetecter.determinant_is_superkey(
-                mvd.determinant, table
-            ):
+            if is_superkey(mvd.determinant, table):
                 alerts.append(
                     Alert(
                         AlertColor.GREEN,

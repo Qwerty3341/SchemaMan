@@ -424,6 +424,26 @@ def test_fifth_nf_passes_with_multiple_simple_unique_keys():
     ) in collected(context)
 
 
+def test_fifth_nf_uses_candidate_keys_instead_of_declared_key_arity():
+    sql = """
+    CREATE TABLE ejemplo (
+        a INTEGER NOT NULL,
+        b INTEGER NOT NULL,
+        c INTEGER NOT NULL,
+        PRIMARY KEY (a, b),
+        UNIQUE (b)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    # The declared primary key is composite, but UNIQUE (B) makes B a
+    # candidate key, so every candidate key is simple and the table passes.
+    assert (
+        AlertColor.GREEN,
+        "ALL KEYS ARE SIMPLE (PASSES 5NF)",
+    ) in collected(context)
+
+
 def test_fifth_nf_cannot_be_proven_with_composite_unique_key():
     sql = """
     CREATE TABLE ejemplo (
@@ -442,6 +462,33 @@ def test_fifth_nf_cannot_be_proven_with_composite_unique_key():
         AlertColor.GRAY,
         "NO JOIN DEPENDENCIES DECLARED",
     ) in collected(context)
+
+
+def test_fifth_nf_checks_declared_join_dependency_even_with_simple_keys():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER NOT NULL,
+        b INTEGER NOT NULL,
+        c INTEGER NOT NULL,
+        d INTEGER NOT NULL,
+        PRIMARY KEY (a),
+        UNIQUE (b)
+        -- JD: (a, c), (b, d), (c, d)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+    alerts = collected(context)
+
+    # Every candidate key (A and B) is simple, but the JD is not implied by
+    # them: the all-simple-keys shortcut must not hide the violation.
+    assert (
+        AlertColor.RED,
+        "JOIN DEPENDENCY (A, C), (B, D), (C, D) IS NOT IMPLIED BY THE KEYS",
+    ) in alerts
+    assert (
+        AlertColor.GREEN,
+        "ALL KEYS ARE SIMPLE (PASSES 5NF)",
+    ) not in alerts
 
 
 def test_fifth_nf_flags_join_dependency_not_implied_by_keys():
@@ -494,9 +541,67 @@ def test_fifth_nf_passes_trivial_join_dependency():
     """
     context = run_nf_detection(sql, "NF5")
 
+    # (A) is contained in (A, B, C), so the JD is normalized to a single
+    # component that covers the whole table: it is trivially satisfied.
     assert (
         AlertColor.GREEN,
-        "TRIVIAL JOIN DEPENDENCY (A, B, C), (A)",
+        "TRIVIAL JOIN DEPENDENCY (A, B, C) (NORMALIZED)",
+    ) in collected(context)
+
+
+def test_fifth_nf_passes_single_component_join_dependency():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        PRIMARY KEY (a)
+        -- JD: (a, b)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GREEN,
+        "TRIVIAL JOIN DEPENDENCY (A, B)",
+    ) in collected(context)
+
+
+def test_fifth_nf_reports_single_component_join_dependency_that_does_not_cover():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        PRIMARY KEY (a)
+        -- JD: (a, b)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    assert (
+        AlertColor.GRAY,
+        "INCOMPLETE JOIN DEPENDENCY (A, B) DOES NOT COVER EVERY COLUMN",
+    ) in collected(context)
+
+
+def test_fifth_nf_reports_incomplete_join_dependency():
+    sql = """
+    CREATE TABLE r (
+        a INTEGER,
+        b INTEGER,
+        c INTEGER,
+        PRIMARY KEY (a, b)
+        -- JD: (a, b), (a)
+    );
+    """
+    context = run_nf_detection(sql, "NF5")
+
+    # (A) is contained in (A, B), so the JD is normalized to a single
+    # component that does not cover C: the declaration is incomplete.
+    assert (
+        AlertColor.GRAY,
+        "INCOMPLETE JOIN DEPENDENCY (A, B) (NORMALIZED) "
+        "DOES NOT COVER EVERY COLUMN",
     ) in collected(context)
 
 

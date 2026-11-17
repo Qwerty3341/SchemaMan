@@ -1,6 +1,6 @@
 :root {
 	--back-color: rgba(0, 0, 0, 0.5);
-	--font-size: 1.2rem;
+	--font-size: var(--fs-content);
 }
 
 .nf-container {
@@ -38,6 +38,10 @@
 	width: 50%;
 }
 
+#info-section h3 {
+	font-size: 1.1rem;
+}
+
 /*=========
  * Buttons
  * =======*/
@@ -59,7 +63,7 @@
 	padding: 1rem;
 	font-weight: 600;
 	font-family: var(--body-font);
-	font-size: 1rem;
+	font-size: 0.95rem;
 	width: 100%;
 	cursor: pointer;
 	text-align: center;
@@ -96,6 +100,6 @@
 	.nf-container {
 		margin: 0.5rem;
 		padding: 1rem;
-		font-size: 1.05rem;
+		font-size: 0.95rem;
 	}
 }

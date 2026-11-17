@@ -5,6 +5,7 @@ from sqlglot import exp
 
 from ..context import PipeLineContext
 from ..filter import Filter
+from .utils.alerts import Alert, AlertColor
 from .utils.data_types import generic_type_of
 from .utils.table_classes import (
     Column,
@@ -42,6 +43,18 @@ JOIN_DEPENDENCY_PATTERN = re.compile(
 )
 JOIN_COMPONENT_PATTERN = re.compile(r"\(([^)]*)\)")
 
+# A comment that starts with a dependency prefix but does not match its
+# pattern is reported as a malformed declaration instead of being ignored.
+DEPENDENCY_PREFIX_PATTERN = re.compile(
+    r"^\s*(?P<kind>JD|FD|MVD)\s*:\s*(?P<rest>.*)$"
+)
+
+DEPENDENCY_NAMES = {
+    "JD": "JOIN DEPENDENCY",
+    "FD": "FUNCTIONAL DEPENDENCY",
+    "MVD": "MULTIVALUED DEPENDENCY",
+}
+
 
 class ModelSchemaFilter(Filter):
     @override
@@ -50,11 +63,16 @@ class ModelSchemaFilter(Filter):
         if context.sql_ast is None:
             raise ValueError("SQL must be parsed before modeling the schema")
 
-        context.schema = self.model_schema(context.sql_ast, context.dialect)
+        diagnostics: list[Alert] = []
+        context.schema = self.model_schema(
+            context.sql_ast, context.dialect, diagnostics
+        )
+        context.violations.extend(diagnostics)
         return context
 
     # autopep8: off
-    def model_schema(self, statements: list[exp.Expression], dialect: str) -> list[Table]: # pyright: ignore
+    def model_schema(self, statements: list[exp.Expression], dialect: str,
+                     diagnostics: list[Alert]) -> list[Table]: # pyright: ignore
     # autopep8: on
         """
         Build one Table per CREATE TABLE
@@ -65,10 +83,19 @@ class ModelSchemaFilter(Filter):
         for statement in statements:
             if (isinstance(statement, exp.Create)
                     and statement.args.get("kind") == "TABLE"):
-                tables.append(self.table_to_generic_syntax(statement, dialect))
+                tables.append(
+                    self.table_to_generic_syntax(
+                        statement, dialect, diagnostics
+                    )
+                )
         return tables
 
-    def table_to_generic_syntax(self, create: exp.Create, dialect: str) -> Table:
+    def table_to_generic_syntax(
+        self,
+        create: exp.Create,
+        dialect: str,
+        diagnostics: list[Alert],
+    ) -> Table:
         schema = create.this  # exp.Schema with the columns and constraints
         table = Table(name=schema.this.name.upper())
         primary_key_columns: list[str] | None = None
@@ -99,7 +126,7 @@ class ModelSchemaFilter(Filter):
         if primary_key_columns is not None:
             table.primary_key = PrimaryKey(columns=tuple(primary_key_columns))
 
-        self.model_dependencies(table, schema.comments)
+        self.model_dependencies(table, schema.comments, diagnostics)
         return table
 
     def detect_constraints(self, nodes: list, table: Table, primary_key_columns: list[str] | None) -> list[str] | None:
@@ -189,7 +216,12 @@ class ModelSchemaFilter(Filter):
             ),
         )
 
-    def model_dependencies(self, table: Table, comments: list[str] | None) -> None:
+    def model_dependencies(
+        self,
+        table: Table,
+        comments: list[str] | None,
+        diagnostics: list[Alert],
+    ) -> None:
         """
         Read FD/MVD/JD declarations from the tables SQL comments
         """
@@ -201,16 +233,30 @@ class ModelSchemaFilter(Filter):
                 continue
 
             match = DEPENDENCY_PATTERN.match(comment)
-            if match is None:
+            if match is not None:
+                dependency = DEPENDENCY_CLASSES[match["arrow"]](
+                    determinant=self._attributes(match["determinant"]),
+                    dependent=self._attributes(match["dependent"]),
+                )
+                if isinstance(dependency, FunctionalDependency):
+                    table.functional_dependencies.append(dependency)
+                else:
+                    table.multivalued_dependencies.append(dependency)
                 continue
-            dependency = DEPENDENCY_CLASSES[match["arrow"]](
-                determinant=self._attributes(match["determinant"]),
-                dependent=self._attributes(match["dependent"]),
-            )
-            if isinstance(dependency, FunctionalDependency):
-                table.functional_dependencies.append(dependency)
-            else:
-                table.multivalued_dependencies.append(dependency)
+
+            # A dependency comment that does not parse is reported instead
+            # of being silently ignored.
+            prefix = DEPENDENCY_PREFIX_PATTERN.match(comment)
+            if prefix is not None:
+                kind = DEPENDENCY_NAMES[prefix["kind"]]
+                diagnostics.append(
+                    Alert(
+                        AlertColor.GRAY,
+                        f"MALFORMED {kind} DECLARATION: "
+                        f"{prefix['rest'].strip()}",
+                        table.name,
+                    )
+                )
 
     @staticmethod
     def detect_join_dependency(comment: str) -> JoinDependency | None:
@@ -228,9 +274,8 @@ class ModelSchemaFilter(Filter):
             )
         )
 
-        # A join dependency needs at least two non-empty components.
-        if len(components) < 2:
-            return None
+        # A single component is a valid (possibly trivial) join dependency,
+        # but an empty attribute is not.
         if any(not name for component in components for name in component):
             return None
 

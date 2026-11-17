@@ -9,11 +9,11 @@ Problem:
 
 Solution:
     Can use the candidate keys from BCNF
-    1. If all candidate keys are simple, complies the 5nf
-        1.1 Group pk
+    1. Compute the candidate keys
+        1.1 Group the PK
         1.2 Group the UNIQUE columns
-        1.3 Group the determinant of each FD that reach all the columns (BCNF)
-    2. If all the keys are simple put green alert
+        1.3 Group the determinant of each FD that reaches all the columns
+    2. If all the candidate keys are simple put a green alert
     3. Each join dependency must be implied by the keys
         3.1. Extract the JDs
         3.2. If no JD is declared
@@ -34,7 +34,7 @@ Solution:
 """
 
 from .alerts import Alert, AlertColor
-from .fourth_nf import FourthNormalFormDetecter
+from .keys import candidate_keys, is_superkey
 from .table_classes import Table
 
 
@@ -48,21 +48,14 @@ class FifthNormalFormDetecter:
 
     @staticmethod
     def from_thirth_to_fifth(table: Table) -> bool:
-        primary_key = table.get_primary_key()
-        primary_key_is_simple = (
-            primary_key is not None and len(primary_key.columns) == 1
-        )
+        """Tell whether every candidate key of the table is a single column.
 
-        # Every UNIQUE constraint must be a single column key.
-        unique_keys_are_simple = all(
-            len(key.columns) == 1 for key in table.get_unique_keys()
-        )
-
-        for fd in table.get_functional_dependencies():
-            if len(fd.determinant) != 1:
-                return False
-
-        return primary_key_is_simple and unique_keys_are_simple
+        When no join dependency is declared this is used as a shortcut, but
+        it is not a proof of 5NF on its own: a declared JD may still not be
+        implied by the keys.
+        """
+        keys = candidate_keys(table)
+        return bool(keys) and all(len(key) == 1 for key in keys)
 
     @staticmethod
     def check_if_each_jd_are_implied_by_keys(table: Table) -> list[Alert]:
@@ -84,17 +77,21 @@ class FifthNormalFormDetecter:
             components = [
                 set(component) for component in join_dependency.components
             ]
-            label = ", ".join(
-                f"({', '.join(component)})"
-                for component in join_dependency.components
-            )
+            label = join_dependency.label()
 
-            # 3.3.1. The JD must cover every column of the table.
+            # 3.3.1. The JD must cover every column of the table. A JD
+            # reduced to a single component that does not cover the table
+            # is incomplete: it cannot be evaluated at all.
             if set().union(*components) != columns:
+                kind = (
+                    "INCOMPLETE JOIN DEPENDENCY"
+                    if len(components) == 1
+                    else "JOIN DEPENDENCY"
+                )
                 alerts.append(
                     Alert(
                         AlertColor.GRAY,
-                        f"JOIN DEPENDENCY {label} DOES NOT COVER EVERY COLUMN",
+                        f"{kind} {label} DOES NOT COVER EVERY COLUMN",
                         table.name
                     )
                 )
@@ -121,9 +118,7 @@ class FifthNormalFormDetecter:
                         intersection = components[i] & components[j]
                         if not intersection:
                             continue
-                        if not FourthNormalFormDetecter.determinant_is_superkey(
-                            tuple(intersection), table
-                        ):
+                        if not is_superkey(tuple(intersection), table):
                             continue
                         components[i] |= components[j]
                         del components[j]
@@ -155,7 +150,13 @@ class FifthNormalFormDetecter:
 
     @staticmethod
     def detect_fifth_nf(table: Table) -> list[Alert]:
-        if FifthNormalFormDetecter.from_thirth_to_fifth(table):
+        # The all-simple-keys shortcut is only valid when the schema does
+        # not declare any join dependency. A declared JD must always be
+        # checked: simple keys do not imply 5NF by themselves.
+        if (
+            not table.get_join_dependencies()
+            and FifthNormalFormDetecter.from_thirth_to_fifth(table)
+        ):
             return [
                 Alert(
                     AlertColor.GREEN,
