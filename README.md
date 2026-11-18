@@ -4,8 +4,8 @@
     <img src="schema_man/static/img/WholeLogo.webp" alt="Schema Man Logo" width="300"/>
 </div>
 
-**Normal Forms interpreter**
-The system will generate reports for compliance and non-compliance for normal forms
+## The normal forms interpreter
+Schema man is a system written in flask that detects normal forms in SQL schemas.
 
 ## Languages
 
@@ -20,6 +20,7 @@ Pipe and Filter
 - sqlglot (SQL sintax verification)
 - jinja
 - pytest
+- codemirror (node)
 
 ## DB engines
 
